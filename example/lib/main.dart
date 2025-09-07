@@ -11,41 +11,39 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter OTP Kit Demo',
+      title: 'Flutter OTP Kit Example',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const OtpDemoPage(),
+      home: const OtpExamplePage(),
     );
   }
 }
 
-class OtpDemoPage extends StatefulWidget {
-  const OtpDemoPage({super.key});
+class OtpExamplePage extends StatefulWidget {
+  const OtpExamplePage({super.key});
 
   @override
-  State<OtpDemoPage> createState() => _OtpDemoPageState();
+  State<OtpExamplePage> createState() => _OtpExamplePageState();
 }
 
-class _OtpDemoPageState extends State<OtpDemoPage> {
-  final GlobalKey<OtpVerificationWidgetState> _otpKey = GlobalKey();
+class _OtpExamplePageState extends State<OtpExamplePage> {
+  String _selectedExample = 'phone';
   String _lastVerifiedOtp = '';
-  int _verificationCount = 0;
-  int _resendCount = 0;
+  final GlobalKey<OtpVerificationWidgetState> _otpKey = GlobalKey();
 
   void _handleVerification(String otp) {
     setState(() {
       _lastVerifiedOtp = otp;
-      _verificationCount++;
     });
 
-    // Simulate verification process
-    Future.delayed(const Duration(seconds: 1), () {
+    // Simulate API call
+    Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('OTP "$otp" verified successfully!'),
+            content: Text('OTP $otp verified successfully!'),
             backgroundColor: Colors.green,
           ),
         );
@@ -54,31 +52,19 @@ class _OtpDemoPageState extends State<OtpDemoPage> {
   }
 
   void _handleResend() {
-    setState(() {
-      _resendCount++;
-    });
-
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('OTP resent! (Count: $_resendCount)'),
+      const SnackBar(
+        content: Text('OTP resent successfully!'),
         backgroundColor: Colors.blue,
       ),
     );
-  }
-
-  void _clearOtp() {
-    _otpKey.currentState?.clearOtp();
-  }
-
-  void _setTestOtp() {
-    _otpKey.currentState?.setOtp('12345');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter OTP Kit Demo'),
+        title: const Text('Flutter OTP Kit Examples'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: SingleChildScrollView(
@@ -86,28 +72,125 @@ class _OtpDemoPageState extends State<OtpDemoPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Demo Information Card
+            // Example selector
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Flutter OTP Kit Demo',
-                      style: Theme.of(context).textTheme.headlineSmall,
+                    const Text(
+                      'Select Example:',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      'This demo showcases the flutter_otp_kit package with various configurations. '
-                      'Try different features and see how easy it is to implement OTP verification!',
+                    Row(
+                      children: [
+                        Expanded(
+                          child: RadioListTile<String>(
+                            title: const Text('Phone OTP'),
+                            value: 'phone',
+                            groupValue: _selectedExample,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedExample = value!;
+                              });
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          child: RadioListTile<String>(
+                            title: const Text('Email OTP'),
+                            value: 'email',
+                            groupValue: _selectedExample,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedExample = value!;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // OTP Widget
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    if (_selectedExample == 'phone')
+                      OtpVerificationWidget(
+                        key: _otpKey,
+                        title: 'Verify Phone Number',
+                        subtitle:
+                            'Enter the 5-digit code sent to {contactInfo}',
+                        contactInfo: '01012345678',
+                        maskingType: MaskingType.phone,
+                        fieldCount: 5,
+                        timerDuration: 60,
+                        buttonText: 'Verify Phone',
+                        resendText: 'Resend Code',
+                        timerPrefix: 'after',
+                        onVerify: _handleVerification,
+                        onResend: _handleResend,
+                      )
+                    else
+                      OtpVerificationWidget(
+                        key: _otpKey,
+                        title: 'Verify Email Address',
+                        subtitle:
+                            'Enter the 6-digit code sent to {contactInfo}',
+                        contactInfo: 'user@example.com',
+                        maskingType: MaskingType.email,
+                        fieldCount: 6,
+                        timerDuration: 120,
+                        buttonText: 'Verify Email',
+                        resendText: 'Resend Code',
+                        timerPrefix: 'after',
+                        onVerify: _handleVerification,
+                        onResend: _handleResend,
+                      ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Control buttons
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Test Controls:',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 12),
                     Row(
                       children: [
                         Expanded(
                           child: ElevatedButton.icon(
-                            onPressed: _clearOtp,
+                            onPressed: () {
+                              _otpKey.currentState?.clearOtp();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('OTP cleared successfully!'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            },
                             icon: const Icon(Icons.clear),
                             label: const Text('Clear OTP'),
                           ),
@@ -115,7 +198,15 @@ class _OtpDemoPageState extends State<OtpDemoPage> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: ElevatedButton.icon(
-                            onPressed: _setTestOtp,
+                            onPressed: () {
+                              _otpKey.currentState?.setOtp('12345');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Test OTP set to 12345'),
+                                  backgroundColor: Colors.blue,
+                                ),
+                              );
+                            },
                             icon: const Icon(Icons.edit),
                             label: const Text('Set Test OTP'),
                           ),
@@ -127,165 +218,56 @@ class _OtpDemoPageState extends State<OtpDemoPage> {
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
 
-            // Phone OTP Example
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Phone OTP Example',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 16),
-                    OtpVerificationWidget(
-                      key: _otpKey,
-                      title: 'Verify Phone Number',
-                      subtitle: 'Enter the 5-digit code sent to {contactInfo}',
-                      contactInfo: '01012345678',
-                      maskingType: MaskingType.phone,
-                      fieldCount: 5,
-                      timerDuration: 60,
-                      buttonText: 'Verify Phone',
-                      resendText: 'Resend Code',
-                      timerPrefix: 'after',
-                      onVerify: _handleVerification,
-                      onResend: _handleResend,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // Email OTP Example
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Email OTP Example',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 16),
-                    OtpVerificationWidget(
-                      title: 'Verify Email Address',
-                      subtitle: 'Enter the 6-digit code sent to {contactInfo}',
-                      contactInfo: 'user@example.com',
-                      maskingType: MaskingType.email,
-                      fieldCount: 6,
-                      timerDuration: 120,
-                      buttonText: 'Verify Email',
-                      resendText: 'Resend Code',
-                      timerPrefix: 'after',
-                      primaryColor: Colors.purple,
-                      onVerify: _handleVerification,
-                      onResend: _handleResend,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // Custom Styled Example
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Custom Styled Example',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 16),
-                    OtpVerificationWidget(
-                      title: 'Custom OTP Verification',
-                      subtitle: 'Enter the verification code',
-                      buttonText: 'Verify',
-                      resendText: 'Resend',
-                      timerPrefix: 'after',
-                      fieldCount: 4,
-                      fieldWidth: 70,
-                      fieldHeight: 80,
-                      borderRadius: 20,
-                      spacing: 20,
-                      primaryColor: Colors.orange,
-                      secondaryColor: Colors.grey[600]!,
-                      backgroundColor: Colors.grey[50]!,
-                      titleStyle: const TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.orange,
+            // Status display
+            if (_lastVerifiedOtp.isNotEmpty)
+              Card(
+                color: Colors.green.shade50,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Last Verified OTP:',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-                      onVerify: _handleVerification,
-                      onResend: _handleResend,
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      Text(
+                        _lastVerifiedOtp,
+                        style: const TextStyle(
+                            fontSize: 24, fontFamily: 'monospace'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
 
-            // Statistics Card
+            // Package info
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Demo Statistics',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 16),
-                    _buildStatRow('Last Verified OTP:',
-                        _lastVerifiedOtp.isEmpty ? 'None' : _lastVerifiedOtp),
-                    _buildStatRow(
-                        'Verification Count:', _verificationCount.toString()),
-                    _buildStatRow('Resend Count:', _resendCount.toString()),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // Package Information
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Package Information',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 16),
                     const Text(
-                      'This demo showcases the flutter_otp_kit package features:',
+                      'Package Information:',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                        '• Configurable field count (4, 5, 6, or any number)'),
-                    const Text('• Smart auto-navigation between fields'),
-                    const Text('• Automatic contact masking (phone/email)'),
-                    const Text('• Built-in timer with countdown'),
-                    const Text('• Full customization of colors and styling'),
-                    const Text(
-                        '• Cross-platform support (mobile, web, desktop)'),
-                    const Text('• Complete localization support'),
-                    const SizedBox(height: 16),
+                        '• Cross-platform support (iOS, Android, Web, Desktop)'),
+                    const Text('• Fully customizable styling'),
+                    const Text('• Smart focus management'),
+                    const Text('• Built-in timer functionality'),
+                    const Text('• Contact masking for privacy'),
+                    const Text('• Full localization support'),
+                    const SizedBox(height: 12),
                     const Text(
                       'Visit pub.dev for more information:',
                       style: TextStyle(fontWeight: FontWeight.bold),
@@ -297,22 +279,6 @@ class _OtpDemoPageState extends State<OtpDemoPage> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildStatRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label),
-          Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ],
       ),
     );
   }

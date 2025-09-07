@@ -1,70 +1,34 @@
 # Flutter OTP Kit Example
 
-This example demonstrates the comprehensive features of the `flutter_otp_kit` package.
+This example demonstrates how to use the `flutter_otp_kit` package.
 
 ## Features Demonstrated
 
-### 1. Phone OTP Verification
-- 5-digit OTP fields
-- Automatic phone number masking (010****78)
-- 60-second timer
-- Smart auto-navigation between fields
-
-### 2. Email OTP Verification
-- 6-digit OTP fields
-- Automatic email masking (us***@example.com)
-- 120-second timer
-- Custom purple theme
-
-### 3. Custom Styled OTP
-- 4-digit OTP fields
-- Custom field dimensions (70x80)
-- Custom border radius (20)
-- Orange theme with custom typography
-- Increased spacing (20)
-
-### 4. Interactive Features
-- Clear OTP button
-- Set test OTP button
-- Real-time statistics tracking
-- Verification and resend counters
+- Phone number OTP verification with masking
+- Email OTP verification with masking  
+- Interactive controls to test `clearOtp()` and `setOtp()` methods
+- Real-time verification feedback
+- Timer functionality
+- Cross-platform compatibility
 
 ## Running the Example
 
-1. Navigate to the example directory:
-   ```bash
-   cd example
-   ```
+```bash
+flutter run
+```
 
-2. Get dependencies:
-   ```bash
-   flutter pub get
-   ```
+## What You'll See
 
-3. Run the app:
-   ```bash
-   flutter run
-   ```
+1. **Example Selector**: Choose between phone or email OTP verification
+2. **OTP Widget**: Interactive OTP input fields with timer
+3. **Test Controls**: Buttons to clear OTP or set test values
+4. **Status Display**: Shows the last verified OTP
+5. **Package Information**: Details about the package features
 
-## Testing Features
+## Key Features
 
-- **Auto-navigation**: Type in any field and watch it automatically move to the next
-- **Contact masking**: See how phone numbers and emails are automatically masked
-- **Timer functionality**: Watch the countdown timer and test the resend feature
-- **Custom styling**: Compare different styling options
-- **Clear/Set OTP**: Test the public methods for clearing and setting OTP values
-
-## Package Information
-
-This example showcases all the key features of the `flutter_otp_kit` package:
-
-- ✅ Configurable field count
-- ✅ Smart focus management
-- ✅ Contact masking
-- ✅ Timer functionality
-- ✅ Custom styling
-- ✅ Cross-platform support
-- ✅ Localization support
-- ✅ Public methods for programmatic control
-
-Visit [pub.dev](https://pub.dev/packages/flutter_otp_kit) for more information about the package.
+- **Smart Navigation**: Auto-move between fields as you type
+- **Contact Masking**: Phone numbers and emails are automatically masked for privacy
+- **Timer Management**: Automatic countdown with resend functionality
+- **Validation**: Real-time validation of OTP input
+- **Customization**: Full control over styling and behavior

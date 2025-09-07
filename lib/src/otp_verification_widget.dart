@@ -56,30 +56,12 @@ import 'masking_type.dart';
 /// - `clearOtp()`: Clears all input fields and refocuses first field
 /// - `setOtp(String)`: Pre-fills fields with provided OTP (useful for testing/auto-fill)
 class OtpVerificationWidget extends StatefulWidget {
-  /// Creates a new [OtpVerificationWidget] instance.
-  ///
-  /// This widget provides a complete OTP verification interface with customizable
-  /// styling, localization support, and robust functionality.
+  /// Creates a new OTP verification widget with customizable styling and behavior.
   ///
   /// The [title], [subtitle], [buttonText], [resendText], [timerPrefix],
   /// [onVerify], and [onResend] parameters are required.
   ///
-  /// All other parameters have sensible defaults and are optional.
-  ///
-  /// Example:
-  /// ```dart
-  /// OtpVerificationWidget(
-  ///   title: 'Verify Phone Number',
-  ///   subtitle: 'Enter the code sent to {contactInfo}',
-  ///   contactInfo: '01012345678',
-  ///   maskingType: MaskingType.phone,
-  ///   buttonText: 'Verify',
-  ///   resendText: 'Resend Code',
-  ///   timerPrefix: 'after',
-  ///   onVerify: (otp) => handleVerification(otp),
-  ///   onResend: () => resendOtp(),
-  /// )
-  /// ```
+  /// All other parameters have sensible defaults and can be customized as needed.
   const OtpVerificationWidget({
     super.key,
     required this.title,
@@ -199,10 +181,10 @@ class OtpVerificationWidget extends StatefulWidget {
   final Widget? buttonWidget;
 
   @override
-  State<OtpVerificationWidget> createState() => _OtpVerificationWidgetState();
+  State<OtpVerificationWidget> createState() => OtpVerificationWidgetState();
 }
 
-class _OtpVerificationWidgetState extends State<OtpVerificationWidget> {
+class OtpVerificationWidgetState extends State<OtpVerificationWidget> {
   late List<TextEditingController> _controllers;
   late List<FocusNode> _focusNodes;
   final _formKey = GlobalKey<FormState>();

@@ -1,5 +1,5 @@
 name: flutter_otp_kit_example
-description: A comprehensive example app demonstrating flutter_otp_kit features
+description: Example app demonstrating flutter_otp_kit package usage
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -13,7 +13,6 @@ dependencies:
     sdk: flutter
   flutter_otp_kit:
     path: ../
-  cupertino_icons: ^1.0.2
 
 dev_dependencies:
   flutter_test:

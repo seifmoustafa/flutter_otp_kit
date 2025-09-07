@@ -1,9 +1,46 @@
-# 🔐 Flutter OTP Kit
+# Flutter OTP Kit
 
 A comprehensive Flutter package for OTP (One-Time Password) verification with customizable styling, localization support, and robust functionality.
 
 [![pub package](https://img.shields.io/pub/v/flutter_otp_kit.svg)](https://pub.dev/packages/flutter_otp_kit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## TL;DR
+
+A wrapper library that makes it easier to implement OTP verification with a single widget, supporting both Material and Cupertino design languages across all platforms.
+
+## Bit more
+
+For anyone building apps with Flutter, implementing OTP verification typically requires designing input fields, managing focus navigation, handling timers, and validation logic. This package provides a complete solution with a single widget that handles all these complexities.
+
+This package supports the **Stable** release as a full released version.
+
+## How it works
+
+Instead of having to write complex OTP verification logic like this...
+
+```dart
+// Traditional approach - lots of boilerplate
+class CustomOtpWidget extends StatefulWidget {
+  // Multiple controllers, focus nodes, timers, validation logic...
+  // Hundreds of lines of code for basic functionality
+}
+```
+
+you can use a single `OtpVerificationWidget` which handles all the complexity for you...
+
+```dart
+OtpVerificationWidget(
+  title: 'Verify Phone Number',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: '01012345678',
+  maskingType: MaskingType.phone,
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => resendOtp(),
+)
+```
+
+The heavy lifting of focus management, timer handling, validation, and styling is done for you.
 
 ## ✨ Features
 
@@ -17,13 +54,15 @@ A comprehensive Flutter package for OTP (One-Time Password) verification with cu
 - **♿ Accessibility ready**: Proper focus handling and keyboard navigation
 - **🔒 Contact masking**: Automatic phone/email masking for privacy
 
-## 📦 Installation
+## Installation
+
+> pub.dev: https://pub.dev/packages/flutter_otp_kit/install
 
 Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_otp_kit: ^1.0.2
+  flutter_otp_kit: ^1.0.3
 ```
 
 Then run:
@@ -237,12 +276,13 @@ Masks email addresses: `user@example.com` → `us***@example.com`
 ### `MaskingType.none`
 Shows full contact information without masking.
 
-## 🧪 Testing
+## Example
 
-The package includes comprehensive tests. Run them with:
+An example app that demonstrates the usage is included in the `example/` directory. You can run it to see the package in action:
 
 ```bash
-flutter test
+cd example
+flutter run
 ```
 
 ## 🤝 Contributing
