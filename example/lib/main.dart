@@ -39,7 +39,7 @@ class _OtpDemoPageState extends State<OtpDemoPage> {
       _lastVerifiedOtp = otp;
       _verificationCount++;
     });
-    
+
     // Simulate verification process
     Future.delayed(const Duration(seconds: 1), () {
       if (mounted) {
@@ -57,7 +57,7 @@ class _OtpDemoPageState extends State<OtpDemoPage> {
     setState(() {
       _resendCount++;
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('OTP resent! (Count: $_resendCount)'),
@@ -126,7 +126,7 @@ class _OtpDemoPageState extends State<OtpDemoPage> {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 24),
 
             // Phone OTP Example
@@ -248,8 +248,10 @@ class _OtpDemoPageState extends State<OtpDemoPage> {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 16),
-                    _buildStatRow('Last Verified OTP:', _lastVerifiedOtp.isEmpty ? 'None' : _lastVerifiedOtp),
-                    _buildStatRow('Verification Count:', _verificationCount.toString()),
+                    _buildStatRow('Last Verified OTP:',
+                        _lastVerifiedOtp.isEmpty ? 'None' : _lastVerifiedOtp),
+                    _buildStatRow(
+                        'Verification Count:', _verificationCount.toString()),
                     _buildStatRow('Resend Count:', _resendCount.toString()),
                   ],
                 ),
@@ -274,12 +276,14 @@ class _OtpDemoPageState extends State<OtpDemoPage> {
                       'This demo showcases the flutter_otp_kit package features:',
                     ),
                     const SizedBox(height: 8),
-                    const Text('• Configurable field count (4, 5, 6, or any number)'),
+                    const Text(
+                        '• Configurable field count (4, 5, 6, or any number)'),
                     const Text('• Smart auto-navigation between fields'),
                     const Text('• Automatic contact masking (phone/email)'),
                     const Text('• Built-in timer with countdown'),
                     const Text('• Full customization of colors and styling'),
-                    const Text('• Cross-platform support (mobile, web, desktop)'),
+                    const Text(
+                        '• Cross-platform support (mobile, web, desktop)'),
                     const Text('• Complete localization support'),
                     const SizedBox(height: 16),
                     const Text(
