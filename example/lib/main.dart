@@ -132,6 +132,15 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                             }
                           },
                         ),
+                        ChoiceChip(
+                          label: const Text('Field Transitions'),
+                          selected: _selectedExample == 'transitions',
+                          onSelected: (selected) {
+                            if (selected) {
+                              setState(() => _selectedExample = 'transitions');
+                            }
+                          },
+                        ),
                       ],
                     ),
                   ],
@@ -303,6 +312,45 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                         shadowColor: Colors.orange.withValues(alpha: 0.3),
                         onVerify: _handleVerification,
                         onResend: _handleResend,
+                      )
+                    else if (_selectedExample == 'transitions')
+                      OtpVerificationWidget(
+                        key: _otpKey,
+                        title: 'Enhanced Field Transitions',
+                        subtitle:
+                            'Smooth transitions and progressive highlighting',
+                        fieldCount: 6,
+                        fieldHeight: 60,
+                        timerDuration: 120,
+                        buttonText: 'Verify',
+                        resendText: 'Resend',
+                        timerPrefix: 'after',
+                        // Enhanced field transition features
+                        fieldTransitionDuration:
+                            const Duration(milliseconds: 200),
+                        fieldTransitionCurve: Curves.easeInOut,
+                        enableFieldStateAnimation: true,
+                        completedFieldBorderColor: Colors.green,
+                        completedFieldBackgroundColor:
+                            Colors.green.withValues(alpha: 0.1),
+                        completedFieldTextColor: Colors.green,
+                        enableProgressiveHighlighting: true,
+                        enableFieldToFieldAnimation: true,
+                        fieldToFieldTransitionDuration:
+                            const Duration(milliseconds: 150),
+                        fieldToFieldTransitionCurve: Curves.easeInOut,
+                        transitionHighlightColor: Colors.blue.withValues(alpha: 0.3),
+                        // Styling
+                        primaryColor: Colors.blue,
+                        focusedBorderColor: Colors.blue,
+                        filledFieldBackgroundColor:
+                            Colors.blue.withValues(alpha: 0.1),
+                        fieldWidth: 50,
+                        borderRadius: 12,
+                        enableShadow: true,
+                        shadowColor: Colors.blue.withValues(alpha: 0.2),
+                        onVerify: _handleVerification,
+                        onResend: _handleResend,
                       ),
                   ],
                 ),
@@ -423,6 +471,10 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                     Text('• Real-time validation and error handling'),
                     Text(
                         '• Advanced cursor control (height, width, alignment)'),
+                    Text('• Enhanced field-to-field visual transitions'),
+                    Text('• Progressive field highlighting for better UX'),
+                    Text('• Smooth field state animations'),
+                    Text('• Configurable transition effects and timing'),
                     Text(
                         '• Cross-platform support (iOS, Android, Web, Desktop)'),
                     SizedBox(height: 12),

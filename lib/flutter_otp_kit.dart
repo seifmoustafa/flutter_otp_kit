@@ -10,3 +10,4 @@ export 'src/otp_field_shape.dart';
 export 'src/otp_animation_config.dart';
 export 'src/otp_theme_config.dart';
 export 'src/otp_behavior_config.dart';
+export 'src/otp_field_state.dart';

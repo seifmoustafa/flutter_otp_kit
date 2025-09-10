@@ -22,6 +22,8 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 - **Gradient Support**: Linear, radial, and sweep gradient backgrounds
 - **Shadow Effects**: Customizable shadows with color, blur, spread, and offset control
 - **Animation System**: Smooth animations with predefined configurations (default, fast, smooth, disabled)
+- **Enhanced Field Transitions**: Smooth field-to-field visual transitions and state animations
+- **Progressive Highlighting**: Visual feedback showing user progress through OTP entry
 - **Theme Integration**: Material Design 3, light, dark themes with automatic adaptation
 
 ### 📱 Responsive & Layout
@@ -56,7 +58,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_otp_kit: ^1.2.3
+  flutter_otp_kit: ^1.3.0
 ```
 
 Then run:
@@ -373,6 +375,41 @@ OtpVerificationWidget(
   cursorWidth: 2.0, // Thicker cursor
   cursorAlignment: CursorAlignment.center, // Perfect center alignment
   cursorColor: Colors.blue, // Blue cursor
+  buttonText: 'Verify',
+  resendText: 'Resend',
+  timerPrefix: 'after',
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => resendOtp(),
+)
+```
+
+### Enhanced Field Transitions
+```dart
+OtpVerificationWidget(
+  title: 'Enhanced Field Transitions',
+  subtitle: 'Smooth transitions and progressive highlighting',
+  fieldCount: 6,
+  fieldHeight: 60,
+  // Enhanced field transition features
+  fieldTransitionDuration: const Duration(milliseconds: 200),
+  fieldTransitionCurve: Curves.easeInOut,
+  enableFieldStateAnimation: true,
+  completedFieldBorderColor: Colors.green,
+  completedFieldBackgroundColor: Colors.green.withOpacity(0.1),
+  completedFieldTextColor: Colors.green,
+  enableProgressiveHighlighting: true,
+  enableFieldToFieldAnimation: true,
+  fieldToFieldTransitionDuration: const Duration(milliseconds: 150),
+  fieldToFieldTransitionCurve: Curves.easeInOut,
+  transitionHighlightColor: Colors.blue.withOpacity(0.3),
+  // Styling
+  primaryColor: Colors.blue,
+  focusedBorderColor: Colors.blue,
+  filledFieldBackgroundColor: Colors.blue.withOpacity(0.1),
+  fieldWidth: 50,
+  borderRadius: 12,
+  enableShadow: true,
+  shadowColor: Colors.blue.withOpacity(0.2),
   buttonText: 'Verify',
   resendText: 'Resend',
   timerPrefix: 'after',

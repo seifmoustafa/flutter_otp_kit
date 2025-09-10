@@ -10,6 +10,7 @@ import 'otp_field_shape.dart';
 import 'otp_animation_config.dart';
 import 'otp_theme_config.dart';
 import 'otp_behavior_config.dart';
+import 'otp_field_state.dart';
 
 /// Enum for cursor alignment within OTP fields
 enum CursorAlignment {
@@ -131,6 +132,18 @@ class OtpVerificationWidget extends StatefulWidget {
     this.shadowColor,
     this.shadowBlurRadius = 10.0,
     this.shadowSpreadRadius = 0.0,
+    // New field transition parameters
+    this.fieldTransitionDuration = const Duration(milliseconds: 200),
+    this.fieldTransitionCurve = Curves.easeInOut,
+    this.enableFieldStateAnimation = true,
+    this.completedFieldBorderColor,
+    this.completedFieldBackgroundColor,
+    this.completedFieldTextColor,
+    this.enableProgressiveHighlighting = true,
+    this.enableFieldToFieldAnimation = true,
+    this.fieldToFieldTransitionDuration = const Duration(milliseconds: 150),
+    this.fieldToFieldTransitionCurve = Curves.easeInOut,
+    this.transitionHighlightColor,
     this.obscureText = false,
     this.obscuringCharacter = '•',
     this.semanticLabel,
@@ -335,6 +348,39 @@ class OtpVerificationWidget extends StatefulWidget {
   /// Shadow spread radius
   final double shadowSpreadRadius;
 
+  /// Field transition duration for state changes
+  final Duration fieldTransitionDuration;
+
+  /// Field transition curve for state changes
+  final Curve fieldTransitionCurve;
+
+  /// Enable field state animations
+  final bool enableFieldStateAnimation;
+
+  /// Border color for completed fields
+  final Color? completedFieldBorderColor;
+
+  /// Background color for completed fields
+  final Color? completedFieldBackgroundColor;
+
+  /// Text color for completed fields
+  final Color? completedFieldTextColor;
+
+  /// Enable progressive highlighting
+  final bool enableProgressiveHighlighting;
+
+  /// Enable field-to-field animations
+  final bool enableFieldToFieldAnimation;
+
+  /// Field-to-field transition duration
+  final Duration fieldToFieldTransitionDuration;
+
+  /// Field-to-field transition curve
+  final Curve fieldToFieldTransitionCurve;
+
+  /// Transition highlight color
+  final Color? transitionHighlightColor;
+
   /// Obscure text (for secure OTP)
   final bool obscureText;
 
@@ -478,6 +524,10 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
   final List<bool> _fieldHasError = [];
+  final List<OtpFieldState> _fieldStates = [];
+  final List<AnimationController> _fieldAnimationControllers = [];
+  final List<Animation<double>> _fieldScaleAnimations = [];
+  final List<Animation<Color?>> _fieldColorAnimations = [];
 
   /// Initialize all lists with proper field count
   void _initializeLists() {
@@ -486,6 +536,47 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     _focusNodes = List.generate(widget.fieldCount, (index) => FocusNode());
     _fieldHasError.clear();
     _fieldHasError.addAll(List.generate(widget.fieldCount, (_) => false));
+
+    // Initialize field states
+    _fieldStates.clear();
+    _fieldStates
+        .addAll(List.generate(widget.fieldCount, (_) => OtpFieldState.empty));
+
+    // Dispose existing animation controllers
+    for (var controller in _fieldAnimationControllers) {
+      controller.dispose();
+    }
+
+    // Initialize field animation controllers
+    _fieldAnimationControllers.clear();
+    _fieldScaleAnimations.clear();
+    _fieldColorAnimations.clear();
+
+    for (int i = 0; i < widget.fieldCount; i++) {
+      final controller = AnimationController(
+        duration: widget.fieldTransitionDuration,
+        vsync: this,
+      );
+      _fieldAnimationControllers.add(controller);
+
+      _fieldScaleAnimations.add(
+        Tween<double>(begin: 1.0, end: 1.05).animate(
+          CurvedAnimation(
+              parent: controller, curve: widget.fieldTransitionCurve),
+        ),
+      );
+
+      _fieldColorAnimations.add(
+        ColorTween(
+          begin: widget.backgroundColor,
+          end: widget.transitionHighlightColor ??
+              widget.primaryColor.withValues(alpha: 0.3),
+        ).animate(
+          CurvedAnimation(
+              parent: controller, curve: widget.fieldTransitionCurve),
+        ),
+      );
+    }
   }
 
   @override
@@ -547,6 +638,9 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     for (var focusNode in _focusNodes) {
       focusNode.dispose();
     }
+    for (var controller in _fieldAnimationControllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -583,15 +677,59 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     });
   }
 
+  /// Updates field state and triggers animations
+  void _updateFieldState(int index) {
+    if (index >= _fieldStates.length) return;
+
+    final hasError = _fieldHasError[index] || _errorText != null;
+    final isFocused = _focusNodes[index].hasFocus;
+    final isFilled = _controllers[index].text.isNotEmpty;
+    final isCompleted = isFilled && !hasError && _isOtpComplete();
+
+    OtpFieldState newState;
+    if (hasError) {
+      newState = OtpFieldState.error;
+    } else if (isCompleted) {
+      newState = OtpFieldState.completed;
+    } else if (isFocused) {
+      newState = OtpFieldState.focused;
+    } else if (isFilled) {
+      newState = OtpFieldState.filled;
+    } else {
+      newState = OtpFieldState.empty;
+    }
+
+    if (_fieldStates[index] != newState) {
+      _fieldStates[index] = newState;
+
+      // Trigger field-to-field animation if enabled
+      if (widget.enableFieldToFieldAnimation && isFocused) {
+        _fieldAnimationControllers[index].forward().then((_) {
+          _fieldAnimationControllers[index].reverse();
+        });
+      }
+
+      // Trigger field state animation if enabled
+      if (widget.enableFieldStateAnimation) {
+        setState(() {});
+      }
+    }
+  }
+
   /// Handles digit input changes and manages focus navigation
   void _onDigitChanged(String value, int index) {
     // Call onChanged callback
     widget.onChanged?.call(_getOtpValue());
 
     if (value.isNotEmpty) {
+      // Update field state
+      _updateFieldState(index);
+
       // Move to next field if not the last one
       if (index < widget.fieldCount - 1) {
         _focusNodes[index + 1].requestFocus();
+        // Update next field state
+        _updateFieldState(index + 1);
       } else {
         // Last field, remove focus
         _focusNodes[index].unfocus();
@@ -599,12 +737,23 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
 
       // Check if OTP is complete
       if (_isOtpComplete()) {
+        // Mark all fields as completed
+        for (int i = 0; i < widget.fieldCount; i++) {
+          if (_controllers[i].text.isNotEmpty && !_fieldHasError[i]) {
+            _fieldStates[i] = OtpFieldState.completed;
+          }
+        }
         widget.onCompleted?.call(_getOtpValue());
       }
     } else {
+      // Update field state
+      _updateFieldState(index);
+
       // Move to previous field if not the first one
       if (index > 0) {
         _focusNodes[index - 1].requestFocus();
+        // Update previous field state
+        _updateFieldState(index - 1);
       }
     }
   }
@@ -657,8 +806,15 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     for (var controller in _controllers) {
       controller.clear();
     }
+
+    // Reset all field states
+    for (int i = 0; i < _fieldStates.length; i++) {
+      _fieldStates[i] = OtpFieldState.empty;
+    }
+
     if (widget.autoFocus && _focusNodes.isNotEmpty) {
       _focusNodes[0].requestFocus();
+      _updateFieldState(0);
     }
   }
 
@@ -666,6 +822,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   void setOtp(String otp) {
     for (int i = 0; i < widget.fieldCount && i < otp.length; i++) {
       _controllers[i].text = otp[i];
+      _updateFieldState(i);
     }
   }
 
@@ -810,12 +967,13 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     return false;
   }
 
-  /// Builds a single OTP field with responsive styling
+  /// Builds a single OTP field with responsive styling and enhanced animations
   Widget _buildOtpField(int index, double spacing, {double? fieldWidth}) {
     // Add bounds checking to prevent RangeError
     if (index >= _fieldHasError.length ||
         index >= _focusNodes.length ||
-        index >= _controllers.length) {
+        index >= _controllers.length ||
+        index >= _fieldStates.length) {
       return Container(
         width: fieldWidth ?? widget.fieldWidth,
         height: widget.fieldHeight,
@@ -832,29 +990,50 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
       );
     }
 
+    final fieldState = _fieldStates[index];
     final hasError = _fieldHasError[index] || _errorText != null;
-    final isFocused = _focusNodes[index].hasFocus;
-    final isFilled = _controllers[index].text.isNotEmpty;
     final responsiveWidth = fieldWidth ?? widget.fieldWidth;
 
-    return AnimatedContainer(
-      duration: widget.animationDuration,
-      curve: widget.animationCurve,
+    // Determine colors based on field state
+    Color borderColor;
+    Color backgroundColor;
+    Color textColor = Colors.black87;
+
+    if (fieldState == OtpFieldState.error || hasError) {
+      borderColor = widget.errorBorderColor ?? Colors.red;
+      backgroundColor = widget.backgroundColor;
+    } else if (fieldState == OtpFieldState.completed &&
+        widget.enableProgressiveHighlighting) {
+      borderColor = widget.completedFieldBorderColor ?? Colors.green;
+      backgroundColor =
+          widget.completedFieldBackgroundColor ?? widget.backgroundColor;
+      textColor = widget.completedFieldTextColor ?? Colors.green;
+    } else if (fieldState == OtpFieldState.focused) {
+      borderColor = widget.focusedBorderColor ?? widget.primaryColor;
+      backgroundColor = widget.backgroundColor;
+    } else if (fieldState == OtpFieldState.filled) {
+      borderColor = widget.secondaryColor.withValues(alpha: 0.8);
+      backgroundColor =
+          widget.filledFieldBackgroundColor ?? widget.backgroundColor;
+    } else {
+      borderColor = widget.secondaryColor.withValues(alpha: 0.8);
+      backgroundColor = widget.backgroundColor;
+    }
+
+    Widget fieldWidget = AnimatedContainer(
+      duration: widget.enableFieldStateAnimation
+          ? widget.fieldTransitionDuration
+          : Duration.zero,
+      curve: widget.fieldTransitionCurve,
       width: responsiveWidth,
       height: widget.fieldHeight,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(widget.borderRadius),
         border: Border.all(
-          color: hasError
-              ? (widget.errorBorderColor ?? Colors.red)
-              : isFocused
-                  ? (widget.focusedBorderColor ?? widget.primaryColor)
-                  : widget.secondaryColor.withValues(alpha: 0.8),
+          color: borderColor,
           width: widget.borderWidth,
         ),
-        color: isFilled
-            ? (widget.filledFieldBackgroundColor ?? widget.backgroundColor)
-            : widget.backgroundColor,
+        color: backgroundColor,
         boxShadow: widget.enableShadow
             ? [
                 BoxShadow(
@@ -886,7 +1065,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
               TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: textColor,
                 height: 1.0, // Ensure consistent line height
               ),
           decoration: InputDecoration(
@@ -909,6 +1088,28 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
         ),
       ),
     );
+
+    // Add field-to-field animation wrapper if enabled
+    if (widget.enableFieldToFieldAnimation &&
+        index < _fieldAnimationControllers.length) {
+      return AnimatedBuilder(
+        animation: _fieldAnimationControllers[index],
+        builder: (context, child) {
+          return Transform.scale(
+            scale: _fieldScaleAnimations[index].value,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(widget.borderRadius),
+                color: _fieldColorAnimations[index].value?.withValues(alpha: 0.1),
+              ),
+              child: fieldWidget,
+            ),
+          );
+        },
+      );
+    }
+
+    return fieldWidget;
   }
 
   @override

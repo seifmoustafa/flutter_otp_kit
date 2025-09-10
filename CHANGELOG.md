@@ -5,6 +5,83 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2025-01-27
+
+### 🎨 Enhanced Field Transitions & Progressive Highlighting
+
+#### New Field State Management
+- **OtpFieldState Enum**: New enum with states: empty, focused, filled, completed, error
+- **State Tracking**: Complete field state management with automatic transitions
+- **State Extensions**: Helper methods for state checking (hasContent, isActive, hasError, etc.)
+- **Automatic State Updates**: Fields automatically update state based on content and focus
+
+#### Enhanced Field Transitions
+- **Field-to-Field Animations**: Smooth transitions when moving between fields
+- **Field State Animations**: Animated transitions for all field state changes
+- **Configurable Timing**: Separate duration and curve controls for different transition types
+- **Scale Effects**: Subtle scale animations for field-to-field transitions
+- **Color Transitions**: Smooth color changes during state transitions
+
+#### Progressive Field Highlighting
+- **Completed Field Styling**: Distinct visual styling for completed fields
+- **Progressive Visual Feedback**: Users can see their progress through OTP entry
+- **Customizable Colors**: Separate colors for completed field border, background, and text
+- **Smart Highlighting**: Only applies when progressive highlighting is enabled
+
+#### New Animation Parameters
+- **fieldTransitionDuration**: Duration for field state transitions (default: 200ms)
+- **fieldTransitionCurve**: Curve for field state transitions (default: easeInOut)
+- **enableFieldStateAnimation**: Enable/disable field state animations (default: true)
+- **completedFieldBorderColor**: Border color for completed fields
+- **completedFieldBackgroundColor**: Background color for completed fields
+- **completedFieldTextColor**: Text color for completed fields
+- **enableProgressiveHighlighting**: Enable progressive highlighting (default: true)
+- **enableFieldToFieldAnimation**: Enable field-to-field animations (default: true)
+- **fieldToFieldTransitionDuration**: Duration for field-to-field transitions (default: 150ms)
+- **fieldToFieldTransitionCurve**: Curve for field-to-field transitions (default: easeInOut)
+- **transitionHighlightColor**: Color for transition highlights
+
+#### Enhanced Theme Configuration
+- **New Theme Colors**: Added completed field colors to OtpThemeConfig
+- **Material Design 3 Support**: Updated Material 3 theme with new colors
+- **Dark/Light Themes**: Updated theme presets with progressive highlighting colors
+- **Backward Compatibility**: All new colors have sensible defaults
+
+#### Technical Implementation
+- **Animation Controllers**: Individual animation controllers for each field
+- **State Management**: Comprehensive state tracking and updates
+- **Performance Optimization**: Efficient animation handling with proper disposal
+- **Memory Management**: Proper cleanup of animation resources
+
+#### User Experience Improvements
+- **Visual Progress**: Clear indication of user progress through OTP entry
+- **Smooth Transitions**: Polished animations enhance the user experience
+- **Modern Feel**: Contemporary UI with smooth state transitions
+- **Accessibility**: Maintained accessibility while adding visual enhancements
+
+#### Example Updates
+- **New Example**: Added "Field Transitions" example showcasing all new features
+- **Comprehensive Demo**: Complete demonstration of progressive highlighting and transitions
+- **Documentation**: Updated README with new example and parameter documentation
+
+### 🔧 Technical Enhancements
+- **Enhanced Animation System**: Extended OtpAnimationConfig with new transition parameters
+- **State Management**: Robust field state tracking with automatic updates
+- **Animation Lifecycle**: Proper animation controller management and disposal
+- **Performance**: Optimized animations with configurable timing and curves
+
+### 📚 Documentation Updates
+- **API Reference**: Added all new parameters to comprehensive API documentation
+- **Examples**: New "Enhanced Field Transitions" example with complete configuration
+- **README**: Updated features list and examples section
+- **Changelog**: Detailed documentation of all new features and improvements
+
+### 🎯 Backward Compatibility
+- **Sensible Defaults**: All new parameters have appropriate default values
+- **Optional Features**: All new features are optional and can be disabled
+- **Existing Code**: All existing code continues to work without changes
+- **Migration**: No breaking changes, gradual adoption of new features
+
 ## [1.2.3] - 2025-09-10
 
 ### 🎯 Cursor Control Enhancement

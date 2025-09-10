@@ -41,6 +41,18 @@ class OtpThemeConfig {
   /// Success border color
   final Color successBorderColor;
 
+  /// Completed field border color
+  final Color completedFieldBorderColor;
+
+  /// Completed field background color
+  final Color completedFieldBackgroundColor;
+
+  /// Completed field text color
+  final Color completedFieldTextColor;
+
+  /// Transition highlight color
+  final Color transitionHighlightColor;
+
   /// Cursor color
   final Color cursorColor;
 
@@ -79,6 +91,10 @@ class OtpThemeConfig {
     this.focusedBorderColor = const Color(0xFF018CC3),
     this.errorBorderColor = Colors.red,
     this.successBorderColor = Colors.green,
+    this.completedFieldBorderColor = Colors.green,
+    this.completedFieldBackgroundColor = const Color(0xFFE8F5E8),
+    this.completedFieldTextColor = Colors.green,
+    this.transitionHighlightColor = const Color(0xFF64B5F6),
     this.cursorColor = const Color(0xFF018CC3),
     this.selectionColor = const Color(0xFF018CC3),
     this.shadowColor = const Color(0xFF000000),
@@ -108,6 +124,10 @@ class OtpThemeConfig {
       focusedBorderColor: colorScheme.primary,
       errorBorderColor: colorScheme.error,
       successBorderColor: colorScheme.tertiary,
+      completedFieldBorderColor: colorScheme.tertiary,
+      completedFieldBackgroundColor: colorScheme.tertiaryContainer,
+      completedFieldTextColor: colorScheme.onTertiaryContainer,
+      transitionHighlightColor: colorScheme.primary.withValues(alpha: 0.3),
       cursorColor: colorScheme.primary,
       selectionColor: colorScheme.primary,
       shadowColor: colorScheme.shadow,
@@ -129,6 +149,10 @@ class OtpThemeConfig {
     focusedBorderColor: Color(0xFF64B5F6),
     errorBorderColor: Color(0xFFCF6679),
     successBorderColor: Color(0xFF4CAF50),
+    completedFieldBorderColor: Color(0xFF4CAF50),
+    completedFieldBackgroundColor: Color(0xFF1B5E20),
+    completedFieldTextColor: Color(0xFF81C784),
+    transitionHighlightColor: Color(0xFF64B5F6),
     cursorColor: Color(0xFF64B5F6),
     selectionColor: Color(0xFF64B5F6),
     shadowColor: Color(0xFF000000),
@@ -149,6 +173,10 @@ class OtpThemeConfig {
     focusedBorderColor: Color(0xFF1976D2),
     errorBorderColor: Color(0xFFD32F2F),
     successBorderColor: Color(0xFF388E3C),
+    completedFieldBorderColor: Color(0xFF388E3C),
+    completedFieldBackgroundColor: Color(0xFFE8F5E8),
+    completedFieldTextColor: Color(0xFF2E7D32),
+    transitionHighlightColor: Color(0xFF1976D2),
     cursorColor: Color(0xFF1976D2),
     selectionColor: Color(0xFF1976D2),
     shadowColor: Color(0xFF000000),

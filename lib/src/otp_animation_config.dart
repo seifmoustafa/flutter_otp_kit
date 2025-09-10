@@ -53,6 +53,27 @@ class OtpAnimationConfig {
   /// Stagger delay between field animations
   final Duration staggerDelay;
 
+  /// Field-to-field transition duration
+  final Duration fieldToFieldTransitionDuration;
+
+  /// Field-to-field transition curve
+  final Curve fieldToFieldTransitionCurve;
+
+  /// Field state transition duration
+  final Duration fieldStateTransitionDuration;
+
+  /// Field state transition curve
+  final Curve fieldStateTransitionCurve;
+
+  /// Enable field-to-field animations
+  final bool enableFieldToFieldAnimation;
+
+  /// Enable field state animations
+  final bool enableFieldStateAnimation;
+
+  /// Enable progressive highlighting animations
+  final bool enableProgressiveHighlighting;
+
   const OtpAnimationConfig({
     this.mainAnimationDuration = const Duration(milliseconds: 300),
     this.mainAnimationCurve = Curves.easeInOut,
@@ -71,6 +92,13 @@ class OtpAnimationConfig {
     this.enableShakeAnimation = true,
     this.enablePulseAnimation = true,
     this.staggerDelay = const Duration(milliseconds: 50),
+    this.fieldToFieldTransitionDuration = const Duration(milliseconds: 150),
+    this.fieldToFieldTransitionCurve = Curves.easeInOut,
+    this.fieldStateTransitionDuration = const Duration(milliseconds: 200),
+    this.fieldStateTransitionCurve = Curves.easeInOut,
+    this.enableFieldToFieldAnimation = true,
+    this.enableFieldStateAnimation = true,
+    this.enableProgressiveHighlighting = true,
   });
 
   /// Default animation config
