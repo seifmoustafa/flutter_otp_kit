@@ -325,6 +325,9 @@ OtpVerificationWidget(
 | `borderRadius` | `double` | `17.752` | Border radius of input fields |
 | `borderWidth` | `double` | `1.869` | Border width of input fields |
 | `spacing` | `double` | `16.0` | Spacing between elements |
+| `fieldSpacing` | `double` | `12.0` | Spacing between OTP input fields |
+| `minFieldSpacing` | `double` | `8.0` | Minimum spacing between fields (responsive) |
+| `maxFieldSpacing` | `double` | `20.0` | Maximum spacing between fields (responsive) |
 | `primaryColor` | `Color` | `Color(0xFF018CC3)` | Primary color |
 | `secondaryColor` | `Color` | `Color(0xFF8B8B8B)` | Secondary color |
 | `backgroundColor` | `Color` | `Colors.white` | Background color of fields |

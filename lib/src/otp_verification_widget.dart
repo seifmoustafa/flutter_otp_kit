@@ -4,6 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'masking_type.dart';
 import 'otp_input_type.dart';
+import 'otp_layout_type.dart';
+import 'otp_field_shape.dart';
+import 'otp_animation_config.dart';
+import 'otp_theme_config.dart';
+import 'otp_behavior_config.dart';
 
 /// A fully generic and reusable OTP verification widget
 ///
@@ -82,6 +87,9 @@ class OtpVerificationWidget extends StatefulWidget {
     this.borderRadius = 17.752,
     this.borderWidth = 1.869,
     this.spacing = 16.0,
+    this.fieldSpacing = 12.0,
+    this.minFieldSpacing = 8.0,
+    this.maxFieldSpacing = 20.0,
     this.primaryColor = const Color(0xFF018CC3),
     this.secondaryColor = const Color(0xFF8B8B8B),
     this.backgroundColor = Colors.white,
@@ -119,6 +127,43 @@ class OtpVerificationWidget extends StatefulWidget {
     this.customKeyboardType,
     this.textCapitalization = TextCapitalization.none,
     this.enableInteractiveSelection = true,
+    // Comprehensive configuration objects
+    this.layoutType = OtpLayoutType.singleRow,
+    this.fieldAlignment = OtpFieldAlignment.center,
+    this.fieldDirection = OtpFieldDirection.horizontal,
+    this.fieldShape = OtpFieldShape.roundedRectangle,
+    this.fieldShapeConfig,
+    this.animationConfig = OtpAnimationConfig.defaultConfig,
+    this.themeConfig,
+    this.behaviorConfig = const OtpBehaviorConfig(),
+    // Advanced layout parameters
+    this.gridColumns = 3,
+    this.customFieldBuilder,
+    this.customLayoutBuilder,
+    // Advanced styling parameters
+    this.enableGradient = false,
+    this.gradientConfig,
+    this.enableCustomDecoration = false,
+    this.customDecoration,
+    // Advanced behavior parameters
+    this.enableHapticFeedback = false,
+    this.enableSoundFeedback = false,
+    this.enableVoiceInput = false,
+    this.enableBiometricInput = false,
+    this.enableSwipeNavigation = false,
+    this.enableKeyboardNavigation = true,
+    this.enableAutoSubmit = false,
+    this.enableAutoClearOnError = false,
+    // Advanced validation parameters
+    this.customValidator,
+    this.validationRegex,
+    this.validationMessage,
+    this.enableRealTimeValidation = false,
+    // Advanced accessibility parameters
+    this.semanticHint,
+    this.semanticValue,
+    this.enableScreenReaderSupport = true,
+    this.customAccessibilityActions,
   });
 
   /// Title text displayed at the top (must be localized)
@@ -170,6 +215,15 @@ class OtpVerificationWidget extends StatefulWidget {
 
   /// Spacing between elements
   final double spacing;
+
+  /// Spacing between OTP input fields
+  final double fieldSpacing;
+
+  /// Minimum spacing between fields (responsive)
+  final double minFieldSpacing;
+
+  /// Maximum spacing between fields (responsive)
+  final double maxFieldSpacing;
 
   /// Primary color (title, button, active resend)
   final Color primaryColor;
@@ -281,6 +335,105 @@ class OtpVerificationWidget extends StatefulWidget {
 
   /// Enable interactive selection
   final bool enableInteractiveSelection;
+
+  // Comprehensive configuration objects
+  /// Layout type for field arrangement
+  final OtpLayoutType layoutType;
+
+  /// Field alignment within layout
+  final OtpFieldAlignment fieldAlignment;
+
+  /// Field arrangement direction
+  final OtpFieldDirection fieldDirection;
+
+  /// Field shape type
+  final OtpFieldShape fieldShape;
+
+  /// Custom field shape configuration
+  final OtpFieldShapeConfig? fieldShapeConfig;
+
+  /// Animation configuration
+  final OtpAnimationConfig animationConfig;
+
+  /// Theme configuration
+  final OtpThemeConfig? themeConfig;
+
+  /// Behavior configuration
+  final OtpBehaviorConfig behaviorConfig;
+
+  // Advanced layout parameters
+  /// Number of columns for grid layout
+  final int gridColumns;
+
+  /// Custom field builder function
+  final Widget Function(BuildContext context, int index, TextEditingController controller, FocusNode focusNode)? customFieldBuilder;
+
+  /// Custom layout builder function
+  final Widget Function(BuildContext context, List<Widget> fields)? customLayoutBuilder;
+
+  // Advanced styling parameters
+  /// Enable gradient background
+  final bool enableGradient;
+
+  /// Gradient configuration
+  final OtpGradientConfig? gradientConfig;
+
+  /// Enable custom decoration
+  final bool enableCustomDecoration;
+
+  /// Custom decoration for fields
+  final BoxDecoration? customDecoration;
+
+  // Advanced behavior parameters
+  /// Enable haptic feedback
+  final bool enableHapticFeedback;
+
+  /// Enable sound feedback
+  final bool enableSoundFeedback;
+
+  /// Enable voice input
+  final bool enableVoiceInput;
+
+  /// Enable biometric input
+  final bool enableBiometricInput;
+
+  /// Enable swipe navigation
+  final bool enableSwipeNavigation;
+
+  /// Enable keyboard navigation
+  final bool enableKeyboardNavigation;
+
+  /// Enable auto submit when complete
+  final bool enableAutoSubmit;
+
+  /// Enable auto clear on error
+  final bool enableAutoClearOnError;
+
+  // Advanced validation parameters
+  /// Custom validator function
+  final String? Function(String?)? customValidator;
+
+  /// Validation regex pattern
+  final String? validationRegex;
+
+  /// Custom validation message
+  final String? validationMessage;
+
+  /// Enable real-time validation
+  final bool enableRealTimeValidation;
+
+  // Advanced accessibility parameters
+  /// Semantic hint for accessibility
+  final String? semanticHint;
+
+  /// Semantic value for accessibility
+  final String? semanticValue;
+
+  /// Enable screen reader support
+  final bool enableScreenReaderSupport;
+
+  /// Custom accessibility actions
+  final List<Map<String, dynamic>>? customAccessibilityActions;
 
   @override
   State<OtpVerificationWidget> createState() => OtpVerificationWidgetState();
@@ -586,7 +739,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     if (widget.customKeyboardType != null) {
       return widget.customKeyboardType!;
     }
-
+    
     switch (widget.otpInputType) {
       case OtpInputType.numeric:
         return TextInputType.number;
@@ -597,6 +750,95 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
       case OtpInputType.custom:
         return TextInputType.text;
     }
+  }
+
+  /// Calculates responsive field spacing based on screen width and field count
+  double _calculateResponsiveSpacing(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final availableWidth = screenWidth - (widget.spacing * 2) - (widget.fieldWidth * widget.fieldCount);
+    final calculatedSpacing = availableWidth / (widget.fieldCount - 1);
+    
+    // Clamp the spacing between min and max values
+    return calculatedSpacing.clamp(widget.minFieldSpacing, widget.maxFieldSpacing);
+  }
+
+  /// Checks if fields should wrap to next line for better responsiveness
+  bool _shouldWrapFields(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final totalWidth = (widget.fieldWidth * widget.fieldCount) + 
+                      (widget.fieldSpacing * (widget.fieldCount - 1)) + 
+                      (widget.spacing * 2);
+    return totalWidth > screenWidth * 0.9; // Use 90% of screen width
+  }
+
+  /// Builds a single OTP field with responsive styling
+  Widget _buildOtpField(int index, double spacing) {
+    final hasError = _fieldHasError[index] || _errorText != null;
+    final isFocused = _focusNodes[index].hasFocus;
+    final isFilled = _controllers[index].text.isNotEmpty;
+    
+    return AnimatedContainer(
+      duration: widget.animationDuration,
+      curve: widget.animationCurve,
+      width: widget.fieldWidth,
+      height: widget.fieldHeight,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(widget.borderRadius),
+        border: Border.all(
+          color: hasError
+              ? (widget.errorBorderColor ?? Colors.red)
+              : isFocused
+                  ? (widget.focusedBorderColor ?? widget.primaryColor)
+                  : widget.secondaryColor.withValues(alpha: 0.8),
+          width: widget.borderWidth,
+        ),
+        color: isFilled
+            ? (widget.filledFieldBackgroundColor ?? widget.backgroundColor)
+            : widget.backgroundColor,
+        boxShadow: widget.enableShadow
+            ? [
+                BoxShadow(
+                  color: widget.shadowColor ?? widget.primaryColor.withValues(alpha: 0.2),
+                  blurRadius: widget.shadowBlurRadius,
+                  spreadRadius: widget.shadowSpreadRadius,
+                ),
+              ]
+            : null,
+      ),
+      child: Semantics(
+        label: 'OTP field ${index + 1} of ${widget.fieldCount}',
+        textField: true,
+        child: TextFormField(
+          controller: _controllers[index],
+          focusNode: _focusNodes[index],
+          textAlign: TextAlign.center,
+          keyboardType: _getKeyboardType(),
+          textCapitalization: widget.textCapitalization,
+          inputFormatters: _getInputFormatters(),
+          obscureText: widget.obscureText,
+          obscuringCharacter: widget.obscuringCharacter,
+          enableInteractiveSelection: widget.enableInteractiveSelection,
+          cursorColor: widget.cursorColor ?? widget.primaryColor,
+          style: widget.fieldStyle ??
+              TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+          decoration: const InputDecoration(
+            counterText: '',
+            border: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            contentPadding: EdgeInsets.zero,
+          ),
+          validator: widget.validator ?? (widget.enableAutoValidation
+              ? (v) => (v == null || v.isEmpty) ? '' : null
+              : null),
+          onChanged: (value) => _onDigitChanged(value, index),
+        ),
+      ),
+    );
   }
 
   @override
@@ -657,93 +899,37 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
                     autovalidateMode: _autoValidate,
                     child: Column(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: List.generate(widget.fieldCount, (index) {
-                            final hasError =
-                                _fieldHasError[index] || _errorText != null;
-                            final isFocused = _focusNodes[index].hasFocus;
-                            final isFilled =
-                                _controllers[index].text.isNotEmpty;
-
-                            return AnimatedContainer(
-                              duration: widget.animationDuration,
-                              curve: widget.animationCurve,
-                              width: widget.fieldWidth,
-                              height: widget.fieldHeight,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(widget.borderRadius),
-                                border: Border.all(
-                                  color: hasError
-                                      ? (widget.errorBorderColor ?? Colors.red)
-                                      : isFocused
-                                          ? (widget.focusedBorderColor ??
-                                              widget.primaryColor)
-                                          : widget.secondaryColor
-                                              .withValues(alpha: 0.8),
-                                  width: widget.borderWidth,
-                                ),
-                                color: isFilled
-                                    ? (widget.filledFieldBackgroundColor ??
-                                        widget.backgroundColor)
-                                    : widget.backgroundColor,
-                                boxShadow: widget.enableShadow
-                                    ? [
-                                        BoxShadow(
-                                          color: widget.shadowColor ??
-                                              widget.primaryColor
-                                                  .withValues(alpha: 0.2),
-                                          blurRadius: widget.shadowBlurRadius,
-                                          spreadRadius:
-                                              widget.shadowSpreadRadius,
-                                        ),
-                                      ]
-                                    : null,
-                              ),
-                              child: Semantics(
-                                label:
-                                    'OTP field ${index + 1} of ${widget.fieldCount}',
-                                textField: true,
-                                child: TextFormField(
-                                  controller: _controllers[index],
-                                  focusNode: _focusNodes[index],
-                                  textAlign: TextAlign.center,
-                                  keyboardType: _getKeyboardType(),
-                                  textCapitalization: widget.textCapitalization,
-                                  inputFormatters: _getInputFormatters(),
-                                  obscureText: widget.obscureText,
-                                  obscuringCharacter: widget.obscuringCharacter,
-                                  enableInteractiveSelection:
-                                      widget.enableInteractiveSelection,
-                                  cursorColor:
-                                      widget.cursorColor ?? widget.primaryColor,
-                                  style: widget.fieldStyle ??
-                                      TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87,
-                                      ),
-                                  decoration: const InputDecoration(
-                                    counterText: '',
-                                    border: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.zero,
-                                  ),
-                                  validator: widget.validator ??
-                                      (widget.enableAutoValidation
-                                          ? (v) => (v == null || v.isEmpty)
-                                              ? ''
-                                              : null
-                                          : null),
-                                  onChanged: (value) =>
-                                      _onDigitChanged(value, index),
-                                ),
-                              ),
-                            );
-                          }),
-                        ),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final responsiveSpacing = _calculateResponsiveSpacing(context);
+                    final shouldWrap = _shouldWrapFields(context);
+                    
+                    if (shouldWrap && widget.fieldCount > 4) {
+                      // Wrap fields for better responsiveness
+                      return Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: responsiveSpacing,
+                        runSpacing: responsiveSpacing * 0.5,
+                        children: List.generate(widget.fieldCount, (index) {
+                          return _buildOtpField(index, responsiveSpacing);
+                        }),
+                      );
+                    } else {
+                      // Single row layout
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(widget.fieldCount, (index) {
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              right: index < widget.fieldCount - 1 ? responsiveSpacing : 0,
+                            ),
+                            child: _buildOtpField(index, responsiveSpacing),
+                          );
+                        }),
+                      );
+                    }
+                  },
+                ),
                         if (_errorText != null || widget.errorText != null)
                           Padding(
                             padding: EdgeInsets.only(top: widget.spacing * 0.5),
