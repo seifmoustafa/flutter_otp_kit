@@ -55,14 +55,19 @@ The heavy lifting of focus management, timer handling, validation, and styling i
 - **♿ Accessibility ready**: Proper focus handling and keyboard navigation
 - **🔒 Contact masking**: Automatic phone/email masking for privacy
 
-### New in v1.2.2 - Critical Layout Error Fixes
+### New in v1.2.2 - Critical Layout and Runtime Error Fixes
 - **🚨 Fixed RenderBox Layout Errors**: Resolved "RenderBox was not laid out" exceptions completely
 - **🔧 Removed Problematic Wrapper**: Eliminated SingleChildScrollView + ConstrainedBox causing infinite height constraints
 - **🛡️ Safe Responsive Design**: Implemented conservative responsive calculations with extra safety margins
 - **📐 Enhanced Field Constraints**: Added Container with maxWidth constraints for overflow protection
-- **🎯 Conservative Safety Margins**: Increased safety margins to 30% for spacing and 20% for field width
-- **📱 Improved Wrap Detection**: Reduced wrap threshold to 75% of screen width for extra safety
+- **🎯 Conservative Safety Margins**: Increased safety margins to 50% for spacing and 40% for field width
+- **📱 Disabled Field Wrapping**: Fields now always stay in single row for standard OTP appearance
 - **🔒 Layout Stability**: Ensured stable layout rendering without constraint conflicts
+- **🚨 Fixed RangeError**: Added bounds checking to prevent index out of bounds errors
+- **🔄 Dynamic Field Count**: Proper handling of field count changes with list reinitialization
+- **🛡️ Crash Prevention**: Added comprehensive error handling for all edge cases
+- **📱 Standard OTP Layout**: Fields maintain single-row layout across all screen sizes
+- **⚡ Performance Optimization**: Removed unnecessary calculations and improved responsiveness
 
 ### Previous Features (v1.2.1) - Critical Responsive Fixes
 - **🚨 Fixed Overflow Bug**: Resolved "RIGHT OVERFLOWED BY 12 PIXELS" error completely

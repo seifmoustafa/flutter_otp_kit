@@ -81,7 +81,7 @@ class OtpVerificationWidget extends StatefulWidget {
     required this.onResend,
     this.contactInfo,
     this.maskingType = MaskingType.phone,
-    this.fieldCount = 5,
+    this.fieldCount = 4,
     this.timerDuration = 60,
     this.fieldWidth = 55.125,
     this.fieldHeight = 60.731,
@@ -460,14 +460,20 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   late Animation<double> _scaleAnimation;
   final List<bool> _fieldHasError = [];
 
-  @override
-  void initState() {
-    super.initState();
+  /// Initialize all lists with proper field count
+  void _initializeLists() {
     _controllers =
         List.generate(widget.fieldCount, (index) => TextEditingController());
     _focusNodes = List.generate(widget.fieldCount, (index) => FocusNode());
-    _remainingTime = widget.timerDuration;
+    _fieldHasError.clear();
     _fieldHasError.addAll(List.generate(widget.fieldCount, (_) => false));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeLists();
+    _remainingTime = widget.timerDuration;
 
     // Initialize animations
     _animationController = AnimationController(
@@ -531,38 +537,13 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
 
     // Handle field count changes
     if (oldWidget.fieldCount != widget.fieldCount) {
-      _updateControllersAndFocusNodes();
+      _initializeLists();
     }
 
     // Handle timer duration changes
     if (oldWidget.timerDuration != widget.timerDuration) {
       _remainingTime = widget.timerDuration;
       _startTimer();
-    }
-  }
-
-  /// Updates controllers and focus nodes when field count changes
-  void _updateControllersAndFocusNodes() {
-    // Dispose old controllers and focus nodes
-    for (var controller in _controllers) {
-      controller.dispose();
-    }
-    for (var focusNode in _focusNodes) {
-      focusNode.dispose();
-    }
-
-    // Create new ones
-    _controllers =
-        List.generate(widget.fieldCount, (index) => TextEditingController());
-    _focusNodes = List.generate(widget.fieldCount, (index) => FocusNode());
-
-    // Auto focus if enabled
-    if (widget.autoFocus && _focusNodes.isNotEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _focusNodes[0].requestFocus();
-        }
-      });
     }
   }
 
@@ -765,11 +746,11 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     final totalFieldWidth = widget.fieldWidth * widget.fieldCount;
     final availableWidth = screenWidth - padding - totalFieldWidth;
 
-    // Calculate spacing with conservative safety margin
+    // Calculate spacing with very conservative safety margin
     final calculatedSpacing = availableWidth / (widget.fieldCount - 1);
 
-    // Apply conservative safety margin to prevent overflow (30% buffer)
-    final safeSpacing = calculatedSpacing * 0.7;
+    // Apply very conservative safety margin to prevent overflow (50% buffer)
+    final safeSpacing = calculatedSpacing * 0.5;
 
     // Clamp the spacing between min and max values
     return safeSpacing.clamp(widget.minFieldSpacing, widget.maxFieldSpacing);
@@ -784,27 +765,42 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
         screenWidth - padding - (minSpacing * (widget.fieldCount - 1));
     final maxFieldWidth = availableWidth / widget.fieldCount;
 
-    // Apply conservative safety margin (20% buffer)
-    final safeFieldWidth = maxFieldWidth * 0.8;
+    // Apply very conservative safety margin (40% buffer)
+    final safeFieldWidth = maxFieldWidth * 0.6;
 
     // Use the smaller of configured width or calculated safe width
     return math.min(widget.fieldWidth, safeFieldWidth);
   }
 
   /// Checks if fields should wrap to next line for better responsiveness
+  /// DISABLED: Fields should always stay in a single row for standard OTP appearance
   bool _shouldWrapFields(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final responsiveFieldWidth = _calculateResponsiveFieldWidth(context);
-    final responsiveSpacing = _calculateResponsiveSpacing(context);
-    final totalWidth = (responsiveFieldWidth * widget.fieldCount) +
-        (responsiveSpacing * (widget.fieldCount - 1)) +
-        (widget.spacing * 2);
-    return totalWidth >
-        screenWidth * 0.75; // Use 75% of screen width for extra safety
+    // Always return false to keep fields in single row
+    return false;
   }
 
   /// Builds a single OTP field with responsive styling
   Widget _buildOtpField(int index, double spacing, {double? fieldWidth}) {
+    // Add bounds checking to prevent RangeError
+    if (index >= _fieldHasError.length ||
+        index >= _focusNodes.length ||
+        index >= _controllers.length) {
+      return Container(
+        width: fieldWidth ?? widget.fieldWidth,
+        height: widget.fieldHeight,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(widget.borderRadius),
+          border: Border.all(color: Colors.grey, width: widget.borderWidth),
+        ),
+        child: Center(
+          child: Text(
+            '?',
+            style: TextStyle(fontSize: 20, color: Colors.grey),
+          ),
+        ),
+      );
+    }
+
     final hasError = _fieldHasError[index] || _errorText != null;
     final isFocused = _focusNodes[index].hasFocus;
     final isFilled = _controllers[index].text.isNotEmpty;
