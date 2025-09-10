@@ -37,7 +37,7 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
     setState(() {
       _lastVerifiedOtp = otp;
     });
-    
+
     // Simulate API call
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
@@ -80,7 +80,8 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                   children: [
                     const Text(
                       'Select Example:',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     Wrap(
@@ -90,28 +91,32 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                           label: const Text('Basic'),
                           selected: _selectedExample == 'basic',
                           onSelected: (selected) {
-                            if (selected) setState(() => _selectedExample = 'basic');
+                            if (selected)
+                              setState(() => _selectedExample = 'basic');
                           },
                         ),
                         ChoiceChip(
                           label: const Text('Advanced'),
                           selected: _selectedExample == 'advanced',
                           onSelected: (selected) {
-                            if (selected) setState(() => _selectedExample = 'advanced');
+                            if (selected)
+                              setState(() => _selectedExample = 'advanced');
                           },
                         ),
                         ChoiceChip(
                           label: const Text('Custom'),
                           selected: _selectedExample == 'custom',
                           onSelected: (selected) {
-                            if (selected) setState(() => _selectedExample = 'custom');
+                            if (selected)
+                              setState(() => _selectedExample = 'custom');
                           },
                         ),
                         ChoiceChip(
                           label: const Text('Responsive'),
                           selected: _selectedExample == 'responsive',
                           onSelected: (selected) {
-                            if (selected) setState(() => _selectedExample = 'responsive');
+                            if (selected)
+                              setState(() => _selectedExample = 'responsive');
                           },
                         ),
                       ],
@@ -133,7 +138,8 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                       OtpVerificationWidget(
                         key: _otpKey,
                         title: 'Basic OTP Verification',
-                        subtitle: 'Enter the 5-digit code sent to {contactInfo}',
+                        subtitle:
+                            'Enter the 5-digit code sent to {contactInfo}',
                         contactInfo: '01012345678',
                         maskingType: MaskingType.phone,
                         fieldCount: 5,
@@ -148,7 +154,8 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                       OtpVerificationWidget(
                         key: _otpKey,
                         title: 'Advanced OTP with Animations',
-                        subtitle: 'Enter the 6-digit code with smooth animations',
+                        subtitle:
+                            'Enter the 6-digit code with smooth animations',
                         fieldCount: 6,
                         timerDuration: 120,
                         buttonText: 'Verify',
@@ -256,7 +263,8 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                   children: [
                     const Text(
                       'Test Controls:',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 12),
                     Row(
@@ -312,12 +320,14 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                     children: [
                       const Text(
                         'Last Verified OTP:',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         _lastVerifiedOtp,
-                        style: const TextStyle(fontSize: 24, fontFamily: 'monospace'),
+                        style: const TextStyle(
+                            fontSize: 24, fontFamily: 'monospace'),
                       ),
                     ],
                   ),
@@ -335,21 +345,28 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                   children: [
                     const Text(
                       'Package Features:',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
-                    const Text('• Multiple input types (numeric, alphabetic, alphanumeric, custom)'),
-                    const Text('• Comprehensive layout options (single row, wrap, grid, custom)'),
-                    const Text('• Advanced field shapes (rectangle, rounded, circle, stadium, custom)'),
-                    const Text('• Complete animation control with predefined configs'),
-                    const Text('• Full theme customization with Material 3 support'),
+                    const Text(
+                        '• Multiple input types (numeric, alphabetic, alphanumeric, custom)'),
+                    const Text(
+                        '• Comprehensive layout options (single row, wrap, grid, custom)'),
+                    const Text(
+                        '• Advanced field shapes (rectangle, rounded, circle, stadium, custom)'),
+                    const Text(
+                        '• Complete animation control with predefined configs'),
+                    const Text(
+                        '• Full theme customization with Material 3 support'),
                     const Text('• Responsive spacing with min/max constraints'),
                     const Text('• Advanced behavior configuration'),
                     const Text('• Comprehensive accessibility support'),
                     const Text('• Gradient backgrounds and custom decorations'),
                     const Text('• Haptic, sound, and visual feedback'),
                     const Text('• Real-time validation and error handling'),
-                    const Text('• Cross-platform support (iOS, Android, Web, Desktop)'),
+                    const Text(
+                        '• Cross-platform support (iOS, Android, Web, Desktop)'),
                     const SizedBox(height: 12),
                     const Text(
                       'Visit pub.dev for more information:',
