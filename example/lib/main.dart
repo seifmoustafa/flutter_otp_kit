@@ -339,7 +339,8 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                         fieldToFieldTransitionDuration:
                             const Duration(milliseconds: 150),
                         fieldToFieldTransitionCurve: Curves.easeInOut,
-                        transitionHighlightColor: Colors.blue.withValues(alpha: 0.3),
+                        transitionHighlightColor:
+                            Colors.blue.withValues(alpha: 0.3),
                         // Styling
                         primaryColor: Colors.blue,
                         focusedBorderColor: Colors.blue,

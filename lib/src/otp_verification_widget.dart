@@ -1100,7 +1100,8 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(widget.borderRadius),
-                color: _fieldColorAnimations[index].value?.withValues(alpha: 0.1),
+                color:
+                    _fieldColorAnimations[index].value?.withValues(alpha: 0.1),
               ),
               child: fieldWidget,
             ),
