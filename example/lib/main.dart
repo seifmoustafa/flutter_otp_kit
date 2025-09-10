@@ -16,6 +16,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
       home: const OtpExamplePage(),
     );
   }
@@ -31,13 +36,14 @@ class OtpExamplePage extends StatefulWidget {
 class _OtpExamplePageState extends State<OtpExamplePage> {
   String _selectedExample = 'phone';
   String _lastVerifiedOtp = '';
+  String _currentOtp = '';
   final GlobalKey<OtpVerificationWidgetState> _otpKey = GlobalKey();
 
   void _handleVerification(String otp) {
     setState(() {
       _lastVerifiedOtp = otp;
     });
-
+    
     // Simulate API call
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
@@ -56,6 +62,21 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
       const SnackBar(
         content: Text('OTP resent successfully!'),
         backgroundColor: Colors.blue,
+      ),
+    );
+  }
+
+  void _handleOtpChange(String value) {
+    setState(() {
+      _currentOtp = value;
+    });
+  }
+
+  void _handleOtpComplete(String otp) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('OTP Complete: $otp'),
+        backgroundColor: Colors.orange,
       ),
     );
   }
@@ -85,31 +106,43 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
-                    Row(
+                    Wrap(
+                      spacing: 8,
                       children: [
-                        Expanded(
-                          child: RadioListTile<String>(
-                            title: const Text('Phone OTP'),
-                            value: 'phone',
-                            groupValue: _selectedExample,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedExample = value!;
-                              });
-                            },
-                          ),
+                        ChoiceChip(
+                          label: const Text('Phone'),
+                          selected: _selectedExample == 'phone',
+                          onSelected: (selected) {
+                            if (selected) setState(() => _selectedExample = 'phone');
+                          },
                         ),
-                        Expanded(
-                          child: RadioListTile<String>(
-                            title: const Text('Email OTP'),
-                            value: 'email',
-                            groupValue: _selectedExample,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedExample = value!;
-                              });
-                            },
-                          ),
+                        ChoiceChip(
+                          label: const Text('Email'),
+                          selected: _selectedExample == 'email',
+                          onSelected: (selected) {
+                            if (selected) setState(() => _selectedExample = 'email');
+                          },
+                        ),
+                        ChoiceChip(
+                          label: const Text('Alphanumeric'),
+                          selected: _selectedExample == 'alphanumeric',
+                          onSelected: (selected) {
+                            if (selected) setState(() => _selectedExample = 'alphanumeric');
+                          },
+                        ),
+                        ChoiceChip(
+                          label: const Text('Secure'),
+                          selected: _selectedExample == 'secure',
+                          onSelected: (selected) {
+                            if (selected) setState(() => _selectedExample = 'secure');
+                          },
+                        ),
+                        ChoiceChip(
+                          label: const Text('Custom'),
+                          selected: _selectedExample == 'custom',
+                          onSelected: (selected) {
+                            if (selected) setState(() => _selectedExample = 'custom');
+                          },
                         ),
                       ],
                     ),
@@ -141,8 +174,12 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                         timerPrefix: 'after',
                         onVerify: _handleVerification,
                         onResend: _handleResend,
+                        onChanged: _handleOtpChange,
+                        onCompleted: _handleOtpComplete,
+                        enableShadow: true,
+                        focusedBorderColor: Colors.blue,
                       )
-                    else
+                    else if (_selectedExample == 'email')
                       OtpVerificationWidget(
                         key: _otpKey,
                         title: 'Verify Email Address',
@@ -157,6 +194,128 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                         timerPrefix: 'after',
                         onVerify: _handleVerification,
                         onResend: _handleResend,
+                        onChanged: _handleOtpChange,
+                        onCompleted: _handleOtpComplete,
+                        primaryColor: Colors.green,
+                        secondaryColor: Colors.grey,
+                      )
+                    else if (_selectedExample == 'alphanumeric')
+                      OtpVerificationWidget(
+                        key: _otpKey,
+                        title: 'Enter Access Code',
+                        subtitle: 'Enter your 6-character access code',
+                        buttonText: 'Verify Code',
+                        resendText: 'Get New Code',
+                        timerPrefix: 'expires in',
+                        fieldCount: 6,
+                        otpInputType: OtpInputType.alphanumeric,
+                        onVerify: _handleVerification,
+                        onResend: _handleResend,
+                        onChanged: _handleOtpChange,
+                        onCompleted: _handleOtpComplete,
+                        fieldWidth: 45,
+                        fieldHeight: 50,
+                        primaryColor: Colors.purple,
+                        textCapitalization: TextCapitalization.characters,
+                      )
+                    else if (_selectedExample == 'secure')
+                      OtpVerificationWidget(
+                        key: _otpKey,
+                        title: 'Secure OTP',
+                        subtitle: 'Enter your secure 4-digit PIN',
+                        buttonText: 'Confirm',
+                        resendText: 'Request New PIN',
+                        timerPrefix: 'valid for',
+                        fieldCount: 4,
+                        otpInputType: OtpInputType.numeric,
+                        obscureText: true,
+                        onVerify: _handleVerification,
+                        onResend: _handleResend,
+                        onChanged: _handleOtpChange,
+                        onCompleted: _handleOtpComplete,
+                        primaryColor: Colors.red,
+                        errorBorderColor: Colors.red,
+                        focusedBorderColor: Colors.orange,
+                      )
+                    else
+                      OtpVerificationWidget(
+                        key: _otpKey,
+                        title: 'Custom OTP Example',
+                        subtitle: 'Highly customized OTP widget',
+                        buttonText: 'Submit',
+                        resendText: 'Resend',
+                        timerPrefix: 'wait',
+                        fieldCount: 5,
+                        otpInputType: OtpInputType.custom,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+                        ],
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Required';
+                          }
+                          if (!RegExp(r'^[A-Z0-9]$').hasMatch(value)) {
+                            return 'Invalid';
+                          }
+                          return null;
+                        },
+                        onVerify: _handleVerification,
+                        onResend: _handleResend,
+                        onChanged: _handleOtpChange,
+                        onCompleted: _handleOtpComplete,
+                        primaryColor: const Color(0xFF6200EA),
+                        secondaryColor: const Color(0xFF757575),
+                        backgroundColor: const Color(0xFFF5F5F5),
+                        focusedBorderColor: const Color(0xFF6200EA),
+                        filledFieldBackgroundColor: const Color(0xFFE8F0FE),
+                        cursorColor: const Color(0xFF6200EA),
+                        enableShadow: true,
+                        shadowColor: const Color(0xFF6200EA),
+                        borderRadius: 12,
+                        fieldWidth: 60,
+                        fieldHeight: 65,
+                        animationDuration: const Duration(milliseconds: 300),
+                        animationCurve: Curves.easeOutBack,
+                        showTimer: false,
+                        textCapitalization: TextCapitalization.characters,
+                        buttonWidget: Container(
+                          width: double.infinity,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF6200EA), Color(0xFF3700B3)],
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF6200EA).withOpacity(0.3),
+                                blurRadius: 12,
+                                offset: const Offset(0, 6),
+                              ),
+                            ],
+                          ),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _otpKey.currentState?.setOtp('ABCD1');
+                              _handleVerification('CUSTOM');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: const Text(
+                              'Submit Custom OTP',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                   ],
                 ),
@@ -221,29 +380,54 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
             const SizedBox(height: 20),
 
             // Status display
-            if (_lastVerifiedOtp.isNotEmpty)
-              Card(
-                color: Colors.green.shade50,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Last Verified OTP:',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Status:',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 12),
+                    if (_currentOtp.isNotEmpty)
+                      Row(
+                        children: [
+                          const Text('Current OTP: '),
+                          Text(
+                            _currentOtp,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'monospace',
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
+                    if (_lastVerifiedOtp.isNotEmpty) ...[
                       const SizedBox(height: 8),
-                      Text(
-                        _lastVerifiedOtp,
-                        style: const TextStyle(
-                            fontSize: 24, fontFamily: 'monospace'),
+                      Row(
+                        children: [
+                          const Icon(Icons.check_circle, color: Colors.green, size: 20),
+                          const SizedBox(width: 8),
+                          const Text('Last Verified: '),
+                          Text(
+                            _lastVerifiedOtp,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'monospace',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
+                  ],
                 ),
               ),
+            ),
 
             const SizedBox(height: 20),
 
@@ -262,10 +446,16 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                     const SizedBox(height: 8),
                     const Text(
                         '• Cross-platform support (iOS, Android, Web, Desktop)'),
-                    const Text('• Fully customizable styling'),
-                    const Text('• Smart focus management'),
-                    const Text('• Built-in timer functionality'),
-                    const Text('• Contact masking for privacy'),
+                    const Text('• Multiple input types (numeric, alphabetic, alphanumeric)'),
+                    const Text('• Paste support from clipboard'),
+                    const Text('• Custom input formatters and validators'),
+                    const Text('• Animation support with customizable curves'),
+                    const Text('• Enhanced error handling with custom messages'),
+                    const Text('• Accessibility features with semantic labels'),
+                    const Text('• Secure OTP with obscure text option'),
+                    const Text('• Shadow effects and advanced styling'),
+                    const Text('• Multiple callbacks (onChanged, onCompleted)'),
+                    const Text('• Theme support for light/dark mode'),
                     const Text('• Full localization support'),
                     const SizedBox(height: 12),
                     const Text(

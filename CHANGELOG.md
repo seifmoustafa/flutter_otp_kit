@@ -5,7 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.3] - 2024-07-19
+## [1.1.0] - 2025-09-10
+
+### Added
+- **Multiple input types support**: numeric, alphabetic, alphanumeric, and custom
+- **Paste support**: Automatically detect and fill OTP from clipboard
+- **Custom input formatters**: Support for custom TextInputFormatter
+- **Custom validators**: Add your own validation logic
+- **Enhanced callbacks**: onChanged and onCompleted callbacks
+- **Animation support**: Fade and scale animations with customizable duration and curves
+- **Enhanced error handling**: Custom error messages and styling
+- **Accessibility features**: Semantic labels for better screen reader support
+- **Secure OTP mode**: Obscure text option for sensitive inputs
+- **Advanced styling options**:
+  - Focused border color
+  - Error border color
+  - Filled field background color
+  - Cursor color customization
+  - Shadow effects with customizable color, blur, and spread
+- **Theme support**: Automatic adaptation to light/dark themes
+- **Conditional timer display**: Show/hide timer based on needs
+- **Custom keyboard types**: Support for different keyboard configurations
+- **Text capitalization**: Control text capitalization behavior
+- **Interactive selection**: Enable/disable text selection
+
+### Enhanced
+- Example app now showcases all new features with 5 different examples
+- Better error state management with visual feedback
+- Improved focus management and navigation
+- More robust paste detection and validation
+
+## [1.0.3] - 2025-09-07
 
 ### Fixed
 - Updated flutter_platform_widgets dependency to latest version (^9.0.0)
@@ -27,7 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - More comprehensive package information display
 - Improved code quality and maintainability
 
-## [1.0.2] - 2024-06-19
+## [1.0.2] - 2025-09-06
 
 ### Added
 - Initial release of Flutter OTP Kit

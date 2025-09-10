@@ -44,6 +44,7 @@ The heavy lifting of focus management, timer handling, validation, and styling i
 
 ## ✨ Features
 
+### Core Features
 - **🔢 Configurable field count**: Support for 4, 5, 6, or any number of digits
 - **🌍 Fully localizable**: All text must be provided by caller (no hardcoded strings)
 - **🎯 Smart focus management**: Auto-navigation between fields during input
@@ -54,6 +55,19 @@ The heavy lifting of focus management, timer handling, validation, and styling i
 - **♿ Accessibility ready**: Proper focus handling and keyboard navigation
 - **🔒 Contact masking**: Automatic phone/email masking for privacy
 
+### New in v1.1.0
+- **🔤 Multiple input types**: numeric, alphabetic, alphanumeric, and custom
+- **📋 Paste support**: Automatically detect and fill OTP from clipboard
+- **🎭 Custom input formatters**: Support for custom TextInputFormatter
+- **✔️ Custom validators**: Add your own validation logic
+- **📞 Enhanced callbacks**: onChanged and onCompleted callbacks
+- **✨ Animation support**: Fade and scale animations with customizable duration and curves
+- **❌ Enhanced error handling**: Custom error messages and styling
+- **🦾 Accessibility features**: Semantic labels for better screen reader support
+- **🔐 Secure OTP mode**: Obscure text option for sensitive inputs
+- **🎨 Advanced styling options**: Focused/error borders, filled backgrounds, shadows
+- **🌓 Theme support**: Automatic adaptation to light/dark themes
+
 ## Installation
 
 > pub.dev: https://pub.dev/packages/flutter_otp_kit/install
@@ -62,7 +76,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_otp_kit: ^1.0.3
+  flutter_otp_kit: ^1.1.0
 ```
 
 Then run:
@@ -192,6 +206,98 @@ OtpVerificationWidget(
 )
 ```
 
+### Alphanumeric OTP
+
+```dart
+OtpVerificationWidget(
+  title: 'Enter Access Code',
+  subtitle: 'Enter your 6-character access code',
+  buttonText: 'Verify Code',
+  resendText: 'Get New Code',
+  timerPrefix: 'expires in',
+  fieldCount: 6,
+  otpInputType: OtpInputType.alphanumeric,
+  textCapitalization: TextCapitalization.characters,
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => resendOtp(),
+  onChanged: (value) => print('Current: $value'),
+  onCompleted: (otp) => print('Completed: $otp'),
+)
+```
+
+### Secure OTP with Obscure Text
+
+```dart
+OtpVerificationWidget(
+  title: 'Secure PIN',
+  subtitle: 'Enter your 4-digit secure PIN',
+  buttonText: 'Confirm',
+  resendText: 'Reset PIN',
+  timerPrefix: 'valid for',
+  fieldCount: 4,
+  obscureText: true,
+  obscuringCharacter: '●',
+  onVerify: (otp) => handleSecureVerification(otp),
+  onResend: () => resetPin(),
+)
+```
+
+### Custom Validation and Formatting
+
+```dart
+OtpVerificationWidget(
+  title: 'Custom OTP',
+  subtitle: 'Enter verification code',
+  buttonText: 'Submit',
+  resendText: 'Resend',
+  timerPrefix: 'wait',
+  otpInputType: OtpInputType.custom,
+  inputFormatters: [
+    FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+  ],
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Required';
+    }
+    if (!RegExp(r'^[A-Z0-9]$').hasMatch(value)) {
+      return 'Invalid character';
+    }
+    return null;
+  },
+  errorText: 'Please enter valid code',
+  errorBorderColor: Colors.red,
+  focusedBorderColor: Colors.blue,
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => resendOtp(),
+)
+```
+
+### Advanced Styling with Animations
+
+```dart
+OtpVerificationWidget(
+  title: 'Animated OTP',
+  subtitle: 'Enter code with style',
+  buttonText: 'Verify',
+  resendText: 'Resend',
+  timerPrefix: 'after',
+  // Animation settings
+  animationDuration: Duration(milliseconds: 300),
+  animationCurve: Curves.easeOutBack,
+  // Shadow effects
+  enableShadow: true,
+  shadowColor: Colors.purple.withOpacity(0.3),
+  shadowBlurRadius: 15,
+  shadowSpreadRadius: 2,
+  // Advanced colors
+  focusedBorderColor: Colors.purple,
+  filledFieldBackgroundColor: Colors.purple.shade50,
+  cursorColor: Colors.purple,
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => resendOtp(),
+)
+```
+
 ## 🎛️ Configuration Options
 
 ### Required Parameters
@@ -231,6 +337,31 @@ OtpVerificationWidget(
 | `timerStyle` | `TextStyle?` | `null` | Custom timer text style |
 | `fieldStyle` | `TextStyle?` | `null` | Custom field text style |
 | `buttonWidget` | `Widget?` | `null` | Custom button widget |
+| `otpInputType` | `OtpInputType` | `OtpInputType.numeric` | Type of input allowed |
+| `inputFormatters` | `List<TextInputFormatter>?` | `null` | Custom input formatters |
+| `validator` | `String? Function(String?)?` | `null` | Custom validator function |
+| `onChanged` | `Function(String)?` | `null` | Called when any field changes |
+| `onCompleted` | `Function(String)?` | `null` | Called when all fields are filled |
+| `enablePaste` | `bool` | `true` | Enable paste from clipboard |
+| `errorText` | `String?` | `null` | Custom error text |
+| `errorStyle` | `TextStyle?` | `null` | Custom error text style |
+| `focusedBorderColor` | `Color?` | `null` | Border color when focused |
+| `errorBorderColor` | `Color?` | `null` | Border color for errors |
+| `filledFieldBackgroundColor` | `Color?` | `null` | Background for filled fields |
+| `cursorColor` | `Color?` | `null` | Cursor color |
+| `animationDuration` | `Duration` | `150ms` | Animation duration |
+| `animationCurve` | `Curve` | `Curves.easeInOut` | Animation curve |
+| `enableShadow` | `bool` | `false` | Enable shadow effects |
+| `shadowColor` | `Color?` | `null` | Shadow color |
+| `shadowBlurRadius` | `double` | `10.0` | Shadow blur radius |
+| `shadowSpreadRadius` | `double` | `0.0` | Shadow spread radius |
+| `obscureText` | `bool` | `false` | Hide input text |
+| `obscuringCharacter` | `String` | `'•'` | Character for obscuring |
+| `semanticLabel` | `String?` | `null` | Accessibility label |
+| `showTimer` | `bool` | `true` | Show/hide timer |
+| `customKeyboardType` | `TextInputType?` | `null` | Custom keyboard type |
+| `textCapitalization` | `TextCapitalization` | `TextCapitalization.none` | Text capitalization |
+| `enableInteractiveSelection` | `bool` | `true` | Enable text selection |
 
 ## 🔧 Public Methods
 
@@ -276,6 +407,20 @@ Masks email addresses: `user@example.com` → `us***@example.com`
 ### `MaskingType.none`
 Shows full contact information without masking.
 
+## 🔤 OTP Input Types
+
+### `OtpInputType.numeric`
+Only accepts numeric input (0-9). Default keyboard is numeric.
+
+### `OtpInputType.alphabetic`
+Only accepts letters (a-z, A-Z). Default keyboard is text.
+
+### `OtpInputType.alphanumeric`
+Accepts both letters and numbers. Default keyboard is text.
+
+### `OtpInputType.custom`
+Allows custom input with your own formatters and validators.
+
 ## Example
 
 An example app that demonstrates the usage is included in the `example/` directory. You can run it to see the package in action:
@@ -300,7 +445,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-If you encounter any problems or have suggestions, please file an issue at the [GitHub repository](https://github.com/yourusername/flutter_otp_kit/issues).
+If you encounter any problems or have suggestions, please file an issue at the [GitHub repository](https://github.com/seifmoustafa/flutter_otp_kit/issues).
 
 ---
 
