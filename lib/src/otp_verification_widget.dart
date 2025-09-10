@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -757,38 +758,58 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     }
   }
 
-  /// Calculates responsive field spacing based on screen width and field count
+  /// Calculates responsive field spacing based on screen width and field count with overflow protection
   double _calculateResponsiveSpacing(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final availableWidth = screenWidth -
-        (widget.spacing * 2) -
-        (widget.fieldWidth * widget.fieldCount);
+    final padding = widget.spacing * 2; // Left and right padding
+    final totalFieldWidth = widget.fieldWidth * widget.fieldCount;
+    final availableWidth = screenWidth - padding - totalFieldWidth;
+    
+    // Calculate spacing with safety margin
     final calculatedSpacing = availableWidth / (widget.fieldCount - 1);
-
+    
+    // Apply safety margin to prevent overflow (20% buffer)
+    final safeSpacing = calculatedSpacing * 0.8;
+    
     // Clamp the spacing between min and max values
-    return calculatedSpacing.clamp(
-        widget.minFieldSpacing, widget.maxFieldSpacing);
+    return safeSpacing.clamp(widget.minFieldSpacing, widget.maxFieldSpacing);
+  }
+
+  /// Calculates responsive field width to prevent overflow
+  double _calculateResponsiveFieldWidth(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final padding = widget.spacing * 2;
+    final minSpacing = widget.minFieldSpacing;
+    final availableWidth = screenWidth - padding - (minSpacing * (widget.fieldCount - 1));
+    final maxFieldWidth = availableWidth / widget.fieldCount;
+    
+    // Use the smaller of configured width or calculated max width
+    return math.min(widget.fieldWidth, maxFieldWidth);
   }
 
   /// Checks if fields should wrap to next line for better responsiveness
   bool _shouldWrapFields(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final totalWidth = (widget.fieldWidth * widget.fieldCount) +
-        (widget.fieldSpacing * (widget.fieldCount - 1)) +
+    final responsiveFieldWidth = _calculateResponsiveFieldWidth(context);
+    final responsiveSpacing = _calculateResponsiveSpacing(context);
+    final totalWidth = (responsiveFieldWidth * widget.fieldCount) +
+        (responsiveSpacing * (widget.fieldCount - 1)) +
         (widget.spacing * 2);
-    return totalWidth > screenWidth * 0.9; // Use 90% of screen width
+    return totalWidth > screenWidth * 0.85; // Use 85% of screen width for safety
   }
 
+
   /// Builds a single OTP field with responsive styling
-  Widget _buildOtpField(int index, double spacing) {
+  Widget _buildOtpField(int index, double spacing, {double? fieldWidth}) {
     final hasError = _fieldHasError[index] || _errorText != null;
     final isFocused = _focusNodes[index].hasFocus;
     final isFilled = _controllers[index].text.isNotEmpty;
+    final responsiveWidth = fieldWidth ?? widget.fieldWidth;
 
     return AnimatedContainer(
       duration: widget.animationDuration,
       curve: widget.animationCurve,
-      width: widget.fieldWidth,
+      width: responsiveWidth,
       height: widget.fieldHeight,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(widget.borderRadius),
@@ -860,11 +881,19 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
           opacity: _fadeAnimation,
           child: ScaleTransition(
             scale: _scaleAnimation,
-            child: Padding(
-              padding: EdgeInsets.all(widget.spacing),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                      maxWidth: constraints.maxWidth,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(widget.spacing),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
                   // Title and subtitle
                   Column(
                     children: [
@@ -913,6 +942,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
                           builder: (context, constraints) {
                             final responsiveSpacing =
                                 _calculateResponsiveSpacing(context);
+                            final responsiveFieldWidth = _calculateResponsiveFieldWidth(context);
                             final shouldWrap = _shouldWrapFields(context);
 
                             if (shouldWrap && widget.fieldCount > 4) {
@@ -923,24 +953,29 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
                                 runSpacing: responsiveSpacing * 0.5,
                                 children:
                                     List.generate(widget.fieldCount, (index) {
-                                  return _buildOtpField(
-                                      index, responsiveSpacing);
+                                  return SizedBox(
+                                    width: responsiveFieldWidth,
+                                    child: _buildOtpField(
+                                        index, responsiveSpacing, fieldWidth: responsiveFieldWidth),
+                                  );
                                 }),
                               );
                             } else {
-                              // Single row layout
+                              // Single row layout with overflow protection
                               return Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
                                 children:
                                     List.generate(widget.fieldCount, (index) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(
+                                  return Container(
+                                    width: responsiveFieldWidth,
+                                    margin: EdgeInsets.only(
                                       right: index < widget.fieldCount - 1
                                           ? responsiveSpacing
                                           : 0,
                                     ),
                                     child: _buildOtpField(
-                                        index, responsiveSpacing),
+                                        index, responsiveSpacing, fieldWidth: responsiveFieldWidth),
                                   );
                                 }),
                               );
@@ -1002,8 +1037,12 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
 
                   // Verify button
                   widget.buttonWidget ?? _buildDefaultButton(),
-                ],
-              ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         );

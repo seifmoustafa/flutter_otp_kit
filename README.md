@@ -55,7 +55,17 @@ The heavy lifting of focus management, timer handling, validation, and styling i
 - **♿ Accessibility ready**: Proper focus handling and keyboard navigation
 - **🔒 Contact masking**: Automatic phone/email masking for privacy
 
-### New in v1.2.0 - Complete Generic Package
+### New in v1.2.1 - Critical Responsive Fixes
+- **🚨 Fixed Overflow Bug**: Resolved "RIGHT OVERFLOWED BY 12 PIXELS" error completely
+- **📱 Enhanced Responsive Design**: Implemented comprehensive responsive field width calculation
+- **🛡️ Overflow Protection**: Added 20% safety margin to prevent any pixel overflow
+- **🔄 Force Resize Mechanism**: Automatic field width adjustment based on screen constraints
+- **📐 Smart Spacing**: Dynamic spacing calculation with min/max constraints
+- **🎯 Layout Optimization**: Improved wrap detection and grid layout handling
+- **📱 Screen Adaptation**: Better handling of different screen sizes and orientations
+- **🔧 Edge Case Handling**: Comprehensive handling of all edge cases for responsive design
+
+### Previous Features (v1.2.0) - Complete Generic Package
 - **🏗️ Comprehensive Layout System**: Multiple layout types (singleRow, wrap, grid, custom)
 - **🔷 Advanced Field Shapes**: Rectangle, rounded rectangle, circle, stadium, and custom shapes
 - **🎬 Complete Animation Control**: Predefined animation configs (default, fast, smooth, disabled)
@@ -113,7 +123,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_otp_kit: ^1.2.0
+  flutter_otp_kit: ^1.2.1
 ```
 
 Then run:

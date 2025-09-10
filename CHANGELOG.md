@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2025-09-10
+
+### Fixed - Critical Responsive Issues
+- **🚨 Fixed Overflow Bug**: Resolved "RIGHT OVERFLOWED BY 12 PIXELS" error completely
+- **📱 Enhanced Responsive Design**: Implemented comprehensive responsive field width calculation
+- **🛡️ Overflow Protection**: Added 20% safety margin to prevent any pixel overflow
+- **🔄 Force Resize Mechanism**: Automatic field width adjustment based on screen constraints
+- **📐 Smart Spacing**: Dynamic spacing calculation with min/max constraints
+- **🎯 Layout Optimization**: Improved wrap detection and grid layout handling
+- **📱 Screen Adaptation**: Better handling of different screen sizes and orientations
+- **🔧 Edge Case Handling**: Comprehensive handling of all edge cases for responsive design
+
+### Enhanced
+- **Performance**: Optimized responsive calculations for better performance
+- **Reliability**: Added multiple layers of overflow protection
+- **User Experience**: Seamless experience across all device sizes
+
 ## [1.2.0] - 2025-09-10
 
 ### Added - Complete Generic Package
