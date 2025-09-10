@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.4] - 2025-09-10
+## [1.2.3] - 2025-09-10
 
 ### 🎯 Cursor Control Enhancement
 - **Cursor Height Control**: Added `cursorHeight` parameter for custom cursor height
@@ -25,8 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Customizable Appearance**: Full control over cursor dimensions and placement
 - **Professional Look**: Proper cursor padding prevents border overlap
 - **Accessibility**: Cursor alignment improves text readability
-
-## [1.2.3] - 2025-09-10
 
 ### 📚 Documentation Updates
 - **Professional Documentation**: Complete overhaul of README.md with comprehensive API reference

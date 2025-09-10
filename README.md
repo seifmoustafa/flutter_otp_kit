@@ -56,7 +56,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_otp_kit: ^1.2.4
+  flutter_otp_kit: ^1.2.3
 ```
 
 Then run:

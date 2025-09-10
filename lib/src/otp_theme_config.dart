@@ -93,7 +93,7 @@ class OtpThemeConfig {
   static OtpThemeConfig material3(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return OtpThemeConfig(
       primaryColor: colorScheme.primary,
       secondaryColor: colorScheme.onSurfaceVariant,
