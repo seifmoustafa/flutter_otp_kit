@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_otp_kit/flutter_otp_kit.dart';
 
 void main() {
@@ -43,7 +44,7 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
     setState(() {
       _lastVerifiedOtp = otp;
     });
-    
+
     // Simulate API call
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
@@ -113,35 +114,40 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                           label: const Text('Phone'),
                           selected: _selectedExample == 'phone',
                           onSelected: (selected) {
-                            if (selected) setState(() => _selectedExample = 'phone');
+                            if (selected)
+                              setState(() => _selectedExample = 'phone');
                           },
                         ),
                         ChoiceChip(
                           label: const Text('Email'),
                           selected: _selectedExample == 'email',
                           onSelected: (selected) {
-                            if (selected) setState(() => _selectedExample = 'email');
+                            if (selected)
+                              setState(() => _selectedExample = 'email');
                           },
                         ),
                         ChoiceChip(
                           label: const Text('Alphanumeric'),
                           selected: _selectedExample == 'alphanumeric',
                           onSelected: (selected) {
-                            if (selected) setState(() => _selectedExample = 'alphanumeric');
+                            if (selected)
+                              setState(() => _selectedExample = 'alphanumeric');
                           },
                         ),
                         ChoiceChip(
                           label: const Text('Secure'),
                           selected: _selectedExample == 'secure',
                           onSelected: (selected) {
-                            if (selected) setState(() => _selectedExample = 'secure');
+                            if (selected)
+                              setState(() => _selectedExample = 'secure');
                           },
                         ),
                         ChoiceChip(
                           label: const Text('Custom'),
                           selected: _selectedExample == 'custom',
                           onSelected: (selected) {
-                            if (selected) setState(() => _selectedExample = 'custom');
+                            if (selected)
+                              setState(() => _selectedExample = 'custom');
                           },
                         ),
                       ],
@@ -248,7 +254,8 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                         fieldCount: 5,
                         otpInputType: OtpInputType.custom,
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'[A-Z0-9]')),
                         ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -288,7 +295,7 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF6200EA).withOpacity(0.3),
+                                color: const Color(0xFF6200EA).withValues(alpha: 0.3),
                                 blurRadius: 12,
                                 offset: const Offset(0, 6),
                               ),
@@ -388,7 +395,8 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                   children: [
                     const Text(
                       'Status:',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 12),
                     if (_currentOtp.isNotEmpty)
@@ -409,7 +417,8 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          const Icon(Icons.check_circle, color: Colors.green, size: 20),
+                          const Icon(Icons.check_circle,
+                              color: Colors.green, size: 20),
                           const SizedBox(width: 8),
                           const Text('Last Verified: '),
                           Text(
@@ -446,11 +455,13 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                     const SizedBox(height: 8),
                     const Text(
                         '• Cross-platform support (iOS, Android, Web, Desktop)'),
-                    const Text('• Multiple input types (numeric, alphabetic, alphanumeric)'),
+                    const Text(
+                        '• Multiple input types (numeric, alphabetic, alphanumeric)'),
                     const Text('• Paste support from clipboard'),
                     const Text('• Custom input formatters and validators'),
                     const Text('• Animation support with customizable curves'),
-                    const Text('• Enhanced error handling with custom messages'),
+                    const Text(
+                        '• Enhanced error handling with custom messages'),
                     const Text('• Accessibility features with semantic labels'),
                     const Text('• Secure OTP with obscure text option'),
                     const Text('• Shadow effects and advanced styling'),

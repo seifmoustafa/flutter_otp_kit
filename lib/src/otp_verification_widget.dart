@@ -286,7 +286,7 @@ class OtpVerificationWidget extends StatefulWidget {
   State<OtpVerificationWidget> createState() => OtpVerificationWidgetState();
 }
 
-class OtpVerificationWidgetState extends State<OtpVerificationWidget> 
+class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     with TickerProviderStateMixin {
   late List<TextEditingController> _controllers;
   late List<FocusNode> _focusNodes;
@@ -309,20 +309,22 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     _focusNodes = List.generate(widget.fieldCount, (index) => FocusNode());
     _remainingTime = widget.timerDuration;
     _fieldHasError.addAll(List.generate(widget.fieldCount, (_) => false));
-    
+
     // Initialize animations
     _animationController = AnimationController(
       duration: widget.animationDuration,
       vsync: this,
     );
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: widget.animationCurve),
+      CurvedAnimation(
+          parent: _animationController, curve: widget.animationCurve),
     );
     _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: widget.animationCurve),
+      CurvedAnimation(
+          parent: _animationController, curve: widget.animationCurve),
     );
     _animationController.forward();
-    
+
     if (widget.showTimer) {
       _startTimer();
     }
@@ -426,7 +428,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   void _onDigitChanged(String value, int index) {
     // Call onChanged callback
     widget.onChanged?.call(_getOtpValue());
-    
+
     if (value.isNotEmpty) {
       // Move to next field if not the last one
       if (index < widget.fieldCount - 1) {
@@ -435,7 +437,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
         // Last field, remove focus
         _focusNodes[index].unfocus();
       }
-      
+
       // Check if OTP is complete
       if (_isOtpComplete()) {
         widget.onCompleted?.call(_getOtpValue());
@@ -536,7 +538,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   /// Validates if the given text is a valid OTP
   bool _isValidOtp(String text) {
     if (text.length != widget.fieldCount) return false;
-    
+
     switch (widget.otpInputType) {
       case OtpInputType.numeric:
         return RegExp(r'^[0-9]+$').hasMatch(text);
@@ -554,7 +556,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     final formatters = <TextInputFormatter>[
       LengthLimitingTextInputFormatter(1),
     ];
-    
+
     if (widget.inputFormatters != null) {
       formatters.addAll(widget.inputFormatters!);
     } else {
@@ -563,17 +565,19 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
           formatters.add(FilteringTextInputFormatter.digitsOnly);
           break;
         case OtpInputType.alphabetic:
-          formatters.add(FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')));
+          formatters
+              .add(FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')));
           break;
         case OtpInputType.alphanumeric:
-          formatters.add(FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')));
+          formatters
+              .add(FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')));
           break;
         case OtpInputType.custom:
           // Use custom formatters if provided
           break;
       }
     }
-    
+
     return formatters;
   }
 
@@ -582,7 +586,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     if (widget.customKeyboardType != null) {
       return widget.customKeyboardType!;
     }
-    
+
     switch (widget.otpInputType) {
       case OtpInputType.numeric:
         return TextInputType.number;
@@ -645,139 +649,156 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
                     ],
                   ),
 
-          SizedBox(height: widget.spacing * 3),
+                  SizedBox(height: widget.spacing * 3),
 
-          // OTP Input Fields
-          Form(
-            key: _formKey,
-            autovalidateMode: _autoValidate,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(widget.fieldCount, (index) {
-                    final hasError = _fieldHasError[index] || _errorText != null;
-                    final isFocused = _focusNodes[index].hasFocus;
-                    final isFilled = _controllers[index].text.isNotEmpty;
-                    
-                    return AnimatedContainer(
-                      duration: widget.animationDuration,
-                      curve: widget.animationCurve,
-                      width: widget.fieldWidth,
-                      height: widget.fieldHeight,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(widget.borderRadius),
-                        border: Border.all(
-                          color: hasError
-                              ? (widget.errorBorderColor ?? Colors.red)
-                              : isFocused
-                                  ? (widget.focusedBorderColor ?? widget.primaryColor)
-                                  : widget.secondaryColor.withValues(alpha: 0.8),
-                          width: widget.borderWidth,
-                        ),
-                        color: isFilled
-                            ? (widget.filledFieldBackgroundColor ?? widget.backgroundColor)
-                            : widget.backgroundColor,
-                        boxShadow: widget.enableShadow
-                            ? [
-                                BoxShadow(
-                                  color: widget.shadowColor ?? widget.primaryColor.withValues(alpha: 0.2),
-                                  blurRadius: widget.shadowBlurRadius,
-                                  spreadRadius: widget.shadowSpreadRadius,
+                  // OTP Input Fields
+                  Form(
+                    key: _formKey,
+                    autovalidateMode: _autoValidate,
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: List.generate(widget.fieldCount, (index) {
+                            final hasError =
+                                _fieldHasError[index] || _errorText != null;
+                            final isFocused = _focusNodes[index].hasFocus;
+                            final isFilled =
+                                _controllers[index].text.isNotEmpty;
+
+                            return AnimatedContainer(
+                              duration: widget.animationDuration,
+                              curve: widget.animationCurve,
+                              width: widget.fieldWidth,
+                              height: widget.fieldHeight,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(widget.borderRadius),
+                                border: Border.all(
+                                  color: hasError
+                                      ? (widget.errorBorderColor ?? Colors.red)
+                                      : isFocused
+                                          ? (widget.focusedBorderColor ??
+                                              widget.primaryColor)
+                                          : widget.secondaryColor
+                                              .withValues(alpha: 0.8),
+                                  width: widget.borderWidth,
                                 ),
-                              ]
-                            : null,
-                      ),
-                      child: Semantics(
-                        label: 'OTP field ${index + 1} of ${widget.fieldCount}',
-                        textField: true,
-                        child: TextFormField(
-                          controller: _controllers[index],
-                          focusNode: _focusNodes[index],
-                          textAlign: TextAlign.center,
-                          keyboardType: _getKeyboardType(),
-                          textCapitalization: widget.textCapitalization,
-                          inputFormatters: _getInputFormatters(),
-                          obscureText: widget.obscureText,
-                          obscuringCharacter: widget.obscuringCharacter,
-                          enableInteractiveSelection: widget.enableInteractiveSelection,
-                          cursorColor: widget.cursorColor ?? widget.primaryColor,
-                          style: widget.fieldStyle ??
-                              TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
+                                color: isFilled
+                                    ? (widget.filledFieldBackgroundColor ??
+                                        widget.backgroundColor)
+                                    : widget.backgroundColor,
+                                boxShadow: widget.enableShadow
+                                    ? [
+                                        BoxShadow(
+                                          color: widget.shadowColor ??
+                                              widget.primaryColor
+                                                  .withValues(alpha: 0.2),
+                                          blurRadius: widget.shadowBlurRadius,
+                                          spreadRadius:
+                                              widget.shadowSpreadRadius,
+                                        ),
+                                      ]
+                                    : null,
                               ),
-                          decoration: const InputDecoration(
-                            counterText: '',
-                            border: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                          validator: widget.validator ?? (widget.enableAutoValidation
-                              ? (v) => (v == null || v.isEmpty) ? '' : null
-                              : null),
-                          onChanged: (value) => _onDigitChanged(value, index),
+                              child: Semantics(
+                                label:
+                                    'OTP field ${index + 1} of ${widget.fieldCount}',
+                                textField: true,
+                                child: TextFormField(
+                                  controller: _controllers[index],
+                                  focusNode: _focusNodes[index],
+                                  textAlign: TextAlign.center,
+                                  keyboardType: _getKeyboardType(),
+                                  textCapitalization: widget.textCapitalization,
+                                  inputFormatters: _getInputFormatters(),
+                                  obscureText: widget.obscureText,
+                                  obscuringCharacter: widget.obscuringCharacter,
+                                  enableInteractiveSelection:
+                                      widget.enableInteractiveSelection,
+                                  cursorColor:
+                                      widget.cursorColor ?? widget.primaryColor,
+                                  style: widget.fieldStyle ??
+                                      TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                      ),
+                                  decoration: const InputDecoration(
+                                    counterText: '',
+                                    border: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.zero,
+                                  ),
+                                  validator: widget.validator ??
+                                      (widget.enableAutoValidation
+                                          ? (v) => (v == null || v.isEmpty)
+                                              ? ''
+                                              : null
+                                          : null),
+                                  onChanged: (value) =>
+                                      _onDigitChanged(value, index),
+                                ),
+                              ),
+                            );
+                          }),
                         ),
-                      ),
-                    );
-                  }),
-                ),
-                if (_errorText != null || widget.errorText != null)
-                  Padding(
-                    padding: EdgeInsets.only(top: widget.spacing * 0.5),
-                    child: Text(
-                      _errorText ?? widget.errorText!,
-                      style: widget.errorStyle ??
-                          TextStyle(
-                            color: widget.errorBorderColor ?? Colors.red,
-                            fontSize: 12,
+                        if (_errorText != null || widget.errorText != null)
+                          Padding(
+                            padding: EdgeInsets.only(top: widget.spacing * 0.5),
+                            child: Text(
+                              _errorText ?? widget.errorText!,
+                              style: widget.errorStyle ??
+                                  TextStyle(
+                                    color:
+                                        widget.errorBorderColor ?? Colors.red,
+                                    fontSize: 12,
+                                  ),
+                            ),
                           ),
+                      ],
                     ),
                   ),
-              ],
-            ),
-          ),
 
-          SizedBox(height: widget.spacing * 2),
+                  SizedBox(height: widget.spacing * 2),
 
-          // Timer and resend section
-          if (widget.showTimer)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: _remainingTime == 0 ? _onResendPressed : null,
-                  child: PlatformText(
-                    widget.resendText,
-                    style: widget.resendStyle ??
-                        TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: _remainingTime == 0
-                              ? widget.primaryColor
-                              : widget.secondaryColor,
-                          decoration: TextDecoration.underline,
+                  // Timer and resend section
+                  if (widget.showTimer)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: _remainingTime == 0 ? _onResendPressed : null,
+                          child: PlatformText(
+                            widget.resendText,
+                            style: widget.resendStyle ??
+                                TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: _remainingTime == 0
+                                      ? widget.primaryColor
+                                      : widget.secondaryColor,
+                                  decoration: TextDecoration.underline,
+                                ),
+                          ),
                         ),
-                  ),
-                ),
-                if (_remainingTime > 0)
-                  PlatformText(
-                    ' ${widget.timerPrefix} ${_formatTime(_remainingTime)}',
-                    style: widget.timerStyle ??
-                        TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
-                          color: widget.secondaryColor,
-                        ),
-                  ),
-              ],
-            ),
-          SizedBox(height: widget.spacing * 2),
+                        if (_remainingTime > 0)
+                          PlatformText(
+                            ' ${widget.timerPrefix} ${_formatTime(_remainingTime)}',
+                            style: widget.timerStyle ??
+                                TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal,
+                                  color: widget.secondaryColor,
+                                ),
+                          ),
+                      ],
+                    ),
+                  SizedBox(height: widget.spacing * 2),
 
-          // Verify button
-          widget.buttonWidget ?? _buildDefaultButton(),
+                  // Verify button
+                  widget.buttonWidget ?? _buildDefaultButton(),
                 ],
               ),
             ),
