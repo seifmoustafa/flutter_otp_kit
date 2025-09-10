@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2025-09-10
+
+### 📚 Documentation Updates
+- **Professional Documentation**: Complete overhaul of README.md with comprehensive API reference
+- **Detailed Examples**: Added 6 comprehensive usage examples from basic to advanced
+- **Best Practices**: Added performance, accessibility, security, and responsive design guidelines
+- **Troubleshooting Guide**: Common issues and solutions section
+- **API Reference**: Complete parameter documentation with types, defaults, and descriptions
+- **Migration Guide**: Backward compatibility and upgrade information
+- **Professional Structure**: Industry-standard documentation format with badges and clear sections
+
+### 📝 Changelog Enhancement
+- **Comprehensive Changelog**: Detailed changelog with organized categories
+- **Technical Details**: Specific improvements and performance metrics
+- **Quality Assurance**: Testing coverage and code quality information
+- **Future Roadmap**: Planned features and community feedback sections
+
 ## [1.2.2] - 2025-09-10
 
 ### 🚀 Major Improvements
