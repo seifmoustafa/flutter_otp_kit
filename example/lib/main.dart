@@ -91,32 +91,45 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                           label: const Text('Basic'),
                           selected: _selectedExample == 'basic',
                           onSelected: (selected) {
-                            if (selected)
+                            if (selected) {
                               setState(() => _selectedExample = 'basic');
+                            }
                           },
                         ),
                         ChoiceChip(
                           label: const Text('Advanced'),
                           selected: _selectedExample == 'advanced',
                           onSelected: (selected) {
-                            if (selected)
+                            if (selected) {
                               setState(() => _selectedExample = 'advanced');
+                            }
                           },
                         ),
                         ChoiceChip(
                           label: const Text('Custom'),
                           selected: _selectedExample == 'custom',
                           onSelected: (selected) {
-                            if (selected)
+                            if (selected) {
                               setState(() => _selectedExample = 'custom');
+                            }
                           },
                         ),
                         ChoiceChip(
                           label: const Text('Responsive'),
                           selected: _selectedExample == 'responsive',
                           onSelected: (selected) {
-                            if (selected)
+                            if (selected) {
                               setState(() => _selectedExample = 'responsive');
+                            }
+                          },
+                        ),
+                        ChoiceChip(
+                          label: const Text('Cursor Control'),
+                          selected: _selectedExample == 'cursor',
+                          onSelected: (selected) {
+                            if (selected) {
+                              setState(() => _selectedExample = 'cursor');
+                            }
                           },
                         ),
                       ],
@@ -143,10 +156,19 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                         contactInfo: '01012345678',
                         maskingType: MaskingType.phone,
                         fieldCount: 4,
+                        fieldHeight: 56,
                         timerDuration: 60,
                         buttonText: 'Verify',
                         resendText: 'Resend Code',
                         timerPrefix: 'after',
+                        // New cursor control features - using smart defaults
+                        cursorHeight:
+                            44, // Auto-calculated as fieldHeight - 12 (56 - 12 = 44)
+                        cursorWidth:
+                            2.0, // Thicker cursor for better visibility
+                        cursorAlignment:
+                            CursorAlignment.center, // Perfect center alignment
+                        cursorColor: Colors.blue, // Blue cursor to match theme
                         onVerify: _handleVerification,
                         onResend: _handleResend,
                       )
@@ -201,6 +223,12 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                         focusedBorderColor: Colors.purple,
                         filledFieldBackgroundColor: Colors.purple.shade100,
                         cursorColor: Colors.purple,
+                        // Custom cursor control
+                        // cursorHeight:
+                        //     55, // Almost full height for circle fields
+                        cursorWidth: 3.0, // Thick cursor for circle fields
+                        cursorAlignment:
+                            CursorAlignment.center, // Center for circles
                         enableShadow: true,
                         shadowColor: Colors.purple,
                         shadowBlurRadius: 15,
@@ -217,7 +245,7 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                         onVerify: _handleVerification,
                         onResend: _handleResend,
                       )
-                    else
+                    else if (_selectedExample == 'responsive')
                       OtpVerificationWidget(
                         key: _otpKey,
                         title: 'Responsive OTP Layout',
@@ -244,6 +272,35 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                           enableAutoFocusNext: true,
                           enableKeyboardNavigation: true,
                         ),
+                        onVerify: _handleVerification,
+                        onResend: _handleResend,
+                      )
+                    else if (_selectedExample == 'cursor')
+                      OtpVerificationWidget(
+                        key: _otpKey,
+                        title: 'Cursor Control Demo',
+                        subtitle:
+                            'Showcasing different cursor styles and alignments',
+                        fieldCount: 6,
+                        fieldHeight: 60,
+                        timerDuration: 120,
+                        buttonText: 'Verify',
+                        resendText: 'Resend',
+                        timerPrefix: 'after',
+                        // Cursor control showcase - perfect centering
+                        cursorHeight:
+                            54, // 6px padding (60 - 6) for perfect centering
+                        cursorWidth: 2.5, // Medium thickness
+                        cursorAlignment:
+                            CursorAlignment.center, // Perfect center alignment
+                        cursorColor: Colors.orange, // Orange cursor
+                        // Styling to make cursor more visible
+                        primaryColor: Colors.orange,
+                        focusedBorderColor: Colors.orange,
+                        fieldWidth: 50,
+                        borderRadius: 8,
+                        enableShadow: true,
+                        shadowColor: Colors.orange.withValues(alpha: 0.3),
                         onVerify: _handleVerification,
                         onResend: _handleResend,
                       ),
@@ -337,42 +394,43 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
             const SizedBox(height: 20),
 
             // Package features
-            Card(
+            const Card(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Package Features:',
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
+                    SizedBox(height: 8),
+                    Text(
                         '• Multiple input types (numeric, alphabetic, alphanumeric, custom)'),
-                    const Text(
+                    Text(
                         '• Comprehensive layout options (single row, wrap, grid, custom)'),
-                    const Text(
+                    Text(
                         '• Advanced field shapes (rectangle, rounded, circle, stadium, custom)'),
-                    const Text(
+                    Text(
                         '• Complete animation control with predefined configs'),
-                    const Text(
-                        '• Full theme customization with Material 3 support'),
-                    const Text('• Responsive spacing with min/max constraints'),
-                    const Text('• Advanced behavior configuration'),
-                    const Text('• Comprehensive accessibility support'),
-                    const Text('• Gradient backgrounds and custom decorations'),
-                    const Text('• Haptic, sound, and visual feedback'),
-                    const Text('• Real-time validation and error handling'),
-                    const Text(
+                    Text('• Full theme customization with Material 3 support'),
+                    Text('• Responsive spacing with min/max constraints'),
+                    Text('• Advanced behavior configuration'),
+                    Text('• Comprehensive accessibility support'),
+                    Text('• Gradient backgrounds and custom decorations'),
+                    Text('• Haptic, sound, and visual feedback'),
+                    Text('• Real-time validation and error handling'),
+                    Text(
+                        '• Advanced cursor control (height, width, alignment)'),
+                    Text(
                         '• Cross-platform support (iOS, Android, Web, Desktop)'),
-                    const SizedBox(height: 12),
-                    const Text(
+                    SizedBox(height: 12),
+                    Text(
                       'Visit pub.dev for more information:',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    const Text('https://pub.dev/packages/flutter_otp_kit'),
+                    Text('https://pub.dev/packages/flutter_otp_kit'),
                   ],
                 ),
               ),

@@ -11,12 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Cursor Height Control**: Added `cursorHeight` parameter for custom cursor height
 - **Cursor Width Control**: Added `cursorWidth` parameter (default: 1.0)
 - **Cursor Alignment**: Added `cursorAlignment` parameter with left, center, right options
-- **Smart Defaults**: Cursor height defaults to fieldHeight - 6 for proper padding
+- **Smart Defaults**: Cursor height defaults to fieldHeight - 12 for perfect vertical centering
 - **Text Alignment**: Cursor alignment automatically adjusts text alignment for better UX
 
 ### 🔧 Technical Implementation
 - **CursorAlignment Enum**: New enum with left, center, right alignment options
 - **Dynamic Cursor Height**: Automatic calculation based on field height with padding
+- **Perfect Vertical Centering**: Content padding ensures text and cursor are perfectly centered
 - **Text Alignment Mapping**: Cursor alignment maps to appropriate TextAlign values
 - **Backward Compatibility**: All new parameters have sensible defaults
 

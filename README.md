@@ -77,20 +77,20 @@ class MyOTPPage extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: OtpVerificationWidget(
-          title: 'Verify Phone Number',
+  title: 'Verify Phone Number',
           subtitle: 'Enter the 5-digit code sent to {contactInfo}',
-          contactInfo: '01012345678',
-          maskingType: MaskingType.phone,
+  contactInfo: '01012345678',
+  maskingType: MaskingType.phone,
           fieldCount: 5,
           timerDuration: 60,
-          buttonText: 'Verify',
-          resendText: 'Resend Code',
-          timerPrefix: 'after',
-          onVerify: (otp) {
-            // Handle OTP verification
-            print('OTP: $otp');
-          },
-          onResend: () {
+  buttonText: 'Verify',
+  resendText: 'Resend Code',
+  timerPrefix: 'after',
+  onVerify: (otp) {
+    // Handle OTP verification
+    print('OTP: $otp');
+  },
+  onResend: () {
             // Handle resend functionality
             print('Resend requested');
           },
@@ -153,7 +153,7 @@ The main widget for OTP verification with comprehensive customization options.
 | `errorBorderColor` | `Color?` | `null` | Color of error field border |
 | `filledFieldBackgroundColor` | `Color?` | `null` | Background color of filled fields |
 | `cursorColor` | `Color?` | `null` | Color of the text cursor |
-| `cursorHeight` | `double?` | `fieldHeight - 6` | Height of the text cursor |
+| `cursorHeight` | `double?` | `fieldHeight - 12` | Height of the text cursor (perfect vertical centering) |
 | `cursorWidth` | `double` | `1.0` | Width of the text cursor |
 | `cursorAlignment` | `CursorAlignment` | `CursorAlignment.center` | Alignment of the cursor within the field |
 | `animationDuration` | `Duration` | `Duration(milliseconds: 150)` | Duration of animations |
@@ -369,9 +369,9 @@ OtpVerificationWidget(
   fieldCount: 6,
   fieldHeight: 56,
   // Cursor customization
-  cursorHeight: 50, // 6px padding from top and bottom
+  cursorHeight: 50, // 6px padding from top and bottom (56 - 6 = 50)
   cursorWidth: 2.0, // Thicker cursor
-  cursorAlignment: CursorAlignment.left, // Left-aligned cursor
+  cursorAlignment: CursorAlignment.center, // Perfect center alignment
   cursorColor: Colors.blue, // Blue cursor
   buttonText: 'Verify',
   resendText: 'Resend',
@@ -409,7 +409,7 @@ OtpVerificationWidget(
   // Gradient background
   enableGradient: true,
   gradientConfig: OtpGradientConfig(
-    colors: [Colors.blue, Colors.purple],
+        colors: [Colors.blue, Colors.purple],
     type: GradientType.linear,
   ),
   // Advanced validation
@@ -417,9 +417,9 @@ OtpVerificationWidget(
   validationRegex: r'^[0-9]{6}$',
   validationMessage: 'Please enter 6 digits',
   // Cursor control
-  cursorHeight: 50, // Custom cursor height with padding
+  cursorHeight: 50, // Perfect centering with 6px padding (56 - 12 = 44)
   cursorWidth: 1.5, // Slightly thicker cursor
-  cursorAlignment: CursorAlignment.center, // Center-aligned cursor
+  cursorAlignment: CursorAlignment.center, // Perfect center alignment
   cursorColor: Colors.purple, // Purple cursor
   // Accessibility
   enableScreenReaderSupport: true,

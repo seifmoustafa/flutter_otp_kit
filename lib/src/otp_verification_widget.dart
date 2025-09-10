@@ -308,7 +308,7 @@ class OtpVerificationWidget extends StatefulWidget {
   /// Cursor color
   final Color? cursorColor;
 
-  /// Cursor height (defaults to fieldHeight - 6 for padding)
+  /// Cursor height (defaults to fieldHeight - 12 for perfect vertical centering)
   final double? cursorHeight;
 
   /// Cursor width
@@ -764,7 +764,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
       case CursorAlignment.left:
         return TextAlign.left;
       case CursorAlignment.center:
-        return TextAlign.center;
+        return TextAlign.center; // Perfect center alignment for OTP
       case CursorAlignment.right:
         return TextAlign.right;
     }
@@ -880,20 +880,26 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
           obscuringCharacter: widget.obscuringCharacter,
           enableInteractiveSelection: widget.enableInteractiveSelection,
           cursorColor: widget.cursorColor ?? widget.primaryColor,
-          cursorHeight: widget.cursorHeight ?? (widget.fieldHeight - 6),
+          cursorHeight: widget.cursorHeight ?? (widget.fieldHeight - 12),
           cursorWidth: widget.cursorWidth,
           style: widget.fieldStyle ??
               TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
+                height: 1.0, // Ensure consistent line height
               ),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             counterText: '',
             border: InputBorder.none,
             enabledBorder: InputBorder.none,
             focusedBorder: InputBorder.none,
-            contentPadding: EdgeInsets.zero,
+            contentPadding: EdgeInsets.symmetric(
+              vertical:
+                  (widget.fieldHeight - 22) / 2, // Perfect vertical centering
+              horizontal: 0,
+            ),
+            isDense: true, // Reduce internal padding
           ),
           validator: widget.validator ??
               (widget.enableAutoValidation
