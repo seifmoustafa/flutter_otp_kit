@@ -56,7 +56,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_otp_kit: ^1.2.3
+  flutter_otp_kit: ^1.2.4
 ```
 
 Then run:
@@ -153,6 +153,9 @@ The main widget for OTP verification with comprehensive customization options.
 | `errorBorderColor` | `Color?` | `null` | Color of error field border |
 | `filledFieldBackgroundColor` | `Color?` | `null` | Background color of filled fields |
 | `cursorColor` | `Color?` | `null` | Color of the text cursor |
+| `cursorHeight` | `double?` | `fieldHeight - 6` | Height of the text cursor |
+| `cursorWidth` | `double` | `1.0` | Width of the text cursor |
+| `cursorAlignment` | `CursorAlignment` | `CursorAlignment.center` | Alignment of the cursor within the field |
 | `animationDuration` | `Duration` | `Duration(milliseconds: 150)` | Duration of animations |
 | `animationCurve` | `Curve` | `Curves.easeInOut` | Animation curve |
 | `textCapitalization` | `TextCapitalization` | `TextCapitalization.none` | Text capitalization behavior |
@@ -211,6 +214,11 @@ The main widget for OTP verification with comprehensive customization options.
 #### OtpFieldDirection
 - `horizontal`: Arrange fields horizontally
 - `vertical`: Arrange fields vertically
+
+#### CursorAlignment
+- `left`: Align cursor to the left
+- `center`: Center align cursor (default)
+- `right`: Align cursor to the right
 
 ### Configuration Classes
 
@@ -353,6 +361,26 @@ OtpVerificationWidget(
 )
 ```
 
+### Cursor Control
+```dart
+OtpVerificationWidget(
+  title: 'Custom Cursor OTP',
+  subtitle: 'Enter code with custom cursor',
+  fieldCount: 6,
+  fieldHeight: 56,
+  // Cursor customization
+  cursorHeight: 50, // 6px padding from top and bottom
+  cursorWidth: 2.0, // Thicker cursor
+  cursorAlignment: CursorAlignment.left, // Left-aligned cursor
+  cursorColor: Colors.blue, // Blue cursor
+  buttonText: 'Verify',
+  resendText: 'Resend',
+  timerPrefix: 'after',
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => resendOtp(),
+)
+```
+
 ### Complete Customization
 ```dart
 OtpVerificationWidget(
@@ -388,6 +416,11 @@ OtpVerificationWidget(
   enableRealTimeValidation: true,
   validationRegex: r'^[0-9]{6}$',
   validationMessage: 'Please enter 6 digits',
+  // Cursor control
+  cursorHeight: 50, // Custom cursor height with padding
+  cursorWidth: 1.5, // Slightly thicker cursor
+  cursorAlignment: CursorAlignment.center, // Center-aligned cursor
+  cursorColor: Colors.purple, // Purple cursor
   // Accessibility
   enableScreenReaderSupport: true,
   semanticLabel: 'OTP verification code',

@@ -11,6 +11,13 @@ import 'otp_animation_config.dart';
 import 'otp_theme_config.dart';
 import 'otp_behavior_config.dart';
 
+/// Enum for cursor alignment within OTP fields
+enum CursorAlignment {
+  left,
+  center,
+  right,
+}
+
 /// A fully generic and reusable OTP verification widget
 ///
 /// This widget provides a complete OTP (One-Time Password) verification interface
@@ -115,6 +122,9 @@ class OtpVerificationWidget extends StatefulWidget {
     this.errorBorderColor,
     this.filledFieldBackgroundColor,
     this.cursorColor,
+    this.cursorHeight,
+    this.cursorWidth = 1.0,
+    this.cursorAlignment = CursorAlignment.center,
     this.animationDuration = const Duration(milliseconds: 150),
     this.animationCurve = Curves.easeInOut,
     this.enableShadow = false,
@@ -297,6 +307,15 @@ class OtpVerificationWidget extends StatefulWidget {
 
   /// Cursor color
   final Color? cursorColor;
+
+  /// Cursor height (defaults to fieldHeight - 6 for padding)
+  final double? cursorHeight;
+
+  /// Cursor width
+  final double cursorWidth;
+
+  /// Cursor alignment within the field
+  final CursorAlignment cursorAlignment;
 
   /// Animation duration for transitions
   final Duration animationDuration;
@@ -739,6 +758,18 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     }
   }
 
+  /// Gets the appropriate text alignment based on cursor alignment
+  TextAlign _getTextAlignForCursorAlignment() {
+    switch (widget.cursorAlignment) {
+      case CursorAlignment.left:
+        return TextAlign.left;
+      case CursorAlignment.center:
+        return TextAlign.center;
+      case CursorAlignment.right:
+        return TextAlign.right;
+    }
+  }
+
   /// Calculates responsive field spacing based on screen width and field count with overflow protection
   double _calculateResponsiveSpacing(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -841,7 +872,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
         child: TextFormField(
           controller: _controllers[index],
           focusNode: _focusNodes[index],
-          textAlign: TextAlign.center,
+          textAlign: _getTextAlignForCursorAlignment(),
           keyboardType: _getKeyboardType(),
           textCapitalization: widget.textCapitalization,
           inputFormatters: _getInputFormatters(),
@@ -849,6 +880,8 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
           obscuringCharacter: widget.obscuringCharacter,
           enableInteractiveSelection: widget.enableInteractiveSelection,
           cursorColor: widget.cursorColor ?? widget.primaryColor,
+          cursorHeight: widget.cursorHeight ?? (widget.fieldHeight - 6),
+          cursorWidth: widget.cursorWidth,
           style: widget.fieldStyle ??
               TextStyle(
                 fontSize: 24,
