@@ -55,7 +55,16 @@ The heavy lifting of focus management, timer handling, validation, and styling i
 - **♿ Accessibility ready**: Proper focus handling and keyboard navigation
 - **🔒 Contact masking**: Automatic phone/email masking for privacy
 
-### New in v1.2.1 - Critical Responsive Fixes
+### New in v1.2.2 - Critical Layout Error Fixes
+- **🚨 Fixed RenderBox Layout Errors**: Resolved "RenderBox was not laid out" exceptions completely
+- **🔧 Removed Problematic Wrapper**: Eliminated SingleChildScrollView + ConstrainedBox causing infinite height constraints
+- **🛡️ Safe Responsive Design**: Implemented conservative responsive calculations with extra safety margins
+- **📐 Enhanced Field Constraints**: Added Container with maxWidth constraints for overflow protection
+- **🎯 Conservative Safety Margins**: Increased safety margins to 30% for spacing and 20% for field width
+- **📱 Improved Wrap Detection**: Reduced wrap threshold to 75% of screen width for extra safety
+- **🔒 Layout Stability**: Ensured stable layout rendering without constraint conflicts
+
+### Previous Features (v1.2.1) - Critical Responsive Fixes
 - **🚨 Fixed Overflow Bug**: Resolved "RIGHT OVERFLOWED BY 12 PIXELS" error completely
 - **📱 Enhanced Responsive Design**: Implemented comprehensive responsive field width calculation
 - **🛡️ Overflow Protection**: Added 20% safety margin to prevent any pixel overflow
@@ -123,7 +132,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_otp_kit: ^1.2.1
+  flutter_otp_kit: ^1.2.2
 ```
 
 Then run:

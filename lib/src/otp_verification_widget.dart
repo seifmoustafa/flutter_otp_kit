@@ -765,11 +765,11 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     final totalFieldWidth = widget.fieldWidth * widget.fieldCount;
     final availableWidth = screenWidth - padding - totalFieldWidth;
 
-    // Calculate spacing with safety margin
+    // Calculate spacing with conservative safety margin
     final calculatedSpacing = availableWidth / (widget.fieldCount - 1);
 
-    // Apply safety margin to prevent overflow (20% buffer)
-    final safeSpacing = calculatedSpacing * 0.8;
+    // Apply conservative safety margin to prevent overflow (30% buffer)
+    final safeSpacing = calculatedSpacing * 0.7;
 
     // Clamp the spacing between min and max values
     return safeSpacing.clamp(widget.minFieldSpacing, widget.maxFieldSpacing);
@@ -784,8 +784,11 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
         screenWidth - padding - (minSpacing * (widget.fieldCount - 1));
     final maxFieldWidth = availableWidth / widget.fieldCount;
 
-    // Use the smaller of configured width or calculated max width
-    return math.min(widget.fieldWidth, maxFieldWidth);
+    // Apply conservative safety margin (20% buffer)
+    final safeFieldWidth = maxFieldWidth * 0.8;
+
+    // Use the smaller of configured width or calculated safe width
+    return math.min(widget.fieldWidth, safeFieldWidth);
   }
 
   /// Checks if fields should wrap to next line for better responsiveness
@@ -797,7 +800,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
         (responsiveSpacing * (widget.fieldCount - 1)) +
         (widget.spacing * 2);
     return totalWidth >
-        screenWidth * 0.85; // Use 85% of screen width for safety
+        screenWidth * 0.75; // Use 75% of screen width for extra safety
   }
 
   /// Builds a single OTP field with responsive styling
@@ -882,180 +885,164 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
           opacity: _fadeAnimation,
           child: ScaleTransition(
             scale: _scaleAnimation,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight,
-                      maxWidth: constraints.maxWidth,
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(widget.spacing),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // Title and subtitle
-                          Column(
-                            children: [
-                              Semantics(
-                                label: widget.semanticLabel ?? widget.title,
-                                header: true,
-                                child: PlatformText(
-                                  widget.title,
-                                  style: widget.titleStyle ??
-                                      TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                        color: widget.primaryColor,
-                                      ),
-                                  textAlign: TextAlign.center,
-                                ),
+            child: Padding(
+              padding: EdgeInsets.all(widget.spacing),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Title and subtitle
+                  Column(
+                    children: [
+                      Semantics(
+                        label: widget.semanticLabel ?? widget.title,
+                        header: true,
+                        child: PlatformText(
+                          widget.title,
+                          style: widget.titleStyle ??
+                              TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: widget.primaryColor,
                               ),
-                              SizedBox(height: widget.spacing * 1.25),
-                              PlatformText(
-                                widget.contactInfo != null
-                                    ? widget.subtitle.replaceAll(
-                                        '{contactInfo}',
-                                        _maskContactInfo(widget.contactInfo!,
-                                            widget.maskingType))
-                                    : widget.subtitle,
-                                style: widget.subtitleStyle ??
-                                    TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: widget.secondaryColor,
-                                    ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(height: widget.spacing * 3),
-
-                          // OTP Input Fields
-                          Form(
-                            key: _formKey,
-                            autovalidateMode: _autoValidate,
-                            child: Column(
-                              children: [
-                                LayoutBuilder(
-                                  builder: (context, constraints) {
-                                    final responsiveSpacing =
-                                        _calculateResponsiveSpacing(context);
-                                    final responsiveFieldWidth =
-                                        _calculateResponsiveFieldWidth(context);
-                                    final shouldWrap =
-                                        _shouldWrapFields(context);
-
-                                    if (shouldWrap && widget.fieldCount > 4) {
-                                      // Wrap fields for better responsiveness
-                                      return Wrap(
-                                        alignment: WrapAlignment.center,
-                                        spacing: responsiveSpacing,
-                                        runSpacing: responsiveSpacing * 0.5,
-                                        children: List.generate(
-                                            widget.fieldCount, (index) {
-                                          return SizedBox(
-                                            width: responsiveFieldWidth,
-                                            child: _buildOtpField(
-                                                index, responsiveSpacing,
-                                                fieldWidth:
-                                                    responsiveFieldWidth),
-                                          );
-                                        }),
-                                      );
-                                    } else {
-                                      // Single row layout with overflow protection
-                                      return Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: List.generate(
-                                            widget.fieldCount, (index) {
-                                          return Container(
-                                            width: responsiveFieldWidth,
-                                            margin: EdgeInsets.only(
-                                              right:
-                                                  index < widget.fieldCount - 1
-                                                      ? responsiveSpacing
-                                                      : 0,
-                                            ),
-                                            child: _buildOtpField(
-                                                index, responsiveSpacing,
-                                                fieldWidth:
-                                                    responsiveFieldWidth),
-                                          );
-                                        }),
-                                      );
-                                    }
-                                  },
-                                ),
-                                if (_errorText != null ||
-                                    widget.errorText != null)
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        top: widget.spacing * 0.5),
-                                    child: Text(
-                                      _errorText ?? widget.errorText!,
-                                      style: widget.errorStyle ??
-                                          TextStyle(
-                                            color: widget.errorBorderColor ??
-                                                Colors.red,
-                                            fontSize: 12,
-                                          ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-
-                          SizedBox(height: widget.spacing * 2),
-
-                          // Timer and resend section
-                          if (widget.showTimer)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GestureDetector(
-                                  onTap: _remainingTime == 0
-                                      ? _onResendPressed
-                                      : null,
-                                  child: PlatformText(
-                                    widget.resendText,
-                                    style: widget.resendStyle ??
-                                        TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: _remainingTime == 0
-                                              ? widget.primaryColor
-                                              : widget.secondaryColor,
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                  ),
-                                ),
-                                if (_remainingTime > 0)
-                                  PlatformText(
-                                    ' ${widget.timerPrefix} ${_formatTime(_remainingTime)}',
-                                    style: widget.timerStyle ??
-                                        TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.normal,
-                                          color: widget.secondaryColor,
-                                        ),
-                                  ),
-                              ],
-                            ),
-                          SizedBox(height: widget.spacing * 2),
-
-                          // Verify button
-                          widget.buttonWidget ?? _buildDefaultButton(),
-                        ],
+                          textAlign: TextAlign.center,
+                        ),
                       ),
+                      SizedBox(height: widget.spacing * 1.25),
+                      PlatformText(
+                        widget.contactInfo != null
+                            ? widget.subtitle.replaceAll(
+                                '{contactInfo}',
+                                _maskContactInfo(
+                                    widget.contactInfo!, widget.maskingType))
+                            : widget.subtitle,
+                        style: widget.subtitleStyle ??
+                            TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: widget.secondaryColor,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: widget.spacing * 3),
+
+                  // OTP Input Fields
+                  Form(
+                    key: _formKey,
+                    autovalidateMode: _autoValidate,
+                    child: Column(
+                      children: [
+                        Container(
+                          constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.9,
+                          ),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              final responsiveSpacing =
+                                  _calculateResponsiveSpacing(context);
+                              final responsiveFieldWidth =
+                                  _calculateResponsiveFieldWidth(context);
+                              final shouldWrap = _shouldWrapFields(context);
+
+                              if (shouldWrap && widget.fieldCount > 4) {
+                                // Wrap fields for better responsiveness
+                                return Wrap(
+                                  alignment: WrapAlignment.center,
+                                  spacing: responsiveSpacing,
+                                  runSpacing: responsiveSpacing * 0.5,
+                                  children:
+                                      List.generate(widget.fieldCount, (index) {
+                                    return SizedBox(
+                                      width: responsiveFieldWidth,
+                                      child: _buildOtpField(
+                                          index, responsiveSpacing,
+                                          fieldWidth: responsiveFieldWidth),
+                                    );
+                                  }),
+                                );
+                              } else {
+                                // Single row layout with overflow protection
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children:
+                                      List.generate(widget.fieldCount, (index) {
+                                    return Container(
+                                      width: responsiveFieldWidth,
+                                      margin: EdgeInsets.only(
+                                        right: index < widget.fieldCount - 1
+                                            ? responsiveSpacing
+                                            : 0,
+                                      ),
+                                      child: _buildOtpField(
+                                          index, responsiveSpacing,
+                                          fieldWidth: responsiveFieldWidth),
+                                    );
+                                  }),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                        if (_errorText != null || widget.errorText != null)
+                          Padding(
+                            padding: EdgeInsets.only(top: widget.spacing * 0.5),
+                            child: Text(
+                              _errorText ?? widget.errorText!,
+                              style: widget.errorStyle ??
+                                  TextStyle(
+                                    color:
+                                        widget.errorBorderColor ?? Colors.red,
+                                    fontSize: 12,
+                                  ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
-                );
-              },
+
+                  SizedBox(height: widget.spacing * 2),
+
+                  // Timer and resend section
+                  if (widget.showTimer)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: _remainingTime == 0 ? _onResendPressed : null,
+                          child: PlatformText(
+                            widget.resendText,
+                            style: widget.resendStyle ??
+                                TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: _remainingTime == 0
+                                      ? widget.primaryColor
+                                      : widget.secondaryColor,
+                                  decoration: TextDecoration.underline,
+                                ),
+                          ),
+                        ),
+                        if (_remainingTime > 0)
+                          PlatformText(
+                            ' ${widget.timerPrefix} ${_formatTime(_remainingTime)}',
+                            style: widget.timerStyle ??
+                                TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal,
+                                  color: widget.secondaryColor,
+                                ),
+                          ),
+                      ],
+                    ),
+                  SizedBox(height: widget.spacing * 2),
+
+                  // Verify button
+                  widget.buttonWidget ?? _buildDefaultButton(),
+                ],
+              ),
             ),
           ),
         );
