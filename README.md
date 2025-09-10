@@ -55,7 +55,44 @@ The heavy lifting of focus management, timer handling, validation, and styling i
 - **♿ Accessibility ready**: Proper focus handling and keyboard navigation
 - **🔒 Contact masking**: Automatic phone/email masking for privacy
 
-### New in v1.1.0
+### New in v1.2.0 - Complete Generic Package
+- **🏗️ Comprehensive Layout System**: Multiple layout types (singleRow, wrap, grid, custom)
+- **🔷 Advanced Field Shapes**: Rectangle, rounded rectangle, circle, stadium, and custom shapes
+- **🎬 Complete Animation Control**: Predefined animation configs (default, fast, smooth, disabled)
+- **🎨 Full Theme System**: Material 3, light, dark themes with complete customization
+- **📱 Responsive Spacing**: Min/max field spacing with automatic calculation
+- **⚙️ Advanced Behavior Configuration**: Haptic feedback, sound feedback, auto-submit, auto-clear
+- **♿ Comprehensive Accessibility**: Screen reader support, semantic labels, custom actions
+- **🌈 Gradient Support**: Linear, radial, and sweep gradients for backgrounds
+- **🎭 Custom Decorations**: Complete BoxDecoration customization
+- **✅ Advanced Validation**: Real-time validation, custom regex, custom messages
+- **🔤 Multiple Input Types**: Numeric, alphabetic, alphanumeric, and custom with formatters
+- **🎤 Voice and Biometric Input**: Support for advanced input methods
+- **👆 Swipe Navigation**: Touch gesture support for field navigation
+- **🛠️ Custom Field Builders**: Complete control over field appearance and behavior
+- **📐 Custom Layout Builders**: Full control over field arrangement
+- **🔲 Grid Layout Support**: Multi-column field arrangements
+- **↔️ Field Direction Control**: Horizontal and vertical field arrangements
+- **🎯 Field Alignment Options**: Center, start, end, space between, around, evenly
+- **🖼️ Border Style Control**: Solid, dashed, dotted, and custom border styles
+- **🌫️ Shadow Configuration**: Customizable shadows with color, blur, spread, offset
+- **📝 Text Style Control**: Complete typography customization for all text elements
+- **🔘 Button Color System**: Comprehensive button color configuration
+- **❌ Error State Management**: Visual error states with custom styling
+- **✅ Success State Management**: Visual success states with custom styling
+- **🎯 Focus State Management**: Custom focus styling and behavior
+- **⏰ Timer Control**: Show/hide timer with custom styling
+- **⌨️ Keyboard Type Control**: Custom keyboard types for different input scenarios
+- **🔤 Text Capitalization**: Control over text capitalization behavior
+- **👆 Interactive Selection**: Enable/disable text selection
+- **✔️ Custom Validators**: Complete validation control with custom logic
+- **⚡ Real-time Validation**: Live validation feedback
+- **💬 Custom Error Messages**: Personalized error messaging
+- **♿ Accessibility Actions**: Custom accessibility actions for screen readers
+- **🏷️ Semantic Support**: Complete semantic labeling for accessibility
+- **🌐 Cross-platform Optimization**: Optimized for iOS, Android, Web, and Desktop
+
+### Previous Features (v1.1.0)
 - **🔤 Multiple input types**: numeric, alphabetic, alphanumeric, and custom
 - **📋 Paste support**: Automatically detect and fill OTP from clipboard
 - **🎭 Custom input formatters**: Support for custom TextInputFormatter
@@ -76,7 +113,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_otp_kit: ^1.1.0
+  flutter_otp_kit: ^1.2.0
 ```
 
 Then run:
@@ -298,6 +335,132 @@ OtpVerificationWidget(
 )
 ```
 
+### Complete Generic Configuration
+
+```dart
+OtpVerificationWidget(
+  title: 'Fully Customizable OTP',
+  subtitle: 'Every aspect is controllable',
+  buttonText: 'Verify',
+  resendText: 'Resend',
+  timerPrefix: 'after',
+  // Layout configuration
+  layoutType: OtpLayoutType.wrap,
+  fieldAlignment: OtpFieldAlignment.center,
+  fieldDirection: OtpFieldDirection.horizontal,
+  fieldShape: OtpFieldShape.circle,
+  // Animation configuration
+  animationConfig: OtpAnimationConfig.smooth,
+  // Theme configuration
+  themeConfig: OtpThemeConfig.material3(context),
+  // Behavior configuration
+  behaviorConfig: OtpBehaviorConfig(
+    enableHapticFeedback: true,
+    enableSoundFeedback: true,
+    enableAutoSubmit: true,
+    enableAutoClearOnError: true,
+  ),
+  // Responsive spacing
+  fieldSpacing: 12.0,
+  minFieldSpacing: 8.0,
+  maxFieldSpacing: 20.0,
+  // Gradient background
+  enableGradient: true,
+  gradientConfig: OtpGradientConfig(
+    colors: [Colors.blue, Colors.purple],
+    type: GradientType.linear,
+  ),
+  // Advanced validation
+  enableRealTimeValidation: true,
+  validationRegex: r'^[0-9]{5}$',
+  validationMessage: 'Please enter 5 digits',
+  // Accessibility
+  enableScreenReaderSupport: true,
+  semanticLabel: 'OTP verification code',
+  semanticHint: 'Enter the 5-digit code',
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => resendOtp(),
+)
+```
+
+### Custom Field Builder
+
+```dart
+OtpVerificationWidget(
+  title: 'Custom Field Design',
+  subtitle: 'Completely custom field appearance',
+  buttonText: 'Verify',
+  resendText: 'Resend',
+  timerPrefix: 'after',
+  // Custom field builder
+  customFieldBuilder: (context, index, controller, focusNode) {
+    return Container(
+      width: 60,
+      height: 60,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.orange, Colors.red],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.orange.withOpacity(0.3),
+            blurRadius: 10,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        focusNode: focusNode,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          counterText: '',
+        ),
+        onChanged: (value) => _onDigitChanged(value, index),
+      ),
+    );
+  },
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => resendOtp(),
+)
+```
+
+### Grid Layout Example
+
+```dart
+OtpVerificationWidget(
+  title: 'Grid Layout OTP',
+  subtitle: 'Fields arranged in a grid',
+  buttonText: 'Verify',
+  resendText: 'Resend',
+  timerPrefix: 'after',
+  fieldCount: 9,
+  // Grid layout
+  layoutType: OtpLayoutType.grid,
+  gridColumns: 3,
+  fieldAlignment: OtpFieldAlignment.center,
+  // Custom styling
+  fieldShape: OtpFieldShape.roundedRectangle,
+  fieldWidth: 50,
+  fieldHeight: 50,
+  borderRadius: 10,
+  primaryColor: Colors.green,
+  // Animation
+  animationConfig: OtpAnimationConfig.fast,
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => resendOtp(),
+)
+```
+
 ## 🎛️ Configuration Options
 
 ### Required Parameters
@@ -365,6 +528,37 @@ OtpVerificationWidget(
 | `customKeyboardType` | `TextInputType?` | `null` | Custom keyboard type |
 | `textCapitalization` | `TextCapitalization` | `TextCapitalization.none` | Text capitalization |
 | `enableInteractiveSelection` | `bool` | `true` | Enable text selection |
+| `layoutType` | `OtpLayoutType` | `OtpLayoutType.singleRow` | Layout type for field arrangement |
+| `fieldAlignment` | `OtpFieldAlignment` | `OtpFieldAlignment.center` | Field alignment within layout |
+| `fieldDirection` | `OtpFieldDirection` | `OtpFieldDirection.horizontal` | Field arrangement direction |
+| `fieldShape` | `OtpFieldShape` | `OtpFieldShape.roundedRectangle` | Field shape type |
+| `fieldShapeConfig` | `OtpFieldShapeConfig?` | `null` | Custom field shape configuration |
+| `animationConfig` | `OtpAnimationConfig` | `OtpAnimationConfig.defaultConfig` | Animation configuration |
+| `themeConfig` | `OtpThemeConfig?` | `null` | Theme configuration |
+| `behaviorConfig` | `OtpBehaviorConfig` | `OtpBehaviorConfig()` | Behavior configuration |
+| `gridColumns` | `int` | `3` | Number of columns for grid layout |
+| `customFieldBuilder` | `Widget Function(...)?` | `null` | Custom field builder function |
+| `customLayoutBuilder` | `Widget Function(...)?` | `null` | Custom layout builder function |
+| `enableGradient` | `bool` | `false` | Enable gradient background |
+| `gradientConfig` | `OtpGradientConfig?` | `null` | Gradient configuration |
+| `enableCustomDecoration` | `bool` | `false` | Enable custom decoration |
+| `customDecoration` | `BoxDecoration?` | `null` | Custom decoration for fields |
+| `enableHapticFeedback` | `bool` | `false` | Enable haptic feedback |
+| `enableSoundFeedback` | `bool` | `false` | Enable sound feedback |
+| `enableVoiceInput` | `bool` | `false` | Enable voice input |
+| `enableBiometricInput` | `bool` | `false` | Enable biometric input |
+| `enableSwipeNavigation` | `bool` | `false` | Enable swipe navigation |
+| `enableKeyboardNavigation` | `bool` | `true` | Enable keyboard navigation |
+| `enableAutoSubmit` | `bool` | `false` | Enable auto submit when complete |
+| `enableAutoClearOnError` | `bool` | `false` | Enable auto clear on error |
+| `customValidator` | `String? Function(String?)?` | `null` | Custom validator function |
+| `validationRegex` | `String?` | `null` | Validation regex pattern |
+| `validationMessage` | `String?` | `null` | Custom validation message |
+| `enableRealTimeValidation` | `bool` | `false` | Enable real-time validation |
+| `semanticHint` | `String?` | `null` | Semantic hint for accessibility |
+| `semanticValue` | `String?` | `null` | Semantic value for accessibility |
+| `enableScreenReaderSupport` | `bool` | `true` | Enable screen reader support |
+| `customAccessibilityActions` | `List<Map<String, dynamic>>?` | `null` | Custom accessibility actions |
 
 ## 🔧 Public Methods
 
@@ -423,6 +617,65 @@ Accepts both letters and numbers. Default keyboard is text.
 
 ### `OtpInputType.custom`
 Allows custom input with your own formatters and validators.
+
+## 🏗️ Layout Types
+
+### `OtpLayoutType.singleRow`
+Fields arranged in a single horizontal row (default).
+
+### `OtpLayoutType.wrap`
+Fields wrap to next line when screen width is insufficient.
+
+### `OtpLayoutType.grid`
+Fields arranged in a grid with specified number of columns.
+
+### `OtpLayoutType.custom`
+Custom layout using your own layout builder function.
+
+## 🔷 Field Shapes
+
+### `OtpFieldShape.rectangle`
+Standard rectangle shape.
+
+### `OtpFieldShape.roundedRectangle`
+Rectangle with rounded corners (default).
+
+### `OtpFieldShape.circle`
+Perfect circle shape.
+
+### `OtpFieldShape.stadium`
+Pill-shaped (stadium) shape.
+
+### `OtpFieldShape.custom`
+Custom shape using your own path function.
+
+## 🎬 Animation Configurations
+
+### `OtpAnimationConfig.defaultConfig`
+Standard animation configuration with moderate timing.
+
+### `OtpAnimationConfig.fast`
+Fast animations for quick interactions.
+
+### `OtpAnimationConfig.smooth`
+Smooth animations with longer durations and easing curves.
+
+### `OtpAnimationConfig.disabled`
+No animations for maximum performance.
+
+## 🎨 Theme Configurations
+
+### `OtpThemeConfig.material3(context)`
+Material Design 3 theme that adapts to your app's theme.
+
+### `OtpThemeConfig.light`
+Light theme with bright colors and high contrast.
+
+### `OtpThemeConfig.dark`
+Dark theme with dark colors and appropriate contrast.
+
+### Custom Theme
+Create your own theme with complete color and style control.
 
 ## Example
 

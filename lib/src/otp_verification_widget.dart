@@ -366,10 +366,15 @@ class OtpVerificationWidget extends StatefulWidget {
   final int gridColumns;
 
   /// Custom field builder function
-  final Widget Function(BuildContext context, int index, TextEditingController controller, FocusNode focusNode)? customFieldBuilder;
+  final Widget Function(
+      BuildContext context,
+      int index,
+      TextEditingController controller,
+      FocusNode focusNode)? customFieldBuilder;
 
   /// Custom layout builder function
-  final Widget Function(BuildContext context, List<Widget> fields)? customLayoutBuilder;
+  final Widget Function(BuildContext context, List<Widget> fields)?
+      customLayoutBuilder;
 
   // Advanced styling parameters
   /// Enable gradient background
@@ -739,7 +744,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     if (widget.customKeyboardType != null) {
       return widget.customKeyboardType!;
     }
-    
+
     switch (widget.otpInputType) {
       case OtpInputType.numeric:
         return TextInputType.number;
@@ -755,19 +760,22 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   /// Calculates responsive field spacing based on screen width and field count
   double _calculateResponsiveSpacing(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final availableWidth = screenWidth - (widget.spacing * 2) - (widget.fieldWidth * widget.fieldCount);
+    final availableWidth = screenWidth -
+        (widget.spacing * 2) -
+        (widget.fieldWidth * widget.fieldCount);
     final calculatedSpacing = availableWidth / (widget.fieldCount - 1);
-    
+
     // Clamp the spacing between min and max values
-    return calculatedSpacing.clamp(widget.minFieldSpacing, widget.maxFieldSpacing);
+    return calculatedSpacing.clamp(
+        widget.minFieldSpacing, widget.maxFieldSpacing);
   }
 
   /// Checks if fields should wrap to next line for better responsiveness
   bool _shouldWrapFields(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final totalWidth = (widget.fieldWidth * widget.fieldCount) + 
-                      (widget.fieldSpacing * (widget.fieldCount - 1)) + 
-                      (widget.spacing * 2);
+    final totalWidth = (widget.fieldWidth * widget.fieldCount) +
+        (widget.fieldSpacing * (widget.fieldCount - 1)) +
+        (widget.spacing * 2);
     return totalWidth > screenWidth * 0.9; // Use 90% of screen width
   }
 
@@ -776,7 +784,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     final hasError = _fieldHasError[index] || _errorText != null;
     final isFocused = _focusNodes[index].hasFocus;
     final isFilled = _controllers[index].text.isNotEmpty;
-    
+
     return AnimatedContainer(
       duration: widget.animationDuration,
       curve: widget.animationCurve,
@@ -798,7 +806,8 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
         boxShadow: widget.enableShadow
             ? [
                 BoxShadow(
-                  color: widget.shadowColor ?? widget.primaryColor.withValues(alpha: 0.2),
+                  color: widget.shadowColor ??
+                      widget.primaryColor.withValues(alpha: 0.2),
                   blurRadius: widget.shadowBlurRadius,
                   spreadRadius: widget.shadowSpreadRadius,
                 ),
@@ -832,9 +841,10 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
             focusedBorder: InputBorder.none,
             contentPadding: EdgeInsets.zero,
           ),
-          validator: widget.validator ?? (widget.enableAutoValidation
-              ? (v) => (v == null || v.isEmpty) ? '' : null
-              : null),
+          validator: widget.validator ??
+              (widget.enableAutoValidation
+                  ? (v) => (v == null || v.isEmpty) ? '' : null
+                  : null),
           onChanged: (value) => _onDigitChanged(value, index),
         ),
       ),
@@ -899,37 +909,44 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
                     autovalidateMode: _autoValidate,
                     child: Column(
                       children: [
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    final responsiveSpacing = _calculateResponsiveSpacing(context);
-                    final shouldWrap = _shouldWrapFields(context);
-                    
-                    if (shouldWrap && widget.fieldCount > 4) {
-                      // Wrap fields for better responsiveness
-                      return Wrap(
-                        alignment: WrapAlignment.center,
-                        spacing: responsiveSpacing,
-                        runSpacing: responsiveSpacing * 0.5,
-                        children: List.generate(widget.fieldCount, (index) {
-                          return _buildOtpField(index, responsiveSpacing);
-                        }),
-                      );
-                    } else {
-                      // Single row layout
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(widget.fieldCount, (index) {
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              right: index < widget.fieldCount - 1 ? responsiveSpacing : 0,
-                            ),
-                            child: _buildOtpField(index, responsiveSpacing),
-                          );
-                        }),
-                      );
-                    }
-                  },
-                ),
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            final responsiveSpacing =
+                                _calculateResponsiveSpacing(context);
+                            final shouldWrap = _shouldWrapFields(context);
+
+                            if (shouldWrap && widget.fieldCount > 4) {
+                              // Wrap fields for better responsiveness
+                              return Wrap(
+                                alignment: WrapAlignment.center,
+                                spacing: responsiveSpacing,
+                                runSpacing: responsiveSpacing * 0.5,
+                                children:
+                                    List.generate(widget.fieldCount, (index) {
+                                  return _buildOtpField(
+                                      index, responsiveSpacing);
+                                }),
+                              );
+                            } else {
+                              // Single row layout
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children:
+                                    List.generate(widget.fieldCount, (index) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(
+                                      right: index < widget.fieldCount - 1
+                                          ? responsiveSpacing
+                                          : 0,
+                                    ),
+                                    child: _buildOtpField(
+                                        index, responsiveSpacing),
+                                  );
+                                }),
+                              );
+                            }
+                          },
+                        ),
                         if (_errorText != null || widget.errorText != null)
                           Padding(
                             padding: EdgeInsets.only(top: widget.spacing * 0.5),
