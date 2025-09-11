@@ -31,22 +31,42 @@ class OtpExamplePage extends StatefulWidget {
 class _OtpExamplePageState extends State<OtpExamplePage> {
   String _selectedExample = 'basic';
   String _lastVerifiedOtp = '';
+  bool _hasError = false;
   final GlobalKey<OtpVerificationWidgetState> _otpKey = GlobalKey();
 
   void _handleVerification(String otp) {
     setState(() {
       _lastVerifiedOtp = otp;
+      _hasError = false; // Clear any previous error
     });
 
-    // Simulate API call
+    // Simulate API call with random success/failure
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('OTP $otp verified successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        // Simulate random verification failure for demo
+        final isSuccess = otp != '0000';
+
+        if (isSuccess) {
+          setState(() {
+            _hasError = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('OTP $otp verified successfully!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else {
+          setState(() {
+            _hasError = true;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Invalid OTP. Please try again.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     });
   }
@@ -138,6 +158,24 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                           onSelected: (selected) {
                             if (selected) {
                               setState(() => _selectedExample = 'transitions');
+                            }
+                          },
+                        ),
+                        ChoiceChip(
+                          label: const Text('Error State'),
+                          selected: _selectedExample == 'error',
+                          onSelected: (selected) {
+                            if (selected) {
+                              setState(() => _selectedExample = 'error');
+                            }
+                          },
+                        ),
+                        ChoiceChip(
+                          label: const Text('Custom Widgets'),
+                          selected: _selectedExample == 'widgets',
+                          onSelected: (selected) {
+                            if (selected) {
+                              setState(() => _selectedExample = 'widgets');
                             }
                           },
                         ),
@@ -350,6 +388,211 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                         borderRadius: 12,
                         enableShadow: true,
                         shadowColor: Colors.blue.withValues(alpha: 0.2),
+                        onVerify: _handleVerification,
+                        onResend: _handleResend,
+                      )
+                    else if (_selectedExample == 'error')
+                      OtpVerificationWidget(
+                        key: _otpKey,
+                        title: 'Error State Management Demo',
+                        subtitle: 'Try entering 0000 to see error state',
+                        fieldCount: 4,
+                        timerDuration: 60,
+                        buttonText: 'Verify',
+                        resendText: 'Resend',
+                        timerPrefix: 'after',
+                        // Error state management
+                        hasError: _hasError,
+                        autoClearErrorOnInput: true,
+                        autoClearErrorOnResend: true,
+                        errorStateDuration: const Duration(seconds: 5),
+                        onErrorStateChanged: () {
+                          setState(() {
+                            _hasError = false;
+                          });
+                        },
+                        // Enhanced error styling
+                        errorBorderColor: Colors.red,
+                        completedFieldBorderColor: Colors.green,
+                        completedFieldBackgroundColor:
+                            Colors.green.withValues(alpha: 0.1),
+                        completedFieldTextColor: Colors.green,
+                        enableProgressiveHighlighting: true,
+                        // Styling
+                        primaryColor: Colors.blue,
+                        focusedBorderColor: Colors.blue,
+                        fieldWidth: 50,
+                        fieldHeight: 60,
+                        borderRadius: 12,
+                        enableShadow: true,
+                        shadowColor: Colors.blue.withValues(alpha: 0.2),
+                        onVerify: _handleVerification,
+                        onResend: _handleResend,
+                      )
+                    else if (_selectedExample == 'widgets')
+                      OtpVerificationWidget(
+                        key: _otpKey,
+                        title: 'Custom Widgets Demo',
+                        subtitle: 'Fully customized with custom widgets',
+                        fieldCount: 4,
+                        timerDuration: 90,
+                        buttonText: 'Verify',
+                        resendText: 'Resend',
+                        timerPrefix: 'after',
+                        // Error state management
+                        hasError: _hasError,
+                        autoClearErrorOnInput: true,
+                        autoClearErrorOnResend: true,
+                        // Custom widgets
+                        titleWidget: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.purple.shade400,
+                                Colors.pink.shade400
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Column(
+                            children: [
+                              Icon(Icons.security,
+                                  size: 48, color: Colors.white),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Secure Verification',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        subtitleWidget: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade50,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.blue.shade200),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.email, color: Colors.blue),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Code sent to your email',
+                                style: TextStyle(
+                                  color: Colors.blue.shade700,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        errorWidget: _hasError
+                            ? Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.red.shade50,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: Colors.red),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.error, color: Colors.red),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'Invalid code. Please try again.',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        verifyButtonWidget: Container(
+                          width: double.infinity,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Colors.purple, Colors.pink],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            borderRadius: BorderRadius.circular(25),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.purple.withValues(alpha: 0.3),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // Get OTP value from the widget state
+                              final otpValue =
+                                  _otpKey.currentState?.getCurrentOtp() ?? '';
+                              _handleVerification(otpValue);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                            ),
+                            child: Text(
+                              'Verify Code',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        resendWidget: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.refresh, size: 16, color: Colors.grey),
+                            const SizedBox(width: 4),
+                            TextButton(
+                              onPressed: () => _handleResend(),
+                              child: Text(
+                                'Resend Code',
+                                style: TextStyle(
+                                  color: Colors.purple,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        timerWidget: Text(
+                          ' 90s remaining',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        ),
+                        // Styling
+                        primaryColor: Colors.purple,
+                        focusedBorderColor: Colors.purple,
+                        fieldWidth: 50,
+                        fieldHeight: 60,
+                        borderRadius: 12,
+                        enableShadow: true,
+                        shadowColor: Colors.purple.withValues(alpha: 0.2),
                         onVerify: _handleVerification,
                         onResend: _handleResend,
                       ),

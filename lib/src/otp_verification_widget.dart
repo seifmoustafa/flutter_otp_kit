@@ -188,21 +188,39 @@ class OtpVerificationWidget extends StatefulWidget {
     this.semanticValue,
     this.enableScreenReaderSupport = true,
     this.customAccessibilityActions,
+    // Error state management parameters
+    this.hasError = false,
+    this.onErrorStateChanged,
+    this.errorStateDuration = const Duration(seconds: 3),
+    this.autoClearErrorOnInput = true,
+    this.autoClearErrorOnResend = true,
+    // Widget-based customization parameters
+    this.titleWidget,
+    this.subtitleWidget,
+    this.errorWidget,
+    this.verifyButtonWidget,
+    this.resendWidget,
+    this.timerWidget,
   });
 
   /// Title text displayed at the top (must be localized)
+  /// If [titleWidget] is provided, this will be ignored
   final String title;
 
   /// Subtitle text displayed below the title (must be localized)
+  /// If [subtitleWidget] is provided, this will be ignored
   final String subtitle;
 
   /// Text for the verify button (must be localized)
+  /// If [verifyButtonWidget] is provided, this will be ignored
   final String buttonText;
 
   /// Text for the resend link (must be localized)
+  /// If [resendWidget] is provided, this will be ignored
   final String resendText;
 
   /// Text prefix for timer (must be localized, e.g., "after" or "بعد")
+  /// If [timerWidget] is provided, this will be ignored
   final String timerPrefix;
 
   /// Contact information to be masked in subtitle (phone/email)
@@ -506,6 +524,41 @@ class OtpVerificationWidget extends StatefulWidget {
   /// Custom accessibility actions
   final List<Map<String, dynamic>>? customAccessibilityActions;
 
+  // Error state management parameters
+  /// External error state - when true, all fields will show error styling
+  final bool hasError;
+
+  /// Callback when error state should change (for external state management)
+  final VoidCallback? onErrorStateChanged;
+
+  /// Duration to show error state before auto-clearing (if auto-clear is enabled)
+  final Duration errorStateDuration;
+
+  /// Automatically clear error state when user starts typing
+  final bool autoClearErrorOnInput;
+
+  /// Automatically clear error state when resend is triggered
+  final bool autoClearErrorOnResend;
+
+  // Widget-based customization parameters
+  /// Custom title widget (replaces [title] text)
+  final Widget? titleWidget;
+
+  /// Custom subtitle widget (replaces [subtitle] text)
+  final Widget? subtitleWidget;
+
+  /// Custom error message widget (replaces [errorText])
+  final Widget? errorWidget;
+
+  /// Custom verify button widget (replaces default button)
+  final Widget? verifyButtonWidget;
+
+  /// Custom resend widget (replaces default resend text)
+  final Widget? resendWidget;
+
+  /// Custom timer widget (replaces default timer text)
+  final Widget? timerWidget;
+
   @override
   State<OtpVerificationWidget> createState() => OtpVerificationWidgetState();
 }
@@ -528,6 +581,10 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   final List<AnimationController> _fieldAnimationControllers = [];
   final List<Animation<double>> _fieldScaleAnimations = [];
   final List<Animation<Color?>> _fieldColorAnimations = [];
+
+  // Error state management
+  bool _internalErrorState = false;
+  Timer? _errorStateTimer;
 
   /// Initialize all lists with proper field count
   void _initializeLists() {
@@ -584,6 +641,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     super.initState();
     _initializeLists();
     _remainingTime = widget.timerDuration;
+    _internalErrorState = widget.hasError;
 
     // Initialize animations
     _animationController = AnimationController(
@@ -631,6 +689,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   @override
   void dispose() {
     _timer?.cancel();
+    _errorStateTimer?.cancel();
     _animationController.dispose();
     for (var controller in _controllers) {
       controller.dispose();
@@ -658,6 +717,20 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
       _remainingTime = widget.timerDuration;
       _startTimer();
     }
+
+    // Handle error state changes
+    if (oldWidget.hasError != widget.hasError) {
+      setState(() {
+        _internalErrorState = widget.hasError;
+      });
+
+      // Start error state timer if error is true
+      if (widget.hasError) {
+        _startErrorStateTimer();
+      } else {
+        _errorStateTimer?.cancel();
+      }
+    }
   }
 
   /// Starts the countdown timer for OTP resend functionality
@@ -677,11 +750,36 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     });
   }
 
+  /// Starts the error state timer for auto-clearing error state
+  void _startErrorStateTimer() {
+    _errorStateTimer?.cancel();
+    _errorStateTimer = Timer(widget.errorStateDuration, () {
+      if (mounted && _internalErrorState) {
+        setState(() {
+          _internalErrorState = false;
+        });
+        widget.onErrorStateChanged?.call();
+      }
+    });
+  }
+
+  /// Clears the internal error state
+  void _clearErrorState() {
+    if (_internalErrorState) {
+      setState(() {
+        _internalErrorState = false;
+      });
+      _errorStateTimer?.cancel();
+      widget.onErrorStateChanged?.call();
+    }
+  }
+
   /// Updates field state and triggers animations
   void _updateFieldState(int index) {
     if (index >= _fieldStates.length) return;
 
-    final hasError = _fieldHasError[index] || _errorText != null;
+    final hasError =
+        _fieldHasError[index] || _errorText != null || _internalErrorState;
     final isFocused = _focusNodes[index].hasFocus;
     final isFilled = _controllers[index].text.isNotEmpty;
     final isCompleted = isFilled && !hasError && _isOtpComplete();
@@ -718,6 +816,13 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
 
   /// Handles digit input changes and manages focus navigation
   void _onDigitChanged(String value, int index) {
+    // Auto-clear error when user starts typing
+    if (_internalErrorState &&
+        widget.autoClearErrorOnInput &&
+        value.isNotEmpty) {
+      _clearErrorState();
+    }
+
     // Call onChanged callback
     widget.onChanged?.call(_getOtpValue());
 
@@ -789,6 +894,11 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   /// Handles the resend OTP button press
   void _onResendPressed() {
     if (_remainingTime == 0) {
+      // Auto-clear error on resend
+      if (_internalErrorState && widget.autoClearErrorOnResend) {
+        _clearErrorState();
+      }
+
       _startTimer();
       widget.onResend();
     }
@@ -824,6 +934,11 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
       _controllers[i].text = otp[i];
       _updateFieldState(i);
     }
+  }
+
+  /// Returns the current OTP value
+  String getCurrentOtp() {
+    return _getOtpValue();
   }
 
   /// Masks contact information based on the specified masking type
@@ -991,7 +1106,8 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     }
 
     final fieldState = _fieldStates[index];
-    final hasError = _fieldHasError[index] || _errorText != null;
+    final hasError =
+        _fieldHasError[index] || _errorText != null || _internalErrorState;
     final responsiveWidth = fieldWidth ?? widget.fieldWidth;
 
     // Determine colors based on field state
@@ -1113,6 +1229,135 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     return fieldWidget;
   }
 
+  /// Builds the title widget (custom or default)
+  Widget _buildTitle() {
+    if (widget.titleWidget != null) {
+      return widget.titleWidget!;
+    }
+
+    return Semantics(
+      label: widget.semanticLabel ?? widget.title,
+      header: true,
+      child: PlatformText(
+        widget.title,
+        style: widget.titleStyle ??
+            TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: widget.primaryColor,
+            ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  /// Builds the subtitle widget (custom or default)
+  Widget _buildSubtitle() {
+    if (widget.subtitleWidget != null) {
+      return widget.subtitleWidget!;
+    }
+
+    return PlatformText(
+      widget.contactInfo != null
+          ? widget.subtitle.replaceAll('{contactInfo}',
+              _maskContactInfo(widget.contactInfo!, widget.maskingType))
+          : widget.subtitle,
+      style: widget.subtitleStyle ??
+          TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: widget.secondaryColor,
+          ),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  /// Builds the error widget (custom or default)
+  Widget _buildError() {
+    if (widget.errorWidget != null) {
+      return widget.errorWidget!;
+    }
+
+    if (_errorText != null || widget.errorText != null) {
+      return Padding(
+        padding: EdgeInsets.only(top: widget.spacing * 0.5),
+        child: Text(
+          _errorText ?? widget.errorText!,
+          style: widget.errorStyle ??
+              TextStyle(
+                color: widget.errorBorderColor ?? Colors.red,
+                fontSize: 12,
+              ),
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+
+  /// Builds the verify button widget (custom or default)
+  Widget _buildVerifyButton() {
+    if (widget.verifyButtonWidget != null) {
+      return widget.verifyButtonWidget!;
+    }
+
+    return _buildDefaultButton();
+  }
+
+  /// Builds the resend widget (custom or default)
+  Widget _buildResend() {
+    if (widget.resendWidget != null) {
+      return widget.resendWidget!;
+    }
+
+    if (!widget.showTimer) {
+      return const SizedBox.shrink();
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        GestureDetector(
+          onTap: _remainingTime == 0 ? _onResendPressed : null,
+          child: PlatformText(
+            widget.resendText,
+            style: widget.resendStyle ??
+                TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: _remainingTime == 0
+                      ? widget.primaryColor
+                      : widget.secondaryColor,
+                  decoration: TextDecoration.underline,
+                ),
+          ),
+        ),
+        if (_remainingTime > 0) _buildTimer(),
+      ],
+    );
+  }
+
+  /// Builds the timer widget (custom or default)
+  Widget _buildTimer() {
+    if (widget.timerWidget != null) {
+      return widget.timerWidget!;
+    }
+
+    if (_remainingTime > 0) {
+      return PlatformText(
+        ' ${widget.timerPrefix} ${_formatTime(_remainingTime)}',
+        style: widget.timerStyle ??
+            TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.normal,
+              color: widget.secondaryColor,
+            ),
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -1130,36 +1375,9 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
                   // Title and subtitle
                   Column(
                     children: [
-                      Semantics(
-                        label: widget.semanticLabel ?? widget.title,
-                        header: true,
-                        child: PlatformText(
-                          widget.title,
-                          style: widget.titleStyle ??
-                              TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: widget.primaryColor,
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+                      _buildTitle(),
                       SizedBox(height: widget.spacing * 1.25),
-                      PlatformText(
-                        widget.contactInfo != null
-                            ? widget.subtitle.replaceAll(
-                                '{contactInfo}',
-                                _maskContactInfo(
-                                    widget.contactInfo!, widget.maskingType))
-                            : widget.subtitle,
-                        style: widget.subtitleStyle ??
-                            TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: widget.secondaryColor,
-                            ),
-                        textAlign: TextAlign.center,
-                      ),
+                      _buildSubtitle(),
                     ],
                   ),
 
@@ -1223,19 +1441,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
                             },
                           ),
                         ),
-                        if (_errorText != null || widget.errorText != null)
-                          Padding(
-                            padding: EdgeInsets.only(top: widget.spacing * 0.5),
-                            child: Text(
-                              _errorText ?? widget.errorText!,
-                              style: widget.errorStyle ??
-                                  TextStyle(
-                                    color:
-                                        widget.errorBorderColor ?? Colors.red,
-                                    fontSize: 12,
-                                  ),
-                            ),
-                          ),
+                        _buildError(),
                       ],
                     ),
                   ),
@@ -1243,41 +1449,11 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
                   SizedBox(height: widget.spacing * 2),
 
                   // Timer and resend section
-                  if (widget.showTimer)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GestureDetector(
-                          onTap: _remainingTime == 0 ? _onResendPressed : null,
-                          child: PlatformText(
-                            widget.resendText,
-                            style: widget.resendStyle ??
-                                TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: _remainingTime == 0
-                                      ? widget.primaryColor
-                                      : widget.secondaryColor,
-                                  decoration: TextDecoration.underline,
-                                ),
-                          ),
-                        ),
-                        if (_remainingTime > 0)
-                          PlatformText(
-                            ' ${widget.timerPrefix} ${_formatTime(_remainingTime)}',
-                            style: widget.timerStyle ??
-                                TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                  color: widget.secondaryColor,
-                                ),
-                          ),
-                      ],
-                    ),
+                  _buildResend(),
                   SizedBox(height: widget.spacing * 2),
 
                   // Verify button
-                  widget.buttonWidget ?? _buildDefaultButton(),
+                  _buildVerifyButton(),
                 ],
               ),
             ),

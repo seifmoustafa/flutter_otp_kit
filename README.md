@@ -49,6 +49,8 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 - **Swipe Navigation**: Touch gesture support for field navigation
 - **Custom Field Builders**: Complete control over field appearance and behavior
 - **Custom Layout Builders**: Full control over field arrangement
+- **Automatic Error State Management**: Built-in error state handling with auto-clear functionality
+- **Widget-Based Customization**: Complete UI customization with custom widgets for all components
 
 ## 🚀 Quick Start
 
@@ -58,7 +60,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_otp_kit: ^1.3.0
+  flutter_otp_kit: ^1.4.0
 ```
 
 Then run:
@@ -470,6 +472,213 @@ OtpVerificationWidget(
 )
 ```
 
+### Error State Management
+```dart
+class MyOTPPage extends StatefulWidget {
+  @override
+  _MyOTPPageState createState() => _MyOTPPageState();
+}
+
+class _MyOTPPageState extends State<MyOTPPage> {
+  bool _hasError = false;
+  final GlobalKey<OtpVerificationWidgetState> _otpKey = GlobalKey();
+
+  void _handleVerification(String otp) {
+    // Simulate API call
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        final isSuccess = otp != '0000'; // Simulate failure for '0000'
+        
+        setState(() {
+          _hasError = !isSuccess;
+        });
+        
+        if (isSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('OTP verified successfully!')),
+          );
+        }
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: OtpVerificationWidget(
+          key: _otpKey,
+          title: 'Error State Demo',
+          subtitle: 'Try entering 0000 to see error state',
+          fieldCount: 4,
+          timerDuration: 60,
+          buttonText: 'Verify',
+          resendText: 'Resend',
+          timerPrefix: 'after',
+          // Error state management
+          hasError: _hasError,
+          autoClearErrorOnInput: true,
+          autoClearErrorOnResend: true,
+          errorStateDuration: const Duration(seconds: 5),
+          onErrorStateChanged: () {
+            setState(() {
+              _hasError = false;
+            });
+          },
+          // Enhanced error styling
+          errorBorderColor: Colors.red,
+          completedFieldBorderColor: Colors.green,
+          completedFieldBackgroundColor: Colors.green.withOpacity(0.1),
+          completedFieldTextColor: Colors.green,
+          enableProgressiveHighlighting: true,
+          onVerify: _handleVerification,
+          onResend: () => print('Resend requested'),
+        ),
+      ),
+    );
+  }
+}
+```
+
+### Widget-Based Customization
+```dart
+OtpVerificationWidget(
+  title: 'Custom Widgets Demo',
+  subtitle: 'Fully customized with custom widgets',
+  fieldCount: 4,
+  timerDuration: 90,
+  buttonText: 'Verify',
+  resendText: 'Resend',
+  timerPrefix: 'after',
+  // Custom widgets
+  titleWidget: Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [Colors.purple.shade400, Colors.pink.shade400],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: Column(
+      children: [
+        Icon(Icons.security, size: 48, color: Colors.white),
+        const SizedBox(height: 8),
+        Text(
+          'Secure Verification',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+  ),
+  subtitleWidget: Container(
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      color: Colors.blue.shade50,
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: Colors.blue.shade200),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.email, color: Colors.blue),
+        const SizedBox(width: 8),
+        Text(
+          'Code sent to your email',
+          style: TextStyle(
+            color: Colors.blue.shade700,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    ),
+  ),
+  errorWidget: Container(
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      color: Colors.red.shade50,
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: Colors.red),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.error, color: Colors.red),
+        const SizedBox(width: 8),
+        Text(
+          'Invalid code. Please try again.',
+          style: TextStyle(
+            color: Colors.red,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    ),
+  ),
+  verifyButtonWidget: Container(
+    width: double.infinity,
+    height: 50,
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [Colors.purple, Colors.pink],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      ),
+      borderRadius: BorderRadius.circular(25),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.purple.withOpacity(0.3),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ),
+    child: ElevatedButton(
+      onPressed: () => handleVerification(),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25),
+        ),
+      ),
+      child: Text(
+        'Verify Code',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
+  ),
+  resendWidget: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Icon(Icons.refresh, size: 16, color: Colors.grey),
+      const SizedBox(width: 4),
+      TextButton(
+        onPressed: () => resendOtp(),
+        child: Text(
+          'Resend Code',
+          style: TextStyle(
+            color: Colors.purple,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    ],
+  ),
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => resendOtp(),
+)
+```
+
 ## 🔧 Public Methods
 
 ### clearOtp()
@@ -490,6 +699,16 @@ final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
 
 // Set OTP
 otpKey.currentState?.setOtp('12345');
+```
+
+### getCurrentOtp()
+Returns the current OTP value from all input fields.
+
+```dart
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+
+// Get current OTP
+String currentOtp = otpKey.currentState?.getCurrentOtp() ?? '';
 ```
 
 ## 🎯 Best Practices

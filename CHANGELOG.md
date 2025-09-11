@@ -5,6 +5,160 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2025-01-27
+
+### 🚀 Major Feature Release: Automatic Error State Management & Widget-Based Customization
+
+#### 🎯 Automatic Error State Management
+- **External Error State**: New `hasError` parameter for external error state control
+- **Auto-Clear on Input**: Automatically clear error state when user starts typing (`autoClearErrorOnInput`)
+- **Auto-Clear on Resend**: Automatically clear error state when resend is triggered (`autoClearErrorOnResend`)
+- **Error State Duration**: Configurable duration for error state display (`errorStateDuration`)
+- **Error State Callback**: Callback for error state changes (`onErrorStateChanged`)
+- **Dynamic Field Styling**: Fields automatically change color based on error state
+- **Visual Feedback**: Immediate visual feedback for validation failures
+- **Smart State Management**: Internal error state tracking with automatic cleanup
+
+#### 🎨 Widget-Based Customization
+- **Custom Title Widget**: Replace title text with any custom widget (`titleWidget`)
+- **Custom Subtitle Widget**: Replace subtitle text with any custom widget (`subtitleWidget`)
+- **Custom Error Widget**: Replace error text with any custom widget (`errorWidget`)
+- **Custom Verify Button Widget**: Replace default button with any custom widget (`verifyButtonWidget`)
+- **Custom Resend Widget**: Replace resend text with any custom widget (`resendWidget`)
+- **Custom Timer Widget**: Replace timer text with any custom widget (`timerWidget`)
+- **Backward Compatibility**: All existing string parameters continue to work as fallbacks
+- **Flexible Design**: Support for animations, icons, complex layouts, custom styling
+
+#### 🔧 Enhanced Public API
+- **getCurrentOtp()**: New public method to get current OTP value from widget state
+- **Improved State Access**: Better access to widget state for external control
+- **Enhanced Callbacks**: More comprehensive callback system for state management
+
+#### 📱 User Experience Improvements
+- **Better Error Handling**: Automatic error state management reduces manual handling
+- **Immediate Feedback**: Visual feedback for validation failures
+- **Consistent Behavior**: Standardized error state management across all implementations
+- **Flexible Customization**: Complete UI customization with custom widgets
+- **Professional Appearance**: Support for complex layouts, gradients, animations
+
+#### 🎯 Best Practice Implementation
+- **Widget vs String Decision**: Smart decision on what should be widget vs string
+  - Title → Widget (can be image, icon, complex layout)
+  - Subtitle → Widget (can be rich text, icons, complex layouts)
+  - Error Message → Widget (can be custom error UI with icons, animations)
+  - Button → Widget (can be custom styled buttons, gradients, icons)
+  - Resend → Widget (can be custom resend UI)
+  - Timer → Widget (can be custom timer display)
+  - Contact Info → Keep as String (masking logic requires string manipulation)
+- **Error State Best Practices**: Automatic error clearing, visual feedback, state management
+- **Customization Best Practices**: Widget-based customization with string fallbacks
+
+#### 📚 Documentation & Examples
+- **Comprehensive Examples**: New examples showcasing error state management and widget customization
+- **Error State Demo**: Complete example showing automatic error state management
+- **Custom Widgets Demo**: Full example with custom widgets for all components
+- **Updated README**: Complete documentation of new features with examples
+- **API Reference**: Updated API documentation with all new parameters
+- **Best Practices**: Guidelines for error state management and widget customization
+
+#### 🔄 Backward Compatibility
+- **Zero Breaking Changes**: All existing code continues to work without changes
+- **String Fallbacks**: All widget parameters have string fallbacks for backward compatibility
+- **Sensible Defaults**: All new parameters have appropriate default values
+- **Gradual Adoption**: New features can be adopted gradually without breaking existing code
+
+#### 🎨 Example Use Cases
+
+**Simple Usage (Backward Compatible):**
+```dart
+OtpVerificationWidget(
+  title: "Enter OTP",
+  subtitle: "We sent a code to your email",
+  buttonText: "Verify",
+  hasError: otpVerificationFailed,
+  onVerify: (otp) => verifyOtp(otp),
+)
+```
+
+**Advanced Usage with Custom Widgets:**
+```dart
+OtpVerificationWidget(
+  titleWidget: Column(
+    children: [
+      Icon(Icons.security, size: 48, color: Colors.blue),
+      Text("Secure Verification", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+    ],
+  ),
+  subtitleWidget: Container(
+    padding: EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: Colors.blue.shade50,
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Row(
+      children: [
+        Icon(Icons.email, color: Colors.blue),
+        SizedBox(width: 8),
+        Text("Code sent to your email"),
+      ],
+    ),
+  ),
+  errorWidget: Container(
+    padding: EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      color: Colors.red.shade50,
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: Colors.red),
+    ),
+    child: Row(
+      children: [
+        Icon(Icons.error, color: Colors.red),
+        SizedBox(width: 8),
+        Text("Invalid code. Please try again.", style: TextStyle(color: Colors.red)),
+      ],
+    ),
+  ),
+  verifyButtonWidget: Container(
+    width: double.infinity,
+    height: 50,
+    decoration: BoxDecoration(
+      gradient: LinearGradient(colors: [Colors.blue, Colors.purple]),
+      borderRadius: BorderRadius.circular(25),
+    ),
+    child: ElevatedButton(
+      onPressed: () => _handleVerify(),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+      ),
+      child: Text("Verify Code", style: TextStyle(color: Colors.white, fontSize: 16)),
+    ),
+  ),
+  hasError: otpVerificationFailed,
+  autoClearErrorOnInput: true,
+  autoClearErrorOnResend: true,
+  onVerify: (otp) => verifyOtp(otp),
+  onResend: () => resendOtp(),
+)
+```
+
+### 🔧 Technical Enhancements
+- **State Management**: Enhanced internal state management for error states
+- **Widget Lifecycle**: Improved widget lifecycle management with proper cleanup
+- **Performance**: Optimized rendering with widget-based customization
+- **Memory Management**: Proper cleanup of error state timers and resources
+
+### 📱 Platform Support
+- **Cross-platform**: All new features work seamlessly across iOS, Android, Web, and Desktop
+- **Responsive**: Widget-based customization adapts to different screen sizes
+- **Accessibility**: Maintained accessibility while adding new customization options
+
+### 🎯 Quality Assurance
+- **Zero Linting Errors**: Clean code with no linting issues
+- **Comprehensive Testing**: All new features tested across platforms
+- **Performance**: No performance regression with new features
+- **Reliability**: Enhanced reliability with automatic error state management
+
 ## [1.3.1] - 2025-01-27
 
 ### 🔧 Fixed
