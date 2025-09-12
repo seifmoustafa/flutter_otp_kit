@@ -49,7 +49,7 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 
 <p align="center">
   <a href="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/tutorial.gif">
-    <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/tutorial.gif" width="300px" alt="Tutorial Video Demo">
+    <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/tutorial.gif" width="200px" alt="Tutorial Video Demo">
   </a>
 </p>
 
