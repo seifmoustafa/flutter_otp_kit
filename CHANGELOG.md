@@ -5,6 +5,107 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2025-09-12
+
+### 🚀 Critical Bug Fixes & Professional Error State Management
+
+#### 🐛 Critical Bug Fixes
+- **Fixed Field Styling Priority**: Error state now properly overrides completed field styling
+- **Fixed Error State Persistence**: Error state no longer clears immediately on partial input
+- **Fixed Empty Field Styling**: Empty fields now use default border color instead of primary color
+- **Fixed Completed Field Override**: Completed fields now show error styling when hasError is true
+- **Fixed Auto-Clear Aggressiveness**: Error state persists until user completes new OTP or clicks resend
+
+#### 🎯 Professional Error State Management
+- **ErrorStatePriority Enum**: Control error state priority (highest, normal, lowest)
+- **ErrorStateBehavior Enum**: Control error state behavior (persistent, autoClear, timed)
+- **Comprehensive Error Configuration**: Full control over error state management
+- **Smart Field Styling**: Proper priority order: Error > Focused > Completed > Filled > Empty
+- **Default Border Color**: New parameter for empty/unfocused field styling
+
+#### 🔧 Enhanced Public API
+- **setErrorState(bool)**: Programmatically set or clear error state
+- **clearErrorState()**: Clear error state programmatically
+- **hasErrorState**: Get current error state
+- **getCurrentOtp()**: Get current OTP value from widget state
+- **Enhanced State Access**: Better access to widget state for external control
+
+#### 🎨 Advanced Field Styling
+- **FieldColors Class**: Comprehensive field color management
+- **Priority-Based Styling**: Proper field styling priority system
+- **Default Color Support**: Separate default color for empty fields
+- **Error Override**: Error state properly overrides all other field states
+- **Visual Consistency**: Consistent field styling across all states
+
+#### 📱 User Experience Improvements
+- **Persistent Error State**: Error state persists until appropriate action
+- **Visual Feedback**: Clear visual feedback for all field states
+- **Professional Behavior**: Error state behaves like professional applications
+- **Consistent Styling**: Proper field styling priority and consistency
+- **Better Error Handling**: Comprehensive error state management
+
+#### 🎯 Error State Behaviors
+
+**Persistent Behavior (Recommended):**
+```dart
+OtpVerificationWidget(
+  errorStateBehavior: ErrorStateBehavior.persistent,
+  errorStatePriority: ErrorStatePriority.highest,
+  autoClearErrorOnInput: false, // Don't clear on partial input
+  autoClearErrorOnResend: true,
+  autoClearErrorOnComplete: true,
+)
+```
+
+**Auto-Clear Behavior:**
+```dart
+OtpVerificationWidget(
+  errorStateBehavior: ErrorStateBehavior.autoClear,
+  errorStatePriority: ErrorStatePriority.highest,
+  autoClearErrorOnInput: true, // Clear on any input
+  autoClearErrorOnResend: true,
+  autoClearErrorOnComplete: true,
+)
+```
+
+**Timed Behavior:**
+```dart
+OtpVerificationWidget(
+  errorStateBehavior: ErrorStateBehavior.timed,
+  errorStatePriority: ErrorStatePriority.highest,
+  errorStateDuration: const Duration(seconds: 3),
+)
+```
+
+#### 🔧 Technical Enhancements
+- **Robust Error Management**: Comprehensive error state management system
+- **Priority System**: Proper field styling priority implementation
+- **State Management**: Enhanced internal state management for error states
+- **Performance**: Optimized error state handling and field styling
+- **Memory Management**: Proper cleanup of error state timers and resources
+- **Code Quality**: Refactored code for better maintainability and reliability
+
+#### 📚 Documentation Updates
+- **Comprehensive Examples**: New examples showcasing error state behaviors
+- **Error State Demo**: Complete example showing advanced error state management
+- **Behavior Examples**: Examples for all error state behaviors
+- **Updated README**: Complete documentation of new error state management
+- **API Reference**: Updated API documentation with all new parameters
+- **Best Practices**: Guidelines for error state management and field styling
+
+#### 🔄 Backward Compatibility
+- **Zero Breaking Changes**: All existing code continues to work
+- **Sensible Defaults**: All new parameters have appropriate default values
+- **Gradual Adoption**: New features can be adopted gradually
+- **Migration Guide**: Clear migration path for new features
+
+#### 🎯 Quality Assurance
+- **Zero Linting Errors**: Clean code with no linting issues
+- **Comprehensive Testing**: All error state scenarios tested
+- **Performance**: No performance regression with new features
+- **Reliability**: Enhanced reliability with proper error state management
+- **Cross-platform**: All features work seamlessly across platforms
+
 ## [1.4.0] - 2025-09-12
 
 ### 🚀 Major Feature Release: Automatic Error State Management & Widget-Based Customization

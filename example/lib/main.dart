@@ -179,6 +179,16 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                             }
                           },
                         ),
+                        ChoiceChip(
+                          label: const Text('Error Behaviors'),
+                          selected: _selectedExample == 'errorBehaviors',
+                          onSelected: (selected) {
+                            if (selected) {
+                              setState(
+                                  () => _selectedExample = 'errorBehaviors');
+                            }
+                          },
+                        ),
                       ],
                     ),
                   ],
@@ -394,18 +404,25 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                     else if (_selectedExample == 'error')
                       OtpVerificationWidget(
                         key: _otpKey,
-                        title: 'Error State Management Demo',
-                        subtitle: 'Try entering 0000 to see error state',
+                        title: 'Advanced Error State Management',
+                        subtitle:
+                            'Try entering 0000 to see error state behavior',
                         fieldCount: 4,
                         timerDuration: 60,
                         buttonText: 'Verify',
                         resendText: 'Resend',
                         timerPrefix: 'after',
-                        // Error state management
+                        // Advanced error state management
                         hasError: _hasError,
-                        autoClearErrorOnInput: true,
+                        errorStateBehavior: ErrorStateBehavior.persistent,
+                        errorStatePriority: ErrorStatePriority.highest,
+                        autoClearErrorOnInput:
+                            false, // Don't clear on partial input
                         autoClearErrorOnResend: true,
+                        autoClearErrorOnComplete: true,
                         errorStateDuration: const Duration(seconds: 5),
+                        defaultBorderColor: Colors
+                            .grey.shade300, // Default color for empty fields
                         onErrorStateChanged: () {
                           setState(() {
                             _hasError = false;
@@ -593,6 +610,47 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
                         borderRadius: 12,
                         enableShadow: true,
                         shadowColor: Colors.purple.withValues(alpha: 0.2),
+                        onVerify: _handleVerification,
+                        onResend: _handleResend,
+                      )
+                    else if (_selectedExample == 'errorBehaviors')
+                      OtpVerificationWidget(
+                        key: _otpKey,
+                        title: 'Error State Behaviors Demo',
+                        subtitle: 'Compare different error state behaviors',
+                        fieldCount: 4,
+                        timerDuration: 60,
+                        buttonText: 'Verify',
+                        resendText: 'Resend',
+                        timerPrefix: 'after',
+                        // Different error state behaviors
+                        hasError: _hasError,
+                        errorStateBehavior: ErrorStateBehavior.autoClear,
+                        errorStatePriority: ErrorStatePriority.highest,
+                        autoClearErrorOnInput: true, // Clear on any input
+                        autoClearErrorOnResend: true,
+                        autoClearErrorOnComplete: true,
+                        errorStateDuration: const Duration(seconds: 3),
+                        defaultBorderColor: Colors.grey.shade300,
+                        onErrorStateChanged: () {
+                          setState(() {
+                            _hasError = false;
+                          });
+                        },
+                        // Styling to show priority
+                        errorBorderColor: Colors.red,
+                        completedFieldBorderColor: Colors.green,
+                        completedFieldBackgroundColor:
+                            Colors.green.withValues(alpha: 0.1),
+                        completedFieldTextColor: Colors.green,
+                        enableProgressiveHighlighting: true,
+                        primaryColor: Colors.blue,
+                        focusedBorderColor: Colors.blue,
+                        fieldWidth: 50,
+                        fieldHeight: 60,
+                        borderRadius: 12,
+                        enableShadow: true,
+                        shadowColor: Colors.blue.withValues(alpha: 0.2),
                         onVerify: _handleVerification,
                         onResend: _handleResend,
                       ),

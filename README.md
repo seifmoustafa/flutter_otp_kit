@@ -60,7 +60,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_otp_kit: ^1.4.0
+  flutter_otp_kit: ^1.5.0
 ```
 
 Then run:
@@ -472,7 +472,7 @@ OtpVerificationWidget(
 )
 ```
 
-### Error State Management
+### Advanced Error State Management
 ```dart
 class MyOTPPage extends StatefulWidget {
   @override
@@ -508,24 +508,28 @@ class _MyOTPPageState extends State<MyOTPPage> {
       body: Center(
         child: OtpVerificationWidget(
           key: _otpKey,
-          title: 'Error State Demo',
-          subtitle: 'Try entering 0000 to see error state',
+          title: 'Advanced Error State Management',
+          subtitle: 'Try entering 0000 to see error state behavior',
           fieldCount: 4,
           timerDuration: 60,
           buttonText: 'Verify',
           resendText: 'Resend',
           timerPrefix: 'after',
-          // Error state management
+          // Advanced error state management
           hasError: _hasError,
-          autoClearErrorOnInput: true,
+          errorStateBehavior: ErrorStateBehavior.persistent,
+          errorStatePriority: ErrorStatePriority.highest,
+          autoClearErrorOnInput: false, // Don't clear on partial input
           autoClearErrorOnResend: true,
+          autoClearErrorOnComplete: true,
           errorStateDuration: const Duration(seconds: 5),
+          defaultBorderColor: Colors.grey.shade300, // Default color for empty fields
           onErrorStateChanged: () {
             setState(() {
               _hasError = false;
             });
           },
-          // Enhanced error styling
+          // Enhanced error styling with proper priority
           errorBorderColor: Colors.red,
           completedFieldBorderColor: Colors.green,
           completedFieldBackgroundColor: Colors.green.withOpacity(0.1),
@@ -538,6 +542,37 @@ class _MyOTPPageState extends State<MyOTPPage> {
     );
   }
 }
+```
+
+### Error State Behaviors
+```dart
+// Persistent error state (recommended)
+OtpVerificationWidget(
+  errorStateBehavior: ErrorStateBehavior.persistent,
+  errorStatePriority: ErrorStatePriority.highest,
+  autoClearErrorOnInput: false, // Don't clear on partial input
+  autoClearErrorOnResend: true,
+  autoClearErrorOnComplete: true,
+  // ... other parameters
+)
+
+// Auto-clear error state
+OtpVerificationWidget(
+  errorStateBehavior: ErrorStateBehavior.autoClear,
+  errorStatePriority: ErrorStatePriority.highest,
+  autoClearErrorOnInput: true, // Clear on any input
+  autoClearErrorOnResend: true,
+  autoClearErrorOnComplete: true,
+  // ... other parameters
+)
+
+// Timed error state
+OtpVerificationWidget(
+  errorStateBehavior: ErrorStateBehavior.timed,
+  errorStatePriority: ErrorStatePriority.highest,
+  errorStateDuration: const Duration(seconds: 3),
+  // ... other parameters
+)
 ```
 
 ### Widget-Based Customization
@@ -709,6 +744,45 @@ final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
 
 // Get current OTP
 String currentOtp = otpKey.currentState?.getCurrentOtp() ?? '';
+```
+
+### setErrorState(bool)
+Sets the error state programmatically.
+
+```dart
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+
+// Set error state
+void showError() {
+  otpKey.currentState?.setErrorState(true);
+}
+
+// Clear error state
+void clearError() {
+  otpKey.currentState?.setErrorState(false);
+}
+```
+
+### clearErrorState()
+Clears the error state programmatically.
+
+```dart
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+
+// Clear error state
+void clearError() {
+  otpKey.currentState?.clearErrorState();
+}
+```
+
+### hasErrorState
+Gets the current error state.
+
+```dart
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+
+// Check if error state is active
+bool isErrorActive = otpKey.currentState?.hasErrorState ?? false;
 ```
 
 ## 🎯 Best Practices

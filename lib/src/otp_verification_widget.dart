@@ -19,6 +19,42 @@ enum CursorAlignment {
   right,
 }
 
+/// Enum for error state priority
+enum ErrorStatePriority {
+  highest, // Error state overrides all other states
+  normal, // Error state follows normal priority rules
+  lowest, // Error state has lowest priority
+}
+
+/// Enum for error state behavior
+enum ErrorStateBehavior {
+  persistent, // Error state persists until manually cleared
+  autoClear, // Error state auto-clears based on configuration
+  timed, // Error state clears after specified duration
+}
+
+/// Enum for field state priority
+enum FieldStatePriority {
+  error, // Error state (highest priority)
+  focused, // Focused state
+  completed, // Completed state
+  filled, // Filled state
+  empty, // Empty state (lowest priority)
+}
+
+/// Field colors data class
+class FieldColors {
+  final Color borderColor;
+  final Color backgroundColor;
+  final Color textColor;
+
+  FieldColors({
+    required this.borderColor,
+    required this.backgroundColor,
+    required this.textColor,
+  });
+}
+
 /// A fully generic and reusable OTP verification widget
 ///
 /// This widget provides a complete OTP (One-Time Password) verification interface
@@ -194,6 +230,10 @@ class OtpVerificationWidget extends StatefulWidget {
     this.errorStateDuration = const Duration(seconds: 3),
     this.autoClearErrorOnInput = true,
     this.autoClearErrorOnResend = true,
+    this.autoClearErrorOnComplete = true,
+    this.errorStatePriority = ErrorStatePriority.highest,
+    this.defaultBorderColor,
+    this.errorStateBehavior = ErrorStateBehavior.persistent,
     // Widget-based customization parameters
     this.titleWidget,
     this.subtitleWidget,
@@ -540,6 +580,18 @@ class OtpVerificationWidget extends StatefulWidget {
   /// Automatically clear error state when resend is triggered
   final bool autoClearErrorOnResend;
 
+  /// Automatically clear error state when OTP is complete
+  final bool autoClearErrorOnComplete;
+
+  /// Priority of error state over other field states
+  final ErrorStatePriority errorStatePriority;
+
+  /// Default border color for empty/unfocused fields
+  final Color? defaultBorderColor;
+
+  /// Behavior of error state (persistent, auto-clear, timed)
+  final ErrorStateBehavior errorStateBehavior;
+
   // Widget-based customization parameters
   /// Custom title widget (replaces [title] text)
   final Widget? titleWidget;
@@ -724,11 +776,18 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
         _internalErrorState = widget.hasError;
       });
 
-      // Start error state timer if error is true
+      // Handle error state timer based on behavior
       if (widget.hasError) {
         _startErrorStateTimer();
       } else {
         _errorStateTimer?.cancel();
+      }
+    }
+
+    // Handle error state behavior changes
+    if (oldWidget.errorStateBehavior != widget.errorStateBehavior) {
+      if (_internalErrorState) {
+        _startErrorStateTimer();
       }
     }
   }
@@ -753,14 +812,19 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   /// Starts the error state timer for auto-clearing error state
   void _startErrorStateTimer() {
     _errorStateTimer?.cancel();
-    _errorStateTimer = Timer(widget.errorStateDuration, () {
-      if (mounted && _internalErrorState) {
-        setState(() {
-          _internalErrorState = false;
-        });
-        widget.onErrorStateChanged?.call();
-      }
-    });
+
+    // Only start timer if behavior is timed and duration is greater than 0
+    if (widget.errorStateBehavior == ErrorStateBehavior.timed &&
+        widget.errorStateDuration.inMilliseconds > 0) {
+      _errorStateTimer = Timer(widget.errorStateDuration, () {
+        if (mounted && _internalErrorState) {
+          setState(() {
+            _internalErrorState = false;
+          });
+          widget.onErrorStateChanged?.call();
+        }
+      });
+    }
   }
 
   /// Clears the internal error state
@@ -771,6 +835,44 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
       });
       _errorStateTimer?.cancel();
       widget.onErrorStateChanged?.call();
+    }
+  }
+
+  /// Handles error state clearing based on input behavior
+  void _handleErrorStateOnInput(String value) {
+    if (!_internalErrorState) return;
+
+    switch (widget.errorStateBehavior) {
+      case ErrorStateBehavior.persistent:
+        // Don't auto-clear error state
+        break;
+      case ErrorStateBehavior.autoClear:
+        // Clear based on configuration
+        if (widget.autoClearErrorOnInput && value.isNotEmpty) {
+          _clearErrorState();
+        }
+        break;
+      case ErrorStateBehavior.timed:
+        // Clear after timer duration (handled by timer)
+        break;
+    }
+  }
+
+  /// Handles error state clearing when OTP is complete
+  void _handleErrorStateOnComplete() {
+    if (!_internalErrorState) return;
+
+    if (widget.autoClearErrorOnComplete) {
+      _clearErrorState();
+    }
+  }
+
+  /// Handles error state clearing on resend
+  void _handleErrorStateOnResend() {
+    if (!_internalErrorState) return;
+
+    if (widget.autoClearErrorOnResend) {
+      _clearErrorState();
     }
   }
 
@@ -816,12 +918,8 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
 
   /// Handles digit input changes and manages focus navigation
   void _onDigitChanged(String value, int index) {
-    // Auto-clear error when user starts typing
-    if (_internalErrorState &&
-        widget.autoClearErrorOnInput &&
-        value.isNotEmpty) {
-      _clearErrorState();
-    }
+    // Handle error state clearing based on behavior
+    _handleErrorStateOnInput(value);
 
     // Call onChanged callback
     widget.onChanged?.call(_getOtpValue());
@@ -842,6 +940,9 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
 
       // Check if OTP is complete
       if (_isOtpComplete()) {
+        // Handle error state clearing on completion
+        _handleErrorStateOnComplete();
+
         // Mark all fields as completed
         for (int i = 0; i < widget.fieldCount; i++) {
           if (_controllers[i].text.isNotEmpty && !_fieldHasError[i]) {
@@ -894,10 +995,8 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   /// Handles the resend OTP button press
   void _onResendPressed() {
     if (_remainingTime == 0) {
-      // Auto-clear error on resend
-      if (_internalErrorState && widget.autoClearErrorOnResend) {
-        _clearErrorState();
-      }
+      // Handle error state clearing on resend
+      _handleErrorStateOnResend();
 
       _startTimer();
       widget.onResend();
@@ -939,6 +1038,84 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   /// Returns the current OTP value
   String getCurrentOtp() {
     return _getOtpValue();
+  }
+
+  /// Sets the error state programmatically
+  void setErrorState(bool hasError) {
+    if (_internalErrorState != hasError) {
+      setState(() {
+        _internalErrorState = hasError;
+      });
+
+      if (hasError) {
+        _startErrorStateTimer();
+      } else {
+        _errorStateTimer?.cancel();
+      }
+
+      widget.onErrorStateChanged?.call();
+    }
+  }
+
+  /// Gets the current error state
+  bool get hasErrorState => _internalErrorState;
+
+  /// Clears the error state programmatically
+  void clearErrorState() {
+    _clearErrorState();
+  }
+
+  /// Gets field colors based on state with proper priority
+  FieldColors _getFieldColors(
+      int index, OtpFieldState fieldState, bool hasError) {
+    // Priority order: Error > Focused > Completed > Filled > Empty
+
+    // 1. Error state (highest priority)
+    if (hasError && widget.errorStatePriority == ErrorStatePriority.highest) {
+      return FieldColors(
+        borderColor: widget.errorBorderColor ?? Colors.red,
+        backgroundColor: widget.backgroundColor,
+        textColor: Colors.black87,
+      );
+    }
+
+    // 2. Focused state
+    if (fieldState == OtpFieldState.focused) {
+      return FieldColors(
+        borderColor: widget.focusedBorderColor ?? widget.primaryColor,
+        backgroundColor: widget.backgroundColor,
+        textColor: Colors.black87,
+      );
+    }
+
+    // 3. Completed state (only if progressive highlighting is enabled)
+    if (fieldState == OtpFieldState.completed &&
+        widget.enableProgressiveHighlighting) {
+      return FieldColors(
+        borderColor: widget.completedFieldBorderColor ?? Colors.green,
+        backgroundColor:
+            widget.completedFieldBackgroundColor ?? widget.backgroundColor,
+        textColor: widget.completedFieldTextColor ?? Colors.green,
+      );
+    }
+
+    // 4. Filled state
+    if (fieldState == OtpFieldState.filled) {
+      return FieldColors(
+        borderColor: widget.secondaryColor.withValues(alpha: 0.8),
+        backgroundColor:
+            widget.filledFieldBackgroundColor ?? widget.backgroundColor,
+        textColor: Colors.black87,
+      );
+    }
+
+    // 5. Empty state (lowest priority) - use default color, not primary
+    return FieldColors(
+      borderColor: widget.defaultBorderColor ??
+          widget.secondaryColor.withValues(alpha: 0.8),
+      backgroundColor: widget.backgroundColor,
+      textColor: Colors.black87,
+    );
   }
 
   /// Masks contact information based on the specified masking type
@@ -1110,31 +1287,11 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
         _fieldHasError[index] || _errorText != null || _internalErrorState;
     final responsiveWidth = fieldWidth ?? widget.fieldWidth;
 
-    // Determine colors based on field state
-    Color borderColor;
-    Color backgroundColor;
-    Color textColor = Colors.black87;
-
-    if (fieldState == OtpFieldState.error || hasError) {
-      borderColor = widget.errorBorderColor ?? Colors.red;
-      backgroundColor = widget.backgroundColor;
-    } else if (fieldState == OtpFieldState.completed &&
-        widget.enableProgressiveHighlighting) {
-      borderColor = widget.completedFieldBorderColor ?? Colors.green;
-      backgroundColor =
-          widget.completedFieldBackgroundColor ?? widget.backgroundColor;
-      textColor = widget.completedFieldTextColor ?? Colors.green;
-    } else if (fieldState == OtpFieldState.focused) {
-      borderColor = widget.focusedBorderColor ?? widget.primaryColor;
-      backgroundColor = widget.backgroundColor;
-    } else if (fieldState == OtpFieldState.filled) {
-      borderColor = widget.secondaryColor.withValues(alpha: 0.8);
-      backgroundColor =
-          widget.filledFieldBackgroundColor ?? widget.backgroundColor;
-    } else {
-      borderColor = widget.secondaryColor.withValues(alpha: 0.8);
-      backgroundColor = widget.backgroundColor;
-    }
+    // Determine colors based on field state with proper priority
+    final fieldColors = _getFieldColors(index, fieldState, hasError);
+    final borderColor = fieldColors.borderColor;
+    final backgroundColor = fieldColors.backgroundColor;
+    final textColor = fieldColors.textColor;
 
     Widget fieldWidget = AnimatedContainer(
       duration: widget.enableFieldStateAnimation
