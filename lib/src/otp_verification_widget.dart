@@ -8,6 +8,7 @@ import 'components/otp_footer.dart';
 import 'components/otp_header.dart';
 import 'config/otp_error_config.dart';
 import 'config/otp_field_config.dart';
+import 'config/otp_animation_config.dart';
 import 'masking_type.dart';
 import 'otp_input_type.dart';
 import 'otp_layout_type.dart';
@@ -506,6 +507,11 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
 
     // Initialize timer
     _remainingTime = widget.timerDuration;
+    
+    // Start timer if showTimer is enabled
+    if (widget.showTimer) {
+      _startTimer();
+    }
 
     // Initialize animations
     _animationController = AnimationController(
@@ -528,14 +534,36 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
 
     // Add listeners for paste support
     if (widget.enablePaste) {
-      for (var focusNode in _stateManager.focusNodes) {
+      // Use a timestamp to track last paste operation to avoid multiple dialogs
+      DateTime lastPasteTime = DateTime.now().subtract(const Duration(seconds: 1));
+      
+      for (int i = 0; i < _stateManager.focusNodes.length; i++) {
+        final focusNode = _stateManager.focusNodes[i];
+        final index = i; // Capture the index for use in the callback
+        
         focusNode.addListener(() async {
           if (focusNode.hasFocus) {
+            // Add debounce to prevent multiple paste operations
+            final now = DateTime.now();
+            if (now.difference(lastPasteTime).inMilliseconds < 500) {
+              return; // Skip if last paste was less than 500ms ago
+            }
+            lastPasteTime = now;
+            
             final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
             if (clipboardData != null && clipboardData.text != null) {
-              final text = clipboardData.text!;
-              if (OtpValidator.isValidOtp(text, widget.otpInputType, widget.fieldCount)) {
+              final text = clipboardData.text!.trim();
+              
+              // If it's exactly the right length and valid, fill all fields
+              if (text.length == widget.fieldCount && 
+                  OtpValidator.isValidOtp(text, widget.otpInputType, widget.fieldCount)) {
                 setOtp(text);
+              } 
+              // If it's a single digit, just put it in the current field and move to next
+              else if (text.length == 1 && 
+                       OtpValidator.isValidOtp(text, widget.otpInputType, 1)) {
+                _stateManager.controllers[index].text = text;
+                _stateManager.onDigitChanged(text, index);
               }
             }
           }
@@ -583,6 +611,8 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   /// Starts the resend timer
   void _startTimer() {
     _timer?.cancel();
+    // Reset timer to full duration
+    _remainingTime = widget.timerDuration;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
         setState(() {
           if (_remainingTime > 0) {
@@ -688,6 +718,9 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
 
   @override
   Widget build(BuildContext context) {
+    // Create animation config from widget parameters
+    final animationConfig = const OtpAnimationConfig();
+
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, child) {
@@ -754,6 +787,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
                       enableInteractiveSelection: widget.enableInteractiveSelection,
                       textCapitalization: widget.textCapitalization,
                       hasInternalError: _stateManager.internalErrorState,
+                      animationConfig: animationConfig,
                     ),
                   ),
 

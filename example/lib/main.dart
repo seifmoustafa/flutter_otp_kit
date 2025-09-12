@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter OTP Kit - Comprehensive Example',
+      title: 'Flutter OTP Kit - Visual States Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         useMaterial3: true,
@@ -30,7 +30,6 @@ class OtpExamplePage extends StatefulWidget {
 
 class _OtpExamplePageState extends State<OtpExamplePage> {
   String _selectedExample = 'basic';
-  // Store the last verified OTP for potential use in UI
   String _lastVerifiedOtp = '';
   bool _hasError = false;
   final GlobalKey<OtpVerificationWidgetState> _otpKey = GlobalKey();
@@ -38,44 +37,55 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
   void _handleVerification(String otp) {
     setState(() {
       _lastVerifiedOtp = otp;
-      _hasError = false; // Clear any previous error
+      _hasError = false;
     });
 
-    // Simulate API call with random success/failure
+    // Simulate API call
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
-        // Simulate random verification failure for demo
+        // Simulate verification failure for demo
         final isSuccess = otp != '0000';
 
         if (isSuccess) {
-          setState(() {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('OTP verified successfully: $otp'),
-                backgroundColor: Colors.green,
-              ),
-            );
-          });
+          _showSuccessDialog(otp);
         } else {
           setState(() {
             _hasError = true;
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Invalid OTP. Please try again.'),
-                backgroundColor: Colors.red,
-              ),
-            );
           });
+          _otpKey.currentState?.setErrorState(true);
         }
       }
     });
   }
 
+  void _showSuccessDialog(String otp) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Success!'),
+        content: Text('OTP $otp verified successfully!'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _otpKey.currentState?.clearOtp();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _handleResend() {
+    setState(() {
+      _hasError = false;
+    });
+    _otpKey.currentState?.clearOtp();
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('OTP resent successfully'),
-        backgroundColor: Colors.blue,
+        content: Text('New OTP sent!'),
+        duration: Duration(seconds: 2),
       ),
     );
   }
@@ -83,648 +93,519 @@ class _OtpExamplePageState extends State<OtpExamplePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        title: const Text('Flutter OTP Kit Demo'),
+        title: const Text('OTP Kit - Visual States Demo'),
+        backgroundColor: Colors.blue.shade600,
+        foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Example Selection
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Choose Example:',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Select Example:',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        if (_lastVerifiedOtp.isNotEmpty)
-                          Text(
-                            'Last Verified: $_lastVerifiedOtp',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        Expanded(
+                          child: RadioListTile<String>(
+                            title: const Text('Basic'),
+                            value: 'basic',
+                            groupValue: _selectedExample,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedExample = value!;
+                                _hasError = false;
+                              });
+                            },
                           ),
+                        ),
+                        Expanded(
+                          child: RadioListTile<String>(
+                            title: const Text('Widget'),
+                            value: 'custom',
+                            groupValue: _selectedExample,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedExample = value!;
+                                _hasError = false;
+                              });
+                            },
+                          ),
+                        ),
                       ],
                     ),
-              const SizedBox(height: 8),
-              _buildExampleSelector(),
-              const SizedBox(height: 24),
-              _buildSelectedExample(),
-              const SizedBox(height: 24),
-              _buildTestControls(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildExampleSelector() {
-    return Wrap(
-      spacing: 8.0,
-      runSpacing: 8.0,
-      children: [
-        _buildChoiceChip('basic', 'Basic'),
-        _buildChoiceChip('custom_styling', 'Custom Styling'),
-        _buildChoiceChip('widget_customization', 'Custom Widgets'),
-        _buildChoiceChip('error_management', 'Error Management'),
-        _buildChoiceChip('error_behaviors', 'Error Behaviors'),
-        _buildChoiceChip('responsive', 'Responsive'),
-        _buildChoiceChip('edge_cases', 'Edge Cases'),
-        _buildChoiceChip('architecture', 'Architecture Demo'),
-      ],
-    );
-  }
-
-  Widget _buildChoiceChip(String value, String label) {
-    return ChoiceChip(
-      label: Text(label),
-      selected: _selectedExample == value,
-      onSelected: (selected) {
-        if (selected) {
-          setState(() {
-            _selectedExample = value;
-            _hasError = false;
-          });
-        }
-      },
-    );
-  }
-
-  Widget _buildSelectedExample() {
-    switch (_selectedExample) {
-      case 'basic':
-        return _buildBasicExample();
-      case 'custom_styling':
-        return _buildCustomStylingExample();
-      case 'widget_customization':
-        return _buildWidgetCustomizationExample();
-      case 'error_management':
-        return _buildErrorManagementExample();
-      case 'error_behaviors':
-        return _buildErrorBehaviorsExample();
-      case 'responsive':
-        return _buildResponsiveExample();
-      case 'edge_cases':
-        return _buildEdgeCasesExample();
-      case 'architecture':
-        return _buildArchitectureExample();
-      default:
-        return _buildBasicExample();
-    }
-  }
-
-  Widget _buildBasicExample() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Basic Example',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'A simple OTP verification widget with default styling.',
-          style: TextStyle(fontSize: 16),
-        ),
-        const SizedBox(height: 16),
-        OtpVerificationWidget(
-          key: _otpKey,
-          title: 'Verify Phone Number',
-          subtitle: 'Enter the code sent to {contactInfo}',
-          contactInfo: '+1 (555) 123-4567',
-          maskingType: MaskingType.phone,
-          buttonText: 'Verify',
-          resendText: 'Resend Code',
-          timerPrefix: 'in',
-          onVerify: _handleVerification,
-          onResend: _handleResend,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCustomStylingExample() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Custom Styling Example',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Customized colors, dimensions, and styling.',
-          style: TextStyle(fontSize: 16),
-        ),
-        const SizedBox(height: 16),
-        OtpVerificationWidget(
-          title: 'Verification Code',
-          subtitle: 'Enter the code sent to {contactInfo}',
-          contactInfo: 'user@example.com',
-          maskingType: MaskingType.email,
-          buttonText: 'Submit',
-          resendText: 'Send Again',
-          timerPrefix: 'after',
-          fieldCount: 6,
-          fieldSpacing: 12.0,
-          otpInputType: OtpInputType.numeric,
-          primaryColor: Colors.purple,
-          secondaryColor: Colors.grey,
-          backgroundColor: Colors.grey.shade100,
-          defaultBorderColor: Colors.grey.shade300,
-          focusedBorderColor: Colors.purple,
-          completedFieldBorderColor: Colors.green,
-          buttonBackgroundColor: Colors.purple,
-          buttonTextColor: Colors.white,
-          buttonBorderRadius: 30.0,
-          onVerify: _handleVerification,
-          onResend: _handleResend,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildWidgetCustomizationExample() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Widget Customization Example',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Custom widgets for title, subtitle, button, etc.',
-          style: TextStyle(fontSize: 16),
-        ),
-        const SizedBox(height: 16),
-        OtpVerificationWidget(
-          titleWidget: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.security, color: Colors.blue),
-              SizedBox(width: 8),
-              Text('Security Verification',
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue)),
-            ],
-          ),
-          subtitleWidget: RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              style: TextStyle(color: Colors.black87, fontSize: 14),
-              children: [
-                TextSpan(text: 'Enter the code sent to '),
-                TextSpan(
-                  text: '+1 (555) ***-**67',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          verifyButtonWidget: ElevatedButton.icon(
-            onPressed: () {}, // This will be overridden by the widget
-            icon: Icon(Icons.check_circle),
-            label: Text('VERIFY NOW'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
               ),
             ),
-          ),
-          title: 'Verify', // Fallback
-          subtitle: 'Enter code', // Fallback
-          buttonText: 'Verify', // Fallback
-          resendText: 'Resend',
-          timerPrefix: 'in',
-          onVerify: _handleVerification,
-          onResend: _handleResend,
-        ),
-      ],
-    );
-  }
 
-  Widget _buildErrorManagementExample() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Error State Management Example',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Demonstrates error state handling and styling.',
-          style: TextStyle(fontSize: 16),
-        ),
-        const SizedBox(height: 16),
-        OtpVerificationWidget(
-          title: 'Verify Account',
-          subtitle: 'Enter verification code',
-          buttonText: 'Verify',
-          resendText: 'Resend Code',
-          timerPrefix: 'in',
-          hasError: _hasError,
-          errorText: 'Invalid OTP. Please try again.',
-          errorBorderColor: Colors.red,
-          errorStateBehavior: ErrorStateBehavior.persistent,
-          errorStatePriority: ErrorStatePriority.highest,
-          autoClearErrorOnInput: false,
-          defaultBorderColor: Colors.grey.shade300,
-          onVerify: _handleVerification,
-          onResend: _handleResend,
-          onErrorStateChanged: () {
-            print('Error state changed');
-          },
-        ),
-      ],
-    );
-  }
+            const SizedBox(height: 20),
 
-  Widget _buildErrorBehaviorsExample() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Error Behaviors Example',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Different error state behaviors: persistent, auto-clear, timed.',
-          style: TextStyle(fontSize: 16),
-        ),
-        const SizedBox(height: 16),
-        OtpVerificationWidget(
-          title: 'Error Behavior Demo',
-          subtitle: 'Enter "0000" to trigger error',
-          buttonText: 'Verify',
-          resendText: 'Resend Code',
-          timerPrefix: 'in',
-          hasError: _hasError,
-          errorText:
-              'Invalid OTP. Error will clear automatically after 3 seconds.',
-          errorBorderColor: Colors.red,
-          errorStateBehavior: ErrorStateBehavior.timed,
-          errorStateDuration: const Duration(seconds: 3),
-          errorStatePriority: ErrorStatePriority.highest,
-          defaultBorderColor: Colors.grey.shade300,
-          onVerify: _handleVerification,
-          onResend: _handleResend,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildResponsiveExample() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Responsive Example',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'OTP fields adjust to available width.',
-          style: TextStyle(fontSize: 16),
-        ),
-        const SizedBox(height: 16),
-        OtpVerificationWidget(
-          title: 'Responsive Layout',
-          subtitle: 'Fields adjust to screen width',
-          buttonText: 'Verify',
-          resendText: 'Resend Code',
-          timerPrefix: 'in',
-          fieldCount: 6,
-          layoutType: OtpLayoutType.responsive,
-          onVerify: _handleVerification,
-          onResend: _handleResend,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildEdgeCasesExample() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Edge Cases Example',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Tests various edge cases like deletion, error states, etc.',
-          style: TextStyle(fontSize: 16),
-        ),
-        const SizedBox(height: 16),
-        OtpVerificationWidget(
-          key: _otpKey,
-          title: 'Edge Cases Testing',
-          subtitle: 'Try different scenarios',
-          buttonText: 'Verify',
-          resendText: 'Resend Code',
-          timerPrefix: 'in',
-          fieldCount: 4,
-          defaultBorderColor: Colors.grey.shade300,
-          errorBorderColor: Colors.red,
-          onVerify: _handleVerification,
-          onResend: _handleResend,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildArchitectureExample() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Architecture Demo',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Demonstrates the new component-based architecture.',
-          style: TextStyle(fontSize: 16),
-        ),
-        const SizedBox(height: 16),
-        Column(
-          children: [
-            // Custom header component
-            Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(8),
+            // Visual States Guide
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Visual States Guide (Fully Customizable):',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildStateGuide('🔵 Focused',
+                        'Customizable border color - cursor is on this field'),
+                    _buildStateGuide('🟢 Filled',
+                        'Customizable border color - field has a value'),
+                    _buildStateGuide('🟢 Completed',
+                        'Customizable border + fill color - all fields are complete'),
+                    _buildStateGuide('⚫ Empty',
+                        'Customizable border color - field is empty and unfocused'),
+                    _buildStateGuide('🔴 Error',
+                        'Customizable border + fill color - verification failed'),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'All colors are configurable via OtpVerificationWidget parameters!',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontStyle: FontStyle.italic,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+            ),
+
+            const SizedBox(height: 20),
+
+            // OTP Widget
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  children: [
+                    const Text(
+                      'Verify Phone Number',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Enter the code sent to +1 ********67',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // OTP Widget based on selection
+                    if (_selectedExample == 'basic') ...[
+                      // String-Based Example - Simple text strings
+                      OtpVerificationWidget(
+                        key: _otpKey,
+                        title: 'Verify Phone Number',
+                        subtitle: 'Enter the code sent to +1 ********67',
+                        buttonText: 'Verify',
+                        resendText: 'Resend Code',
+                        timerPrefix: 'Resend in',
+                        onVerify: _handleVerification,
+                        onResend: _handleResend,
+                        fieldCount: 4,
+                        onChanged: (value) {
+                          setState(() {
+                            _hasError = false;
+                          });
+                        },
+                        timerDuration: 60,
+                        showTimer: true,
+                        // Completely generic colors - fully customizable
+                        primaryColor: Colors.blue.shade600,
+                        secondaryColor: Colors.grey.shade400,
+                        backgroundColor: Colors.white,
+                        focusedBorderColor: Colors.blue.shade600,
+                        completedFieldBorderColor: Colors.green.shade600,
+                        completedFieldBackgroundColor: Colors.green.shade50,
+                        completedFieldTextColor: Colors.green.shade700,
+                        defaultBorderColor: Colors.grey.shade400,
+                        filledFieldBackgroundColor: Colors.transparent,
+                        buttonBackgroundColor: Colors.blue.shade600,
+                        buttonTextColor: Colors.white,
+                        // Custom error colors
+                        errorBorderColor: Colors.red.shade600,
+                        errorBackgroundColor: Colors.red.shade50,
+                        errorTextColor: Colors.red.shade800,
+                      ),
+                    ] else ...[
+                      // Widget-Based Example - Custom widgets with icons and rich content
+                      Container(
+                        padding: const EdgeInsets.all(24.0),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.purple.shade50,
+                              Colors.blue.shade50,
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: Colors.purple.shade200,
+                            width: 1,
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            // Custom Header with Icon
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.purple.shade600,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: const Icon(
+                                    Icons.security,
+                                    color: Colors.white,
+                                    size: 24,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                const Text(
+                                  'Verify Phone Number',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            // Custom Subtitle with Rich Text
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: Colors.grey.shade300,
+                                ),
+                              ),
+                              child: RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey.shade700,
+                                  ),
+                                  children: [
+                                    const TextSpan(
+                                        text: 'Enter the code sent to '),
+                                    TextSpan(
+                                      text: '+1 ********67',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.purple.shade600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 24),
+
+                            // The OTP Widget
+                            OtpVerificationWidget(
+                              key: _otpKey,
+                              title: '', // Empty since we have custom header
+                              subtitle:
+                                  '', // Empty since we have custom subtitle
+                              buttonText: 'Verify',
+                              resendText: 'Resend Code',
+                              timerPrefix: 'Resend in',
+                              onVerify: _handleVerification,
+                              onResend: _handleResend,
+                              fieldCount: 4,
+                              onChanged: (value) {
+                                setState(() {
+                                  _hasError = false;
+                                });
+                              },
+                              timerDuration: 60,
+                              showTimer: true,
+                              fieldSpacing: 16.0,
+                              // Completely generic colors - fully customizable
+                              primaryColor: Colors.purple.shade600,
+                              secondaryColor: Colors.grey.shade500,
+                              backgroundColor: Colors.transparent,
+                              focusedBorderColor: Colors.blue.shade600,
+                              completedFieldBorderColor: Colors.green.shade600,
+                              completedFieldBackgroundColor:
+                                  Colors.green.shade50,
+                              completedFieldTextColor: Colors.green.shade700,
+                              defaultBorderColor: Colors.grey.shade400,
+                              filledFieldBackgroundColor: Colors.transparent,
+                              enableProgressiveHighlighting: true,
+                              buttonBackgroundColor: Colors.purple.shade600,
+                              buttonTextColor: Colors.white,
+                              // Custom error colors (different from basic example)
+                              errorBorderColor: Colors.orange.shade600,
+                              errorBackgroundColor: Colors.orange.shade50,
+                              errorTextColor: Colors.orange.shade800,
+                              buttonBorderRadius: 12.0,
+                              buttonHeight: 56.0,
+                              // Custom styles for widgets
+                              titleStyle: const TextStyle(
+                                fontSize: 0, // Hide default title
+                              ),
+                              subtitleStyle: const TextStyle(
+                                fontSize: 0, // Hide default subtitle
+                              ),
+                              buttonStyle: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+
+                    const SizedBox(height: 32),
+
+                    // Widget-Based Customization Info
+                    if (_selectedExample == 'custom') ...[
+                      Card(
+                        color: Colors.purple.shade50,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.info_outline,
+                                    color: Colors.purple.shade600,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Text(
+                                    'Widget-Based Customization',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              const Text(
+                                'This example shows how to create custom layouts with:',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              const SizedBox(height: 8),
+                              _buildFeatureItem('🔒 Custom header with icon'),
+                              _buildFeatureItem('🎨 Gradient background'),
+                              _buildFeatureItem(
+                                  '📱 Rich text with styled phone number'),
+                              _buildFeatureItem(
+                                  '🎯 Custom container with borders'),
+                              _buildFeatureItem(
+                                  '⚡ Fully integrated OTP functionality'),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+
+                    // Test Buttons
+                    const Text(
+                      'Test Buttons:',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            _otpKey.currentState?.setErrorState(true);
+                            setState(() {
+                              _hasError = true;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red.shade600,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: const Text('Set Error'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            _otpKey.currentState?.clearErrorState();
+                            setState(() {
+                              _hasError = false;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green.shade600,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: const Text('Clear Error'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            _otpKey.currentState?.clearOtp();
+                            setState(() {
+                              _hasError = false;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange.shade600,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: const Text('Clear All'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            _otpKey.currentState?.setOtp('1234');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.purple.shade600,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: const Text('Fill Test'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Status Display
+            if (_lastVerifiedOtp.isNotEmpty || _hasError)
+              Card(
+                color: _hasError ? Colors.red.shade50 : Colors.green.shade50,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
                     children: [
-                      Icon(Icons.architecture, color: Colors.blue),
-                      SizedBox(width: 8),
-                      Text(
-                        'Component Architecture',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
+                      Icon(
+                        _hasError ? Icons.error : Icons.check_circle,
+                        color: _hasError
+                            ? Colors.red.shade600
+                            : Colors.green.shade600,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          _hasError
+                              ? 'Verification failed! Try again.'
+                              : 'Last verified: $_lastVerifiedOtp',
+                          style: TextStyle(
+                            color: _hasError
+                                ? Colors.red.shade800
+                                : Colors.green.shade800,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Enter the verification code sent to your device',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.black87,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 24),
-
-            // OTP fields
-            Form(
-              child: OtpFieldsRow(
-                controllers: List.generate(4, (_) => TextEditingController()),
-                focusNodes: List.generate(4, (_) => FocusNode()),
-                fieldStates: List.generate(4, (_) => OtpFieldState.empty),
-                fieldHasError: List.generate(4, (_) => false),
-                onDigitChanged: (value, index) {
-                  // Handle digit change
-                },
-                config: OtpFieldConfig(
-                  fieldWidth: 60,
-                  fieldHeight: 60,
-                  borderRadius: 16,
-                  borderWidth: 2,
-                  primaryColor: Colors.blue,
-                  secondaryColor: Colors.grey,
-                  backgroundColor: Colors.white,
-                  enableShadow: true,
-                  shadowColor: Colors.blue.withAlpha(50),
-                  shadowBlurRadius: 8,
-                  shadowSpreadRadius: 0,
                 ),
-                getFieldColors: (index, state, hasError) {
-                  // Simple field colors logic
-                  if (hasError) {
-                    return FieldColors(
-                      borderColor: Colors.red,
-                      backgroundColor: Colors.white,
-                      textColor: Colors.black,
-                    );
-                  } else if (state == OtpFieldState.focused) {
-                    return FieldColors(
-                      borderColor: Colors.blue,
-                      backgroundColor: Colors.white,
-                      textColor: Colors.black,
-                    );
-                  } else {
-                    return FieldColors(
-                      borderColor: Colors.grey.shade300,
-                      backgroundColor: Colors.white,
-                      textColor: Colors.black,
-                    );
-                  }
-                },
-                inputFormatters: [],
-                keyboardType: TextInputType.number,
-                validator: null,
-                layoutType: OtpLayoutType.fixed,
-                fieldCount: 4,
-                fieldSpacing: 12,
-                cursorAlignment: TextAlign.center,
               ),
-            ),
-            SizedBox(height: 24),
-
-            // Error display
-            OtpErrorDisplay(
-              errorText: 'This is a sample error message',
-              errorColor: Colors.red,
-              topSpacing: 8,
-            ),
-            SizedBox(height: 24),
-
-            // Footer with verify button and resend
-            OtpFooter(
-              onVerifyPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Verify pressed')),
-                );
-              },
-              onResendPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Resend pressed')),
-                );
-              },
-              isLoading: false,
-              remainingTime: 30,
-              primaryColor: Colors.blue,
-              secondaryColor: Colors.grey,
-              spacing: 16,
-              buttonText: 'Verify Code',
-              resendText: 'Resend Code',
-              timerPrefix: 'in',
-              buttonBackgroundColor: Colors.blue,
-              buttonTextColor: Colors.white,
-              buttonBorderRadius: 30,
-            ),
           ],
         ),
-      ],
+      ),
     );
   }
 
-  Widget _buildTestControls() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Test Controls:',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8.0,
-          runSpacing: 8.0,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                String currentOtp = _otpKey.currentState?.getCurrentOtp() ?? '';
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Current OTP: $currentOtp'),
-                    backgroundColor: Colors.blue,
-                  ),
-                );
-              },
-              child: const Text('Get OTP'),
+  Widget _buildStateGuide(String title, String description) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.w500,
+              ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                _otpKey.currentState?.clearOtp(
-                  refocus: true,
-                  clearError: true,
-                  callOnChanged: true,
-                );
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('OTP cleared with refocus'),
-                    backgroundColor: Colors.blue,
-                  ),
-                );
-              },
-              child: const Text('Clear OTP'),
+          ),
+          Expanded(
+            child: Text(
+              description,
+              style: TextStyle(
+                color: Colors.grey.shade600,
+              ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                _otpKey.currentState?.clearOtp(
-                  refocus: false,
-                  clearError: false,
-                );
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('OTP cleared without refocus'),
-                    backgroundColor: Colors.indigo,
-                  ),
-                );
-              },
-              child: const Text('Clear Only'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeatureItem(String feature) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      child: Row(
+        children: [
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              feature,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                _otpKey.currentState?.setOtp('1234');
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Set OTP to 1234'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              },
-              child: const Text('Set OTP'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final isValid = _otpKey.currentState?.isOtpValid() ?? false;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('OTP is ${isValid ? 'valid' : 'invalid'}'),
-                    backgroundColor: isValid ? Colors.green : Colors.orange,
-                  ),
-                );
-              },
-              child: const Text('Check Valid'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _otpKey.currentState?.resetFields();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Fields reset'),
-                    backgroundColor: Colors.purple,
-                  ),
-                );
-              },
-              child: const Text('Reset Fields'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _otpKey.currentState
-                    ?.resetFields(preserveFocus: true, preserveError: true);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Preserved focus & error'),
-                    backgroundColor: Colors.teal,
-                  ),
-                );
-              },
-              child: const Text('Preserve State'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _otpKey.currentState?.setErrorState(true);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Error state set'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              },
-              child: const Text('Set Error'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _otpKey.currentState?.clearErrorState();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Error state cleared'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              },
-              child: const Text('Clear Error'),
-            ),
-          ],
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 }

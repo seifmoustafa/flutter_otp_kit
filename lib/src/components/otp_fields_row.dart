@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../state/otp_field_state.dart';
 import '../styling/field_colors.dart';
 import '../config/otp_field_config.dart';
+import '../config/otp_animation_config.dart';
 import '../otp_layout_type.dart';
 import 'otp_field.dart';
 
@@ -30,6 +31,7 @@ class OtpFieldsRow extends StatefulWidget {
     this.enableInteractiveSelection = true,
     this.textCapitalization = TextCapitalization.none,
     this.hasInternalError = false,
+    this.animationConfig = const OtpAnimationConfig(),
   }) : super(key: key);
 
   /// Text controllers for the fields
@@ -88,6 +90,9 @@ class OtpFieldsRow extends StatefulWidget {
 
   /// Whether the widget has an internal error
   final bool hasInternalError;
+  
+  /// Animation configuration for the fields
+  final OtpAnimationConfig animationConfig;
 
   @override
   State<OtpFieldsRow> createState() => _OtpFieldsRowState();
@@ -104,44 +109,56 @@ class _OtpFieldsRowState extends State<OtpFieldsRow> {
           // Calculate field width based on available width and spacing
           final totalSpacing = widget.fieldSpacing * (widget.fieldCount - 1);
           calculatedFieldWidth = (constraints.maxWidth - totalSpacing) / widget.fieldCount;
+          
+          // Ensure a minimum reasonable size
+          final minWidth = widget.config.minResponsiveWidth;
+          if (calculatedFieldWidth < minWidth) {
+            calculatedFieldWidth = minWidth;
+          }
         }
 
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            widget.fieldCount,
-            (index) {
-              // Get field colors based on state and error
-              final hasError = widget.fieldHasError[index] || widget.hasInternalError;
-              final fieldState = widget.fieldStates[index];
-              final fieldColors = widget.getFieldColors(index, fieldState, hasError);
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              widget.fieldCount,
+              (index) {
+                // Get field colors based on state and error
+                final hasError = widget.fieldHasError[index] || widget.hasInternalError;
+                final fieldState = widget.fieldStates[index];
+                final fieldColors = widget.getFieldColors(index, fieldState, hasError);
 
-              return Padding(
-                padding: EdgeInsets.only(
-                  right: index < widget.fieldCount - 1 ? widget.fieldSpacing : 0,
-                ),
-                child: OtpField(
-                  controller: widget.controllers[index],
-                  focusNode: widget.focusNodes[index],
-                  fieldState: fieldState,
-                  hasError: hasError,
-                  onChanged: (value) => widget.onDigitChanged(value, index),
-                  config: widget.config,
-                  fieldColors: fieldColors,
-                  inputFormatters: widget.inputFormatters,
-                  keyboardType: widget.keyboardType,
-                  cursorAlignment: widget.cursorAlignment,
-                  validator: widget.validator,
-                  obscureText: widget.obscureText,
-                  obscuringCharacter: widget.obscuringCharacter,
-                  enableInteractiveSelection: widget.enableInteractiveSelection,
-                  textCapitalization: widget.textCapitalization,
-                  fieldWidth: calculatedFieldWidth,
-                  index: index,
-                  fieldCount: widget.fieldCount,
-                ),
-              );
-            },
+                return Padding(
+                  padding: EdgeInsets.only(
+                    right: index < widget.fieldCount - 1 ? widget.fieldSpacing : 0,
+                  ),
+                  child: OtpField(
+                    controller: widget.controllers[index],
+                    focusNode: widget.focusNodes[index],
+                    fieldState: fieldState,
+                    hasError: hasError,
+                    onChanged: (value) => widget.onDigitChanged(value, index),
+                    config: widget.config,
+                    fieldColors: fieldColors,
+                    inputFormatters: widget.inputFormatters,
+                    keyboardType: widget.keyboardType,
+                    cursorAlignment: widget.cursorAlignment,
+                    validator: widget.validator,
+                    obscureText: widget.obscureText,
+                    obscuringCharacter: widget.obscuringCharacter,
+                    enableInteractiveSelection: widget.enableInteractiveSelection,
+                    textCapitalization: widget.textCapitalization,
+                    fieldWidth: calculatedFieldWidth,
+                    index: index,
+                    fieldCount: widget.fieldCount,
+                    animationDuration: widget.animationConfig.fieldTransitionDuration,
+                    animationCurve: widget.animationConfig.fieldTransitionCurve,
+                    transitionHighlightColor: widget.animationConfig.transitionHighlightColor,
+                  ),
+                );
+              },
+            ),
           ),
         );
       },

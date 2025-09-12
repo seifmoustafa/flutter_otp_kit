@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'otp_field_state.dart';
 import '../config/otp_error_config.dart';
 
@@ -119,6 +120,12 @@ class OtpStateManager {
     if (internalErrorState) {
       internalErrorState = false;
       errorStateTimer?.cancel();
+      
+      // Critical: Update all field states to ensure they reflect the cleared error state
+      for (int i = 0; i < fieldCount; i++) {
+        updateFieldState(i);
+      }
+      
       onErrorStateChanged?.call();
     }
   }
@@ -143,20 +150,31 @@ class OtpStateManager {
 
     switch (errorConfig.errorStateBehavior) {
       case ErrorStateBehavior.persistent:
-        // Don't auto-clear error state
+        // Don't auto-clear error state automatically, but if explicitly configured to clear on input, do so
+        if (errorConfig.autoClearErrorOnInput && value.isNotEmpty) {
+          clearErrorState();
+        }
         break;
       case ErrorStateBehavior.autoClear:
         // Clear based on configuration
         if (errorConfig.autoClearErrorOnInput) {
           // For empty value, only clear if explicitly configured to do so
           // For non-empty value, always clear if autoClearErrorOnInput is true
-          if (value.isNotEmpty || errorConfig.autoClearErrorOnInput) {
+          if (value.isNotEmpty) {
+            // Always clear error when typing new value
+            clearErrorState();
+          } else if (errorConfig.autoClearErrorOnInput) {
+            // Only clear on empty if specifically configured
             clearErrorState();
           }
         }
         break;
       case ErrorStateBehavior.timed:
         // Clear after timer duration (handled by timer)
+        // But also immediately clear if user starts typing new value
+        if (value.isNotEmpty && errorConfig.autoClearErrorOnInput) {
+          clearErrorState();
+        }
         break;
     }
   }
@@ -183,10 +201,19 @@ class OtpStateManager {
   void updateFieldState(int index, {bool? hasError, bool? isFocused, bool? isFilled, bool? isCompleted}) {
     if (index >= fieldStates.length) return;
 
+    // Check current error state - take into account the latest error state
+    // If internalErrorState was just cleared, we need to ensure it's not applied to fields
     final fieldHasError = this.fieldHasError[index] || errorText != null || internalErrorState;
     final fieldIsFocused = focusNodes[index].hasFocus;
+    // Check if the field is actually filled with content
     final fieldIsFilled = controllers[index].text.isNotEmpty;
+    // A field is completed only if it's filled and all other fields are also filled
     final fieldIsCompleted = fieldIsFilled && isOtpComplete();
+    
+    // Debug print to help track state changes (only in debug mode)
+    if (kDebugMode) {
+      debugPrint('Field $index: hasError=$fieldHasError, isFocused=$fieldIsFocused, isFilled=$fieldIsFilled, isCompleted=$fieldIsCompleted');
+    }
 
     // Determine the new state with proper priority
     OtpFieldState newState;
@@ -255,8 +282,17 @@ class OtpStateManager {
 
   /// Handles digit input changes
   void onDigitChanged(String value, int index) {
-    // Handle error state clearing based on behavior
-    handleErrorStateOnInput(value);
+    // Always clear error when user starts interacting (typing or deleting)
+    if (internalErrorState) {
+      clearErrorState();
+    }
+
+    // Clear individual field error state if this field had an error
+    if (fieldHasError[index]) {
+      fieldHasError[index] = false;
+      // Update this field's state immediately to reflect cleared error
+      updateFieldState(index);
+    }
 
     // Call onChanged callback
     onOtpChanged?.call(getOtpValue());
@@ -265,6 +301,9 @@ class OtpStateManager {
       // Update field state
       updateFieldState(index);
 
+      // Remove the duplicate detection logic - users should be able to type same values consecutively
+      // This was preventing legitimate OTPs like 2244, 1122, etc.
+      
       // Move to next field if not the last one
       if (index < fieldCount - 1) {
         focusNodes[index + 1].requestFocus();
@@ -288,27 +327,48 @@ class OtpStateManager {
         }
         onOtpCompleted?.call(getOtpValue());
       }
-    } else {
-      // Handle deletion/backspace - field is now empty
-      // Explicitly set field state to empty to ensure proper styling
-      fieldStates[index] = OtpFieldState.empty;
+     } else {
+       // Check if this is a backspace press in an empty field
+       bool isEmptyFieldBackspace = controllers[index].text.isEmpty;
+       
+       // Clear any field-specific error state when clearing a field
+       if (fieldHasError[index]) {
+         fieldHasError[index] = false;
+       }
+       
+       // Handle error state clearing for empty fields
+       // Always clear error when user starts typing/deleting (user is actively correcting)
+       if (internalErrorState) {
+         // Clear error state when user starts interacting with fields
+         clearErrorState();
+       }
+       
+       // Ensure we clear any "filled" or "completed" state for this field
+       controllers[index].clear();
 
-      // Update field state
-      updateFieldState(index);
-
-      // Move to previous field if not the first one
-      if (index > 0) {
-        focusNodes[index - 1].requestFocus();
-        // Update previous field state
-        updateFieldState(index - 1);
-      } else {
-        // This is the first field and it's now empty
-        // Ensure it gets proper focus styling
-        if (focusNodes[0].hasFocus) {
-          fieldStates[0] = OtpFieldState.focused;
-        }
-      }
-    }
+       // Move to previous field if not the first one
+       if (index > 0) {
+         // Always move to the previous field when hitting backspace
+         focusNodes[index - 1].requestFocus();
+         
+         // If this was a backspace in an empty field, we should select the text in the previous field
+         // so the user can immediately overwrite it with the next keystroke
+         if (isEmptyFieldBackspace) {
+           controllers[index - 1].selection = TextSelection(
+             baseOffset: 0,
+             extentOffset: controllers[index - 1].text.length,
+           );
+         }
+       }
+       
+       // CRITICAL: Update field states AFTER focus changes
+       // This ensures the deleted field becomes unfocused (grey) and the previous field becomes focused (blue)
+       WidgetsBinding.instance.addPostFrameCallback((_) {
+         for (int i = 0; i < fieldCount; i++) {
+           updateFieldState(i);
+         }
+       });
+     }
   }
 
   /// Returns the complete OTP value
