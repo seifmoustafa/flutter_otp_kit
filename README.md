@@ -48,8 +48,8 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 ### 🎬 Video Demo
 
 <p align="center">
-  <a href="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/tutorial.mp4">
-    <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/tutorial.mp4" width="600px" alt="Tutorial Video Demo">
+  <a href="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/tutorial.gif">
+    <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/tutorial.gif" width="600px" alt="Tutorial Video Demo">
   </a>
 </p>
 
@@ -65,7 +65,7 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 >    - `sc5.png`: Complete filled inputs
 >    - `sc6.png`: Email basic design
 > 3. Video tutorial:
->    - `tutorial.mp4`: Complete walkthrough of Flutter OTP Kit features and implementation
+>    - `tutorial.gif`: Complete walkthrough of Flutter OTP Kit features and implementation
 
 ## ✨ Features
 
