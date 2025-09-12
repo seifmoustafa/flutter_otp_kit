@@ -40,37 +40,37 @@ class OtpErrorDisplay extends StatefulWidget {
 
   /// Top spacing between error and OTP fields
   final double topSpacing;
-  
+
   /// Left spacing for error text
   final double leftSpacing;
-  
+
   /// Right spacing for error text
   final double rightSpacing;
-  
+
   /// Bottom spacing for error text
   final double bottomSpacing;
-  
+
   /// Alignment of error message relative to OTP fields
   final ErrorAlignment alignment;
-  
+
   /// Animation type for error appearance
   final ErrorAnimationType animationType;
-  
+
   /// Duration of animation
   final Duration animationDuration;
-  
+
   /// Whether to show an icon with the error
   final bool showErrorIcon;
-  
+
   /// Icon to display with error (default is error outline)
   final IconData? errorIcon;
-  
+
   /// Maximum number of lines for error message
   final int maxLines;
-  
+
   /// Whether to provide haptic feedback when error appears
   final bool enableHapticFeedback;
-  
+
   /// Type of haptic feedback
   final ErrorHapticFeedbackType hapticFeedbackType;
 
@@ -78,15 +78,16 @@ class OtpErrorDisplay extends StatefulWidget {
   State<OtpErrorDisplay> createState() => _OtpErrorDisplayState();
 }
 
-class _OtpErrorDisplayState extends State<OtpErrorDisplay> with SingleTickerProviderStateMixin {
+class _OtpErrorDisplayState extends State<OtpErrorDisplay>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _opacityAnimation;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _scaleAnimation;
-  
+
   String? _previousErrorText;
   bool _isFirstBuild = true;
-  
+
   @override
   void initState() {
     super.initState();
@@ -94,12 +95,12 @@ class _OtpErrorDisplayState extends State<OtpErrorDisplay> with SingleTickerProv
       vsync: this,
       duration: widget.animationDuration,
     );
-    
+
     _setupAnimations();
-    
+
     _previousErrorText = widget.errorText;
   }
-  
+
   void _setupAnimations() {
     // Opacity animation for fade effects
     _opacityAnimation = Tween<double>(
@@ -109,7 +110,7 @@ class _OtpErrorDisplayState extends State<OtpErrorDisplay> with SingleTickerProv
       parent: _animationController,
       curve: Curves.easeInOut,
     ));
-    
+
     // Slide animation for slide effects
     Offset beginOffset;
     switch (widget.animationType) {
@@ -123,7 +124,7 @@ class _OtpErrorDisplayState extends State<OtpErrorDisplay> with SingleTickerProv
         beginOffset = Offset.zero;
         break;
     }
-    
+
     _slideAnimation = Tween<Offset>(
       begin: beginOffset,
       end: Offset.zero,
@@ -131,7 +132,7 @@ class _OtpErrorDisplayState extends State<OtpErrorDisplay> with SingleTickerProv
       parent: _animationController,
       curve: Curves.easeOutCubic,
     ));
-    
+
     // Scale animation for scale effects
     _scaleAnimation = Tween<double>(
       begin: 0.8,
@@ -141,11 +142,11 @@ class _OtpErrorDisplayState extends State<OtpErrorDisplay> with SingleTickerProv
       curve: Curves.elasticOut,
     ));
   }
-  
+
   void _triggerAnimation() {
     _animationController.reset();
     _animationController.forward();
-    
+
     // Trigger haptic feedback if enabled
     if (widget.enableHapticFeedback) {
       switch (widget.hapticFeedbackType) {
@@ -164,25 +165,25 @@ class _OtpErrorDisplayState extends State<OtpErrorDisplay> with SingleTickerProv
       }
     }
   }
-  
+
   @override
   void didUpdateWidget(OtpErrorDisplay oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     // If animation parameters changed, update animations
     if (oldWidget.animationType != widget.animationType ||
         oldWidget.animationDuration != widget.animationDuration) {
       _setupAnimations();
     }
-    
+
     // Trigger animation when error text changes
     if (_previousErrorText != widget.errorText && widget.errorText != null) {
       _triggerAnimation();
     }
-    
+
     _previousErrorText = widget.errorText;
   }
-  
+
   @override
   void dispose() {
     _animationController.dispose();
@@ -191,11 +192,11 @@ class _OtpErrorDisplayState extends State<OtpErrorDisplay> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    // If no error text or widget, show an empty container
-    if (widget.errorText == null && widget.errorWidget == null) {
+    // If no error text, don't show anything (even if errorWidget is provided)
+    if (widget.errorText == null) {
       return const SizedBox.shrink();
     }
-    
+
     // Only animate if this is not the first build
     if (!_isFirstBuild && widget.errorText != null) {
       // Don't need to trigger here as didUpdateWidget handles it
@@ -248,7 +249,7 @@ class _OtpErrorDisplayState extends State<OtpErrorDisplay> with SingleTickerProv
         ),
       ],
     );
-    
+
     // Apply padding based on alignment
     Widget paddedWidget = Padding(
       padding: EdgeInsets.only(
@@ -259,7 +260,7 @@ class _OtpErrorDisplayState extends State<OtpErrorDisplay> with SingleTickerProv
       ),
       child: errorTextWidget,
     );
-    
+
     // Apply animation
     return AnimatedBuilder(
       animation: _animationController,
@@ -268,7 +269,7 @@ class _OtpErrorDisplayState extends State<OtpErrorDisplay> with SingleTickerProv
       },
     );
   }
-  
+
   Widget _buildAnimatedWidget(Widget child) {
     // Apply different animations based on type
     switch (widget.animationType) {
@@ -277,7 +278,7 @@ class _OtpErrorDisplayState extends State<OtpErrorDisplay> with SingleTickerProv
           opacity: _opacityAnimation,
           child: child,
         );
-        
+
       case ErrorAnimationType.slideInBottom:
       case ErrorAnimationType.slideInTop:
         return SlideTransition(
@@ -287,7 +288,7 @@ class _OtpErrorDisplayState extends State<OtpErrorDisplay> with SingleTickerProv
             child: child,
           ),
         );
-        
+
       case ErrorAnimationType.scaleUp:
         return ScaleTransition(
           scale: _scaleAnimation,
@@ -296,16 +297,18 @@ class _OtpErrorDisplayState extends State<OtpErrorDisplay> with SingleTickerProv
             child: child,
           ),
         );
-        
+
       case ErrorAnimationType.shakeAndFade:
         // For shake effect, use a combination of custom animation and fade
         final shakeAnimation = Tween<double>(
           begin: -3.0,
           end: 0.0,
-        ).chain(CurveTween(
-          curve: Curves.elasticOut,
-        )).animate(_animationController);
-        
+        )
+            .chain(CurveTween(
+              curve: Curves.elasticOut,
+            ))
+            .animate(_animationController);
+
         return FadeTransition(
           opacity: _opacityAnimation,
           child: AnimatedBuilder(
@@ -314,9 +317,9 @@ class _OtpErrorDisplayState extends State<OtpErrorDisplay> with SingleTickerProv
               return Transform.translate(
                 offset: Offset(
                   // Use a sine wave for shake effect
-                  shakeAnimation.value * 
-                    (1 - _animationController.value) * 
-                    math.sin(_animationController.value * 10 * math.pi),
+                  shakeAnimation.value *
+                      (1 - _animationController.value) *
+                      math.sin(_animationController.value * 10 * math.pi),
                   0,
                 ),
                 child: child,
@@ -325,10 +328,9 @@ class _OtpErrorDisplayState extends State<OtpErrorDisplay> with SingleTickerProv
             child: child,
           ),
         );
-        
+
       case ErrorAnimationType.none:
         return child;
     }
   }
 }
-

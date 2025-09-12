@@ -69,20 +69,26 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 ### 🎯 Core Functionality
 - **Complete OTP Verification**: Full-featured OTP input with validation and verification
 - **Multiple Input Types**: Numeric, alphabetic, alphanumeric, and custom input support
-- **Smart Paste Detection**: Automatic clipboard detection and OTP filling
+- **Smart Paste Detection**: Enhanced clipboard detection with debounce mechanism and intelligent full OTP vs single-digit handling
+- **Consecutive Digit Support**: Fixed issue preventing consecutive identical digits (e.g., "2244" now works perfectly)
 - **Real-time Validation**: Live validation with custom regex patterns and error messages
 - **Auto-submit**: Automatic form submission when OTP is complete
-- **Timer Integration**: Built-in countdown timer for resend functionality
+- **Timer Integration**: Enhanced timer with automatic start and proper reset on resend
+- **Smart Validation**: Prevents verification with incomplete fields and shows user-friendly error messages
+- **Instant Error Clearing**: Validation errors clear immediately when user starts typing for better UX
 
 ### 🎨 Design & Customization
+- **Perfect Visual Hierarchy**: Strict visual hierarchy: Error > Focused > Completed > Filled > Empty
+- **Generic Color System**: All colors (including error colors) are completely customizable
 - **Comprehensive Styling**: Complete control over colors, dimensions, spacing, and appearance
 - **Advanced Field Shapes**: Rectangle, rounded rectangle, circle, stadium, and custom shapes
 - **Gradient Support**: Linear, radial, and sweep gradient backgrounds
 - **Shadow Effects**: Customizable shadows with color, blur, spread, and offset control
-- **Animation System**: Smooth animations with predefined configurations (default, fast, smooth, disabled)
+- **Animation System**: Smooth animations with `Curves.easeInOut` for professional transitions
 - **Enhanced Field Transitions**: Smooth field-to-field visual transitions and state animations
 - **Progressive Highlighting**: Visual feedback showing user progress through OTP entry
 - **Theme Integration**: Material Design 3, light, dark themes with automatic adaptation
+- **Responsive Design**: Fixed pixel overflow issues with proper text wrapping and flexible layouts
 
 ### 📱 Responsive & Layout
 - **Responsive Design**: Automatic adaptation to different screen sizes and orientations
@@ -119,7 +125,7 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 
 ```yaml
 dependencies:
-  flutter_otp_kit: ^1.5.0
+  flutter_otp_kit: ^2.0.0
 ```
 
 ## 🚀 Usage
@@ -137,6 +143,8 @@ OtpVerificationWidget(
   buttonText: 'Verify',
   resendText: 'Resend Code',
   timerPrefix: 'in',
+  enableAutoValidation: true, // Enable validation to prevent verify with missing fields
+  validationMessage: 'Please enter all digits', // Custom validation message
   onVerify: (otp) {
     // Handle OTP verification
     print('Verifying OTP: $otp');
@@ -147,6 +155,40 @@ OtpVerificationWidget(
   },
 )
 ```
+
+### Validation & Error Handling
+
+The package now includes comprehensive validation with excellent UX:
+
+```dart
+OtpVerificationWidget(
+  title: 'Verify Phone Number',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: '+1 (555) 123-4567',
+  buttonText: 'Verify',
+  resendText: 'Resend Code',
+  timerPrefix: 'in',
+  enableAutoValidation: true, // Prevents verify with incomplete fields
+  validationMessage: 'Please enter all digits', // Shows when fields are missing
+  onVerify: (otp) {
+    if (otp == '1234') {
+      // Success - proceed with verification
+      print('Verification successful');
+    } else {
+      // Error - set error state programmatically
+      otpKey.currentState?.setErrorState(true);
+    }
+  },
+  onResend: () => resendOtp(),
+)
+```
+
+**Validation Features:**
+- ✅ **Prevents incomplete verification**: Verify button won't work with missing fields
+- ✅ **User-friendly messages**: Shows "Please enter all digits" when fields are incomplete
+- ✅ **Instant error clearing**: Validation errors disappear immediately when typing
+- ✅ **Programmatic control**: Set/clear error states programmatically
+- ✅ **Smart error handling**: Errors clear automatically on user interaction
 
 ### Customization Example
 
@@ -213,36 +255,134 @@ OtpVerificationWidget(
 
 ### Widget-Based Customization
 
+The package now supports complete widget-based customization with a fully rendered example showcasing:
+
+- **Custom gradient containers** with shadows and borders
+- **Multiple icons** throughout the interface (security, phone, verified user, message, clock, keyboard, info)
+- **Rich text** with styled phone number display
+- **Custom header** with gradient icon containers
+- **Enhanced subtitle** with icons and rich text
+- **Custom OTP fields container** with keyboard icon
+- **Informative footer** with help text
+
 ```dart
 OtpVerificationWidget(
   titleWidget: Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      Icon(Icons.security, color: Colors.blue),
-      SizedBox(width: 8),
-      Text('Security Verification', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+      Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.purple.shade600, Colors.blue.shade600],
+          ),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.purple.shade300,
+              blurRadius: 8,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: Icon(Icons.security, color: Colors.white, size: 24),
+      ),
+      SizedBox(width: 12),
+      Flexible(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.phone_android, color: Colors.purple.shade600, size: 20),
+                SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    'Verify Phone Number',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 4),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.verified_user, color: Colors.green.shade600, size: 14),
+                SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    'Secure Verification',
+                    style: TextStyle(fontSize: 11, color: Colors.green.shade600),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     ],
   ),
-  subtitleWidget: RichText(
-    textAlign: TextAlign.center,
-    text: TextSpan(
-      style: TextStyle(color: Colors.black87, fontSize: 14),
-      children: [
-        TextSpan(text: 'Enter the code sent to '),
-        TextSpan(
-          text: '+1 (555) ***-**67',
-          style: TextStyle(fontWeight: FontWeight.bold),
+  subtitleWidget: Container(
+    padding: EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: Colors.grey.shade300),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.shade100,
+          blurRadius: 4,
+          spreadRadius: 1,
         ),
       ],
     ),
-  ),
-  verifyButtonWidget: ElevatedButton.icon(
-    onPressed: () {},  // This will be overridden by the widget
-    icon: Icon(Icons.check_circle),
-    label: Text('VERIFY NOW'),
-    style: ElevatedButton.styleFrom(
-      backgroundColor: Colors.green,
-      foregroundColor: Colors.white,
+    child: Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.message, color: Colors.blue.shade600, size: 18),
+            SizedBox(width: 8),
+            Text('SMS Code Sent', style: TextStyle(fontWeight: FontWeight.w600)),
+          ],
+        ),
+        SizedBox(height: 8),
+        Flexible(
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+              children: [
+                TextSpan(text: 'Enter the code sent to '),
+                TextSpan(
+                  text: '+1 ********67',
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple.shade600),
+                ),
+              ],
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.access_time, color: Colors.grey.shade500, size: 14),
+            SizedBox(width: 4),
+            Flexible(
+              child: Text(
+                'Code expires in 10 minutes',
+                style: TextStyle(fontSize: 11, color: Colors.grey.shade500, fontStyle: FontStyle.italic),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ],
     ),
   ),
   buttonText: 'Verify',  // Fallback

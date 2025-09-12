@@ -452,7 +452,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   @override
   void initState() {
     super.initState();
-    
+
     // Create the OTP configuration
     final errorConfig = OtpErrorConfig(
       hasError: widget.hasError,
@@ -485,6 +485,9 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
       fieldCount: widget.fieldCount,
       errorConfig: errorConfig,
       onErrorStateChanged: widget.onErrorStateChanged,
+      onErrorTextChanged: () {
+        setState(() {});
+      },
       onOtpChanged: widget.onChanged,
       onOtpCompleted: widget.onCompleted,
     );
@@ -507,7 +510,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
 
     // Initialize timer
     _remainingTime = widget.timerDuration;
-    
+
     // Start timer if showTimer is enabled
     if (widget.showTimer) {
       _startTimer();
@@ -535,12 +538,13 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     // Add listeners for paste support
     if (widget.enablePaste) {
       // Use a timestamp to track last paste operation to avoid multiple dialogs
-      DateTime lastPasteTime = DateTime.now().subtract(const Duration(seconds: 1));
-      
+      DateTime lastPasteTime =
+          DateTime.now().subtract(const Duration(seconds: 1));
+
       for (int i = 0; i < _stateManager.focusNodes.length; i++) {
         final focusNode = _stateManager.focusNodes[i];
         final index = i; // Capture the index for use in the callback
-        
+
         focusNode.addListener(() async {
           if (focusNode.hasFocus) {
             // Add debounce to prevent multiple paste operations
@@ -549,19 +553,20 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
               return; // Skip if last paste was less than 500ms ago
             }
             lastPasteTime = now;
-            
+
             final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
             if (clipboardData != null && clipboardData.text != null) {
               final text = clipboardData.text!.trim();
-              
+
               // If it's exactly the right length and valid, fill all fields
-              if (text.length == widget.fieldCount && 
-                  OtpValidator.isValidOtp(text, widget.otpInputType, widget.fieldCount)) {
+              if (text.length == widget.fieldCount &&
+                  OtpValidator.isValidOtp(
+                      text, widget.otpInputType, widget.fieldCount)) {
                 setOtp(text);
-              } 
+              }
               // If it's a single digit, just put it in the current field and move to next
-              else if (text.length == 1 && 
-                       OtpValidator.isValidOtp(text, widget.otpInputType, 1)) {
+              else if (text.length == 1 &&
+                  OtpValidator.isValidOtp(text, widget.otpInputType, 1)) {
                 _stateManager.controllers[index].text = text;
                 _stateManager.onDigitChanged(text, index);
               }
@@ -611,34 +616,48 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   /// Starts the resend timer
   void _startTimer() {
     _timer?.cancel();
-    // Reset timer to full duration
-    _remainingTime = widget.timerDuration;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        setState(() {
-          if (_remainingTime > 0) {
-            _remainingTime--;
-          } else {
-            _timer?.cancel();
-          }
-        });
+      setState(() {
+        if (_remainingTime > 0) {
+          _remainingTime--;
+        } else {
+          _timer?.cancel();
+          // Refresh field states when timer ends to ensure proper styling
+          _stateManager.refreshAllFieldStates();
+        }
+      });
     });
   }
 
   /// Handles the verify button press
   void _onVerifyPressed() {
-    if (widget.enableAutoValidation && _stateManager.formKey.currentState!.validate()) {
-      _stateManager.formKey.currentState!.save();
-      if (_stateManager.isOtpComplete()) {
+    if (widget.enableAutoValidation) {
+      // Check if OTP is complete first
+      if (!_stateManager.isOtpComplete()) {
+        // Show validation message for incomplete OTP
+        _stateManager.errorText =
+            widget.validationMessage ?? 'Please enter all digits';
+        setState(() {
+          _stateManager.autoValidateMode = AutovalidateMode.always;
+        });
+        return;
+      }
+
+      // If OTP is complete, validate the form
+      if (_stateManager.formKey.currentState!.validate()) {
+        _stateManager.formKey.currentState!.save();
         setState(() => _isLoading = true);
         widget.onVerify(_stateManager.getOtpValue());
         setState(() => _isLoading = false);
+      } else {
+        setState(() {
+          _stateManager.autoValidateMode = AutovalidateMode.always;
+        });
       }
-    } else if (!widget.enableAutoValidation) {
+    } else {
       setState(() => _isLoading = true);
       widget.onVerify(_stateManager.getOtpValue());
       setState(() => _isLoading = false);
-    } else {
-      setState(() => _stateManager.autoValidateMode = AutovalidateMode.always);
     }
   }
 
@@ -647,6 +666,15 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     if (_remainingTime == 0) {
       // Handle error state clearing on resend
       _stateManager.handleErrorStateOnResend();
+
+      // Clear OTP fields to ensure clean state (this now updates all field states)
+      _stateManager.clearOtp(
+          refocus: false, clearError: true, callOnChanged: false);
+
+      // Start timer immediately with instant state update
+      setState(() {
+        _remainingTime = widget.timerDuration;
+      });
 
       _startTimer();
       widget.onResend();
@@ -668,7 +696,8 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   }
 
   /// Pre-fills the OTP input fields with the provided value
-  void setOtp(String otp, {
+  void setOtp(
+    String otp, {
     bool clearFocus = true,
     bool clearError = true,
     bool callCallbacks = true,
@@ -685,6 +714,17 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   /// Returns the current OTP value
   String getCurrentOtp() {
     return _stateManager.getOtpValue();
+  }
+
+  /// Refreshes all field states to ensure they reflect current state
+  void refreshAllFieldStates() {
+    _stateManager.refreshAllFieldStates();
+    setState(() {});
+  }
+
+  /// Public method to trigger verify button press
+  void triggerVerify() {
+    _onVerifyPressed();
   }
 
   /// Checks if the current OTP is valid
@@ -784,7 +824,8 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
                       cursorAlignment: widget.cursorAlignment,
                       obscureText: widget.obscureText,
                       obscuringCharacter: widget.obscuringCharacter,
-                      enableInteractiveSelection: widget.enableInteractiveSelection,
+                      enableInteractiveSelection:
+                          widget.enableInteractiveSelection,
                       textCapitalization: widget.textCapitalization,
                       hasInternalError: _stateManager.internalErrorState,
                       animationConfig: animationConfig,

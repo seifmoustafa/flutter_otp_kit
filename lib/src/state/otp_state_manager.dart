@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'otp_field_state.dart';
 import '../config/otp_error_config.dart';
 
@@ -11,6 +10,7 @@ class OtpStateManager {
     required this.fieldCount,
     required this.errorConfig,
     required this.onErrorStateChanged,
+    required this.onErrorTextChanged,
     required this.onOtpChanged,
     required this.onOtpCompleted,
   }) {
@@ -25,6 +25,9 @@ class OtpStateManager {
 
   /// Callback when error state changes
   final VoidCallback? onErrorStateChanged;
+
+  /// Callback when error text changes
+  final VoidCallback? onErrorTextChanged;
 
   /// Callback when OTP changes
   final ValueChanged<String>? onOtpChanged;
@@ -93,7 +96,8 @@ class OtpStateManager {
       }
 
       // Create new controllers and focus nodes
-      controllers = List.generate(newFieldCount, (index) => TextEditingController());
+      controllers =
+          List.generate(newFieldCount, (index) => TextEditingController());
       focusNodes = List.generate(newFieldCount, (index) => FocusNode());
       fieldHasError = List.generate(newFieldCount, (_) => false);
       fieldStates = List.generate(newFieldCount, (_) => OtpFieldState.empty);
@@ -120,12 +124,12 @@ class OtpStateManager {
     if (internalErrorState) {
       internalErrorState = false;
       errorStateTimer?.cancel();
-      
+
       // Critical: Update all field states to ensure they reflect the cleared error state
       for (int i = 0; i < fieldCount; i++) {
         updateFieldState(i);
       }
-      
+
       onErrorStateChanged?.call();
     }
   }
@@ -198,28 +202,26 @@ class OtpStateManager {
   }
 
   /// Updates the state of a field
-  void updateFieldState(int index, {bool? hasError, bool? isFocused, bool? isFilled, bool? isCompleted}) {
+  void updateFieldState(int index,
+      {bool? hasError, bool? isFocused, bool? isFilled, bool? isCompleted}) {
     if (index >= fieldStates.length) return;
 
     // Check current error state - take into account the latest error state
     // If internalErrorState was just cleared, we need to ensure it's not applied to fields
-    final fieldHasError = this.fieldHasError[index] || errorText != null || internalErrorState;
+    final fieldHasError =
+        this.fieldHasError[index] || errorText != null || internalErrorState;
     final fieldIsFocused = focusNodes[index].hasFocus;
     // Check if the field is actually filled with content
     final fieldIsFilled = controllers[index].text.isNotEmpty;
     // A field is completed only if it's filled and all other fields are also filled
     final fieldIsCompleted = fieldIsFilled && isOtpComplete();
-    
-    // Debug print to help track state changes (only in debug mode)
-    if (kDebugMode) {
-      debugPrint('Field $index: hasError=$fieldHasError, isFocused=$fieldIsFocused, isFilled=$fieldIsFilled, isCompleted=$fieldIsCompleted');
-    }
 
     // Determine the new state with proper priority
     OtpFieldState newState;
 
     // Error state has highest priority if configured that way
-    if (fieldHasError && errorConfig.errorStatePriority == ErrorStatePriority.highest) {
+    if (fieldHasError &&
+        errorConfig.errorStatePriority == ErrorStatePriority.highest) {
       newState = OtpFieldState.error;
     }
     // Normal priority handling
@@ -287,6 +289,17 @@ class OtpStateManager {
       clearErrorState();
     }
 
+    // Clear validation error text when user starts typing
+    if (errorText != null) {
+      errorText = null;
+      // Update all field states to reflect cleared error text
+      for (int i = 0; i < fieldCount; i++) {
+        updateFieldState(i);
+      }
+      // Notify widget that error text has changed
+      onErrorTextChanged?.call();
+    }
+
     // Clear individual field error state if this field had an error
     if (fieldHasError[index]) {
       fieldHasError[index] = false;
@@ -303,7 +316,7 @@ class OtpStateManager {
 
       // Remove the duplicate detection logic - users should be able to type same values consecutively
       // This was preventing legitimate OTPs like 2244, 1122, etc.
-      
+
       // Move to next field if not the last one
       if (index < fieldCount - 1) {
         focusNodes[index + 1].requestFocus();
@@ -327,48 +340,48 @@ class OtpStateManager {
         }
         onOtpCompleted?.call(getOtpValue());
       }
-     } else {
-       // Check if this is a backspace press in an empty field
-       bool isEmptyFieldBackspace = controllers[index].text.isEmpty;
-       
-       // Clear any field-specific error state when clearing a field
-       if (fieldHasError[index]) {
-         fieldHasError[index] = false;
-       }
-       
-       // Handle error state clearing for empty fields
-       // Always clear error when user starts typing/deleting (user is actively correcting)
-       if (internalErrorState) {
-         // Clear error state when user starts interacting with fields
-         clearErrorState();
-       }
-       
-       // Ensure we clear any "filled" or "completed" state for this field
-       controllers[index].clear();
+    } else {
+      // Check if this is a backspace press in an empty field
+      bool isEmptyFieldBackspace = controllers[index].text.isEmpty;
 
-       // Move to previous field if not the first one
-       if (index > 0) {
-         // Always move to the previous field when hitting backspace
-         focusNodes[index - 1].requestFocus();
-         
-         // If this was a backspace in an empty field, we should select the text in the previous field
-         // so the user can immediately overwrite it with the next keystroke
-         if (isEmptyFieldBackspace) {
-           controllers[index - 1].selection = TextSelection(
-             baseOffset: 0,
-             extentOffset: controllers[index - 1].text.length,
-           );
-         }
-       }
-       
-       // CRITICAL: Update field states AFTER focus changes
-       // This ensures the deleted field becomes unfocused (grey) and the previous field becomes focused (blue)
-       WidgetsBinding.instance.addPostFrameCallback((_) {
-         for (int i = 0; i < fieldCount; i++) {
-           updateFieldState(i);
-         }
-       });
-     }
+      // Clear any field-specific error state when clearing a field
+      if (fieldHasError[index]) {
+        fieldHasError[index] = false;
+      }
+
+      // Handle error state clearing for empty fields
+      // Always clear error when user starts typing/deleting (user is actively correcting)
+      if (internalErrorState) {
+        // Clear error state when user starts interacting with fields
+        clearErrorState();
+      }
+
+      // Ensure we clear any "filled" or "completed" state for this field
+      controllers[index].clear();
+
+      // Move to previous field if not the first one
+      if (index > 0) {
+        // Always move to the previous field when hitting backspace
+        focusNodes[index - 1].requestFocus();
+
+        // If this was a backspace in an empty field, we should select the text in the previous field
+        // so the user can immediately overwrite it with the next keystroke
+        if (isEmptyFieldBackspace) {
+          controllers[index - 1].selection = TextSelection(
+            baseOffset: 0,
+            extentOffset: controllers[index - 1].text.length,
+          );
+        }
+      }
+
+      // CRITICAL: Update field states AFTER focus changes
+      // This ensures the deleted field becomes unfocused (grey) and the previous field becomes focused (blue)
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        for (int i = 0; i < fieldCount; i++) {
+          updateFieldState(i);
+        }
+      });
+    }
   }
 
   /// Returns the complete OTP value
@@ -431,7 +444,7 @@ class OtpStateManager {
       fieldStates[i] = OtpFieldState.empty;
       fieldHasError[i] = false;
     }
-    
+
     // Clear error state if requested
     if (clearError && internalErrorState) {
       clearErrorState();
@@ -442,6 +455,11 @@ class OtpStateManager {
       onOtpChanged?.call('');
     }
 
+    // Update all field states to ensure proper visual styling
+    for (int i = 0; i < fieldCount; i++) {
+      updateFieldState(i);
+    }
+
     // Optionally refocus first field
     if (refocus && focusNodes.isNotEmpty) {
       focusNodes[0].requestFocus();
@@ -450,7 +468,8 @@ class OtpStateManager {
   }
 
   /// Pre-fills the OTP input fields with the provided value
-  void setOtp(String otp, {
+  void setOtp(
+    String otp, {
     bool clearFocus = true,
     bool clearError = true,
     bool callCallbacks = true,
@@ -459,12 +478,12 @@ class OtpStateManager {
     for (var controller in controllers) {
       controller.clear();
     }
-    
+
     // Set new values
     for (int i = 0; i < fieldCount && i < otp.length; i++) {
       controllers[i].text = otp[i];
     }
-    
+
     // Clear focus from all fields if requested
     if (clearFocus) {
       for (var focusNode in focusNodes) {
@@ -473,27 +492,35 @@ class OtpStateManager {
         }
       }
     }
-    
+
     // Clear error state if configured to do so and requested
-    if (clearError && internalErrorState &&
+    if (clearError &&
+        internalErrorState &&
         errorConfig.autoClearErrorOnComplete &&
         isOtpComplete()) {
       clearErrorState();
     }
-    
+
     // Update all field states
     for (int i = 0; i < fieldCount; i++) {
       updateFieldState(i);
     }
-    
+
     if (callCallbacks) {
       // Call onChanged callback
       onOtpChanged?.call(getOtpValue());
-      
+
       // Call onCompleted callback if OTP is complete
       if (isOtpComplete()) {
         onOtpCompleted?.call(getOtpValue());
       }
+    }
+  }
+
+  /// Refreshes all field states to ensure they reflect current state
+  void refreshAllFieldStates() {
+    for (int i = 0; i < fieldCount; i++) {
+      updateFieldState(i);
     }
   }
 
@@ -509,32 +536,32 @@ class OtpStateManager {
         }
       }
     }
-    
+
     // Clear all field values
     for (var controller in controllers) {
       controller.clear();
     }
-    
+
     // Reset all field states to empty
     for (int i = 0; i < fieldStates.length; i++) {
       fieldStates[i] = OtpFieldState.empty;
     }
-    
+
     // Reset all error flags if not preserving error
     if (!preserveError) {
       for (int i = 0; i < fieldHasError.length; i++) {
         fieldHasError[i] = false;
       }
-      
+
       // Clear any error text
       errorText = null;
-      
+
       // Clear internal error state if configured to do so
       if (errorConfig.autoClearErrorOnInput) {
         clearErrorState();
       }
     }
-    
+
     // Restore focus if needed
     if (preserveFocus && focusedIndex != null) {
       focusNodes[focusedIndex].requestFocus();
