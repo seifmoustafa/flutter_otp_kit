@@ -11,36 +11,36 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 <table>
   <tr>
     <td align="center">
-      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/basic.gif" width="200px" alt="Basic OTP">
+      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/sc1.png" width="200px" alt="Basic Design with Validation Error">
       <br />
-      <em>Basic OTP</em>
+      <em>Basic Design with Validation Error</em>
     </td>
     <td align="center">
-      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/custom_styling.gif" width="200px" alt="Custom Styling">
+      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/sc4.png" width="200px" alt="Empty Initial Basic Design">
       <br />
-      <em>Custom Styling</em>
+      <em>Empty Initial Basic Design</em>
     </td>
     <td align="center">
-      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/error_state.gif" width="200px" alt="Error State">
+      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/sc5.png" width="200px" alt="Complete Filled Inputs">
       <br />
-      <em>Error State</em>
+      <em>Complete Filled Inputs</em>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/widget_customization.gif" width="200px" alt="Widget Customization">
+      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/sc6.png" width="200px" alt="Email Basic Design">
       <br />
-      <em>Widget Customization</em>
+      <em>Email Basic Design</em>
     </td>
     <td align="center">
-      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/responsive.gif" width="200px" alt="Responsive Layout">
+      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/sc2.png" width="200px" alt="Widget Design While Writing">
       <br />
-      <em>Responsive Layout</em>
+      <em>Widget Design While Writing</em>
     </td>
     <td align="center">
-      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/edge_cases.gif" width="200px" alt="Edge Cases">
+      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/sc3.png" width="200px" alt="Complete Typed Widget Design">
       <br />
-      <em>Edge Cases</em>
+      <em>Complete Typed Widget Design</em>
     </td>
   </tr>
 </table>
@@ -48,21 +48,24 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 ### 🎬 Video Demo
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=your_video_id">
-    <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/video_thumbnail.jpg" width="600px" alt="Video Demo">
+  <a href="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/tutorial.mp4">
+    <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/tutorial.mp4" width="600px" alt="Tutorial Video Demo">
   </a>
 </p>
 
-> **Note for Package Maintainers**: 
-> 1. Replace the URLs with your actual screenshot and video URLs after uploading them to your repository.
-> 2. To add your own screenshots:
->    - Place your screenshots/GIFs in the `screenshots` directory
->    - Update the URLs in the README.md file
->    - Recommended dimensions: 400x800px for screenshots, 600x400px for video thumbnails
-> 3. To add a video demo:
->    - Upload your video to YouTube or another video hosting platform
->    - Create a thumbnail for the video and place it in the `screenshots` directory
->    - Update the URL in the README.md file with your video URL
+**Tutorial Video**: Complete walkthrough of Flutter OTP Kit features and implementation
+
+> **Screenshots & Video**: 
+> 1. All screenshots are stored in the `screenshots` directory
+> 2. Screenshots showcase different states and designs:
+>    - `sc1.png`: Basic design with validation error
+>    - `sc2.png`: Widget design while writing
+>    - `sc3.png`: Complete typed widget design
+>    - `sc4.png`: Empty initial basic design
+>    - `sc5.png`: Complete filled inputs
+>    - `sc6.png`: Email basic design
+> 3. Video tutorial:
+>    - `tutorial.mp4`: Complete walkthrough of Flutter OTP Kit features and implementation
 
 ## ✨ Features
 

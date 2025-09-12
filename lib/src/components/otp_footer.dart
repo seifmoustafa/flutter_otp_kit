@@ -182,9 +182,7 @@ class OtpFooter extends StatelessWidget {
                 TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: remainingTime == 0
-                      ? primaryColor
-                      : secondaryColor,
+                  color: remainingTime == 0 ? primaryColor : secondaryColor,
                   decoration: TextDecoration.underline,
                 ),
           ),
