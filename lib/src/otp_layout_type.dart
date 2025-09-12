@@ -1,7 +1,10 @@
 /// Enum for different OTP field layout types
 enum OtpLayoutType {
-  /// Single row layout (default)
-  singleRow,
+  /// Single row layout with fixed width fields (default)
+  fixed,
+
+  /// Single row layout with responsive field widths
+  responsive,
 
   /// Wrap layout for responsive design
   wrap,

@@ -4,7 +4,65 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)](https://flutter.dev)
 
-A comprehensive, production-ready Flutter package for OTP (One-Time Password) verification with extensive customization options, responsive design, and robust error handling.
+A comprehensive, production-ready Flutter package for OTP (One-Time Password) verification with extensive customization options, responsive design, and robust error handling. Built with a modern component-based architecture, this package offers unparalleled flexibility, maintainability, and performance.
+
+## 📸 Screenshots & Demo
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/basic.gif" width="200px" alt="Basic OTP">
+      <br />
+      <em>Basic OTP</em>
+    </td>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/custom_styling.gif" width="200px" alt="Custom Styling">
+      <br />
+      <em>Custom Styling</em>
+    </td>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/error_state.gif" width="200px" alt="Error State">
+      <br />
+      <em>Error State</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/widget_customization.gif" width="200px" alt="Widget Customization">
+      <br />
+      <em>Widget Customization</em>
+    </td>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/responsive.gif" width="200px" alt="Responsive Layout">
+      <br />
+      <em>Responsive Layout</em>
+    </td>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/edge_cases.gif" width="200px" alt="Edge Cases">
+      <br />
+      <em>Edge Cases</em>
+    </td>
+  </tr>
+</table>
+
+### 🎬 Video Demo
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=your_video_id">
+    <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/video_thumbnail.jpg" width="600px" alt="Video Demo">
+  </a>
+</p>
+
+> **Note for Package Maintainers**: 
+> 1. Replace the URLs with your actual screenshot and video URLs after uploading them to your repository.
+> 2. To add your own screenshots:
+>    - Place your screenshots/GIFs in the `screenshots` directory
+>    - Update the URLs in the README.md file
+>    - Recommended dimensions: 400x800px for screenshots, 600x400px for video thumbnails
+> 3. To add a video demo:
+>    - Upload your video to YouTube or another video hosting platform
+>    - Create a thumbnail for the video and place it in the `screenshots` directory
+>    - Update the URL in the README.md file with your video URL
 
 ## ✨ Features
 
@@ -48,702 +106,589 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 - **Voice Input**: Voice input capabilities
 - **Swipe Navigation**: Touch gesture support for field navigation
 - **Custom Field Builders**: Complete control over field appearance and behavior
-- **Custom Layout Builders**: Full control over field arrangement
-- **Automatic Error State Management**: Built-in error state handling with auto-clear functionality
-- **Widget-Based Customization**: Complete UI customization with custom widgets for all components
 
-## 🚀 Quick Start
+### 🧩 Architecture
+- **Component-Based Design**: Modular architecture for better maintainability
+- **State Management**: Dedicated state management for OTP fields
+- **Styling System**: Centralized styling for consistent appearance
+- **Configuration System**: Comprehensive configuration options
+- **Utility Functions**: Reusable utility functions for common tasks
+- **Public API**: Clean and well-documented public API
 
-### Installation
-
-Add this to your package's `pubspec.yaml` file:
+## 📦 Installation
 
 ```yaml
 dependencies:
   flutter_otp_kit: ^1.5.0
 ```
 
-Then run:
-
-```bash
-flutter pub get
-```
+## 🚀 Usage
 
 ### Basic Usage
 
 ```dart
-import 'package:flutter/material.dart';
 import 'package:flutter_otp_kit/flutter_otp_kit.dart';
 
-class MyOTPPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: OtpVerificationWidget(
+OtpVerificationWidget(
   title: 'Verify Phone Number',
-          subtitle: 'Enter the 5-digit code sent to {contactInfo}',
-  contactInfo: '01012345678',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: '+1 (555) 123-4567',
   maskingType: MaskingType.phone,
-          fieldCount: 5,
-          timerDuration: 60,
   buttonText: 'Verify',
   resendText: 'Resend Code',
-  timerPrefix: 'after',
+  timerPrefix: 'in',
   onVerify: (otp) {
     // Handle OTP verification
-    print('OTP: $otp');
+    print('Verifying OTP: $otp');
   },
   onResend: () {
-            // Handle resend functionality
-            print('Resend requested');
-          },
-        ),
-      ),
-    );
-  }
-}
-```
-
-## 📖 API Reference
-
-### OtpVerificationWidget
-
-The main widget for OTP verification with comprehensive customization options.
-
-#### Required Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `title` | `String` | Main title displayed above OTP fields |
-| `subtitle` | `String` | Subtitle with instructions (use `{contactInfo}` for dynamic content) |
-| `buttonText` | `String` | Text for the verification button |
-| `resendText` | `String` | Text for the resend button |
-| `timerPrefix` | `String` | Text prefix for the countdown timer |
-| `onVerify` | `Function(String)` | Callback when OTP verification is requested |
-| `onResend` | `Function()` | Callback when resend is requested |
-
-#### Optional Parameters
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `contactInfo` | `String?` | `null` | Contact information to display (phone/email) |
-| `maskingType` | `MaskingType` | `MaskingType.phone` | Type of contact masking |
-| `fieldCount` | `int` | `5` | Number of OTP input fields |
-| `timerDuration` | `int` | `60` | Countdown timer duration in seconds |
-| `fieldWidth` | `double` | `55.125` | Width of each OTP field |
-| `fieldHeight` | `double` | `60.731` | Height of each OTP field |
-| `borderRadius` | `double` | `17.752` | Border radius for fields |
-| `borderWidth` | `double` | `1.869` | Border width for fields |
-| `spacing` | `double` | `16.0` | General spacing around the widget |
-| `fieldSpacing` | `double` | `12.0` | Spacing between OTP fields |
-| `minFieldSpacing` | `double` | `8.0` | Minimum spacing between fields |
-| `maxFieldSpacing` | `double` | `20.0` | Maximum spacing between fields |
-| `primaryColor` | `Color` | `Color(0xFF018CC3)` | Primary color for the widget |
-| `secondaryColor` | `Color` | `Color(0xFF8B8B8B)` | Secondary color for borders and text |
-| `backgroundColor` | `Color` | `Colors.white` | Background color for fields |
-| `autoFocus` | `bool` | `true` | Auto-focus the first field |
-| `enableAutoValidation` | `bool` | `true` | Enable automatic validation |
-| `otpInputType` | `OtpInputType` | `OtpInputType.numeric` | Type of input allowed |
-| `enablePaste` | `bool` | `true` | Enable clipboard paste detection |
-| `obscureText` | `bool` | `false` | Hide input text (for sensitive OTPs) |
-| `obscuringCharacter` | `String` | `'•'` | Character used for obscuring text |
-| `showTimer` | `bool` | `true` | Show/hide the countdown timer |
-| `enableShadow` | `bool` | `false` | Enable shadow effects |
-| `shadowColor` | `Color?` | `null` | Color of the shadow |
-| `shadowBlurRadius` | `double` | `10.0` | Blur radius of the shadow |
-| `shadowSpreadRadius` | `double` | `0.0` | Spread radius of the shadow |
-| `focusedBorderColor` | `Color?` | `null` | Color of focused field border |
-| `errorBorderColor` | `Color?` | `null` | Color of error field border |
-| `filledFieldBackgroundColor` | `Color?` | `null` | Background color of filled fields |
-| `cursorColor` | `Color?` | `null` | Color of the text cursor |
-| `cursorHeight` | `double?` | `fieldHeight - 12` | Height of the text cursor (perfect vertical centering) |
-| `cursorWidth` | `double` | `1.0` | Width of the text cursor |
-| `cursorAlignment` | `CursorAlignment` | `CursorAlignment.center` | Alignment of the cursor within the field |
-| `animationDuration` | `Duration` | `Duration(milliseconds: 150)` | Duration of animations |
-| `animationCurve` | `Curve` | `Curves.easeInOut` | Animation curve |
-| `textCapitalization` | `TextCapitalization` | `TextCapitalization.none` | Text capitalization behavior |
-| `enableInteractiveSelection` | `bool` | `true` | Enable text selection |
-| `layoutType` | `OtpLayoutType` | `OtpLayoutType.singleRow` | Layout type for field arrangement |
-| `fieldAlignment` | `OtpFieldAlignment` | `OtpFieldAlignment.center` | Field alignment within layout |
-| `fieldDirection` | `OtpFieldDirection` | `OtpFieldDirection.horizontal` | Field arrangement direction |
-| `fieldShape` | `OtpFieldShape` | `OtpFieldShape.roundedRectangle` | Field shape type |
-| `animationConfig` | `OtpAnimationConfig` | `OtpAnimationConfig.defaultConfig` | Animation configuration |
-| `themeConfig` | `OtpThemeConfig?` | `null` | Theme configuration |
-| `behaviorConfig` | `OtpBehaviorConfig` | `OtpBehaviorConfig()` | Behavior configuration |
-| `enableGradient` | `bool` | `false` | Enable gradient background |
-| `gradientConfig` | `OtpGradientConfig?` | `null` | Gradient configuration |
-| `enableHapticFeedback` | `bool` | `false` | Enable haptic feedback |
-| `enableSoundFeedback` | `bool` | `false` | Enable sound feedback |
-| `enableAutoSubmit` | `bool` | `false` | Enable auto submit when complete |
-| `enableAutoClearOnError` | `bool` | `false` | Enable auto clear on error |
-| `validationRegex` | `String?` | `null` | Validation regex pattern |
-| `validationMessage` | `String?` | `null` | Custom validation message |
-| `enableRealTimeValidation` | `bool` | `false` | Enable real-time validation |
-| `enableScreenReaderSupport` | `bool` | `true` | Enable screen reader support |
-
-### Enums
-
-#### OtpInputType
-- `numeric`: Only accepts numbers (0-9)
-- `alphabetic`: Only accepts letters (a-z, A-Z)
-- `alphanumeric`: Accepts both letters and numbers
-- `custom`: Allows custom input with formatters
-
-#### MaskingType
-- `phone`: Masks phone numbers (e.g., 010******78)
-- `email`: Masks email addresses (e.g., u***@example.com)
-
-#### OtpLayoutType
-- `singleRow`: Fields arranged in a single horizontal row
-- `wrap`: Fields wrap to next line when needed
-- `grid`: Fields arranged in a grid
-- `custom`: Custom layout using builder function
-
-#### OtpFieldShape
-- `rectangle`: Standard rectangle shape
-- `roundedRectangle`: Rectangle with rounded corners
-- `circle`: Perfect circle shape
-- `stadium`: Pill-shaped (stadium) shape
-- `custom`: Custom shape using path function
-
-#### OtpFieldAlignment
-- `start`: Align fields to the start
-- `center`: Center align fields
-- `end`: Align fields to the end
-- `spaceBetween`: Distribute fields with space between
-- `spaceAround`: Distribute fields with space around
-- `spaceEvenly`: Distribute fields with even spacing
-
-#### OtpFieldDirection
-- `horizontal`: Arrange fields horizontally
-- `vertical`: Arrange fields vertically
-
-#### CursorAlignment
-- `left`: Align cursor to the left
-- `center`: Center align cursor (default)
-- `right`: Align cursor to the right
-
-### Configuration Classes
-
-#### OtpAnimationConfig
-Predefined animation configurations:
-
-```dart
-OtpAnimationConfig.defaultConfig  // Standard animations
-OtpAnimationConfig.fast          // Fast animations
-OtpAnimationConfig.smooth        // Smooth animations
-OtpAnimationConfig.disabled      // No animations
-```
-
-#### OtpThemeConfig
-Theme configurations:
-
-```dart
-OtpThemeConfig.material3(context)  // Material Design 3 theme
-OtpThemeConfig.light             // Light theme
-OtpThemeConfig.dark              // Dark theme
-```
-
-#### OtpBehaviorConfig
-Behavior configuration options:
-
-```dart
-OtpBehaviorConfig(
-  enableHapticFeedback: true,
-  enableSoundFeedback: true,
-  enableAutoSubmit: true,
-  enableAutoClearOnError: true,
-  enableVisualFeedback: true,
+    // Handle resend OTP
+    print('Resending OTP');
+  },
 )
 ```
 
-#### OtpGradientConfig
-Gradient configuration:
+### Customization Example
 
-```dart
-OtpGradientConfig(
-  colors: [Colors.blue, Colors.purple],
-  type: GradientType.linear,
-  begin: Alignment.topLeft,
-  end: Alignment.bottomRight,
-)
-```
-
-## 🎨 Examples
-
-### Basic OTP
 ```dart
 OtpVerificationWidget(
-  title: 'Verify Phone Number',
-  subtitle: 'Enter the 5-digit code sent to {contactInfo}',
-  contactInfo: '01012345678',
-  maskingType: MaskingType.phone,
-  fieldCount: 5,
-  buttonText: 'Verify',
-  resendText: 'Resend Code',
+  title: 'Verification Code',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: 'user@example.com',
+  maskingType: MaskingType.email,
+  buttonText: 'Submit',
+  resendText: 'Send Again',
   timerPrefix: 'after',
-  onVerify: (otp) => handleVerification(otp),
-  onResend: () => resendOtp(),
-)
-```
-
-### Alphanumeric OTP
-```dart
-OtpVerificationWidget(
-  title: 'Verify Account',
-  subtitle: 'Enter the 6-character code',
   fieldCount: 6,
-  otpInputType: OtpInputType.alphanumeric,
-  textCapitalization: TextCapitalization.characters,
-  buttonText: 'Verify',
-  resendText: 'Resend',
-  timerPrefix: 'expires in',
-  onVerify: (otp) => handleVerification(otp),
-  onResend: () => resendOtp(),
-)
-```
-
-### Secure OTP
-```dart
-OtpVerificationWidget(
-  title: 'Secure Verification',
-  subtitle: 'Enter the secure code',
-  fieldCount: 4,
-  obscureText: true,
-  obscuringCharacter: '●',
-  enableShadow: true,
-  shadowColor: Colors.purple.withOpacity(0.3),
-  buttonText: 'Verify',
-  resendText: 'Resend',
-  timerPrefix: 'after',
-  onVerify: (otp) => handleVerification(otp),
-  onResend: () => resendOtp(),
-)
-```
-
-### Custom Validation
-```dart
-OtpVerificationWidget(
-  title: 'Custom Validation',
-  subtitle: 'Enter valid OTP',
-  fieldCount: 6,
-  validationRegex: r'^[0-9]{6}$',
-  validationMessage: 'Please enter 6 digits',
-  enableRealTimeValidation: true,
-  buttonText: 'Verify',
-  resendText: 'Resend',
-  timerPrefix: 'after',
-  onVerify: (otp) => handleVerification(otp),
-  onResend: () => resendOtp(),
-)
-```
-
-### Advanced Styling
-```dart
-OtpVerificationWidget(
-  title: 'Styled OTP',
-  subtitle: 'Enter code with style',
-  fieldCount: 5,
-  fieldShape: OtpFieldShape.circle,
-  fieldWidth: 60,
-  fieldHeight: 60,
-  borderRadius: 30,
-  primaryColor: Colors.purple,
-  enableGradient: true,
-  gradientConfig: OtpGradientConfig(
-    colors: [Colors.purple, Colors.pink],
-    type: GradientType.linear,
-  ),
-  animationConfig: OtpAnimationConfig.smooth,
-  enableHapticFeedback: true,
-  buttonText: 'Verify',
-  resendText: 'Resend',
-  timerPrefix: 'after',
-  onVerify: (otp) => handleVerification(otp),
-  onResend: () => resendOtp(),
-)
-```
-
-### Cursor Control
-```dart
-OtpVerificationWidget(
-  title: 'Custom Cursor OTP',
-  subtitle: 'Enter code with custom cursor',
-  fieldCount: 6,
-  fieldHeight: 56,
-  // Cursor customization
-  cursorHeight: 50, // 6px padding from top and bottom (56 - 6 = 50)
-  cursorWidth: 2.0, // Thicker cursor
-  cursorAlignment: CursorAlignment.center, // Perfect center alignment
-  cursorColor: Colors.blue, // Blue cursor
-  buttonText: 'Verify',
-  resendText: 'Resend',
-  timerPrefix: 'after',
-  onVerify: (otp) => handleVerification(otp),
-  onResend: () => resendOtp(),
-)
-```
-
-### Enhanced Field Transitions
-```dart
-OtpVerificationWidget(
-  title: 'Enhanced Field Transitions',
-  subtitle: 'Smooth transitions and progressive highlighting',
-  fieldCount: 6,
-  fieldHeight: 60,
-  // Enhanced field transition features
-  fieldTransitionDuration: const Duration(milliseconds: 200),
-  fieldTransitionCurve: Curves.easeInOut,
-  enableFieldStateAnimation: true,
-  completedFieldBorderColor: Colors.green,
-  completedFieldBackgroundColor: Colors.green.withOpacity(0.1),
-  completedFieldTextColor: Colors.green,
-  enableProgressiveHighlighting: true,
-  enableFieldToFieldAnimation: true,
-  fieldToFieldTransitionDuration: const Duration(milliseconds: 150),
-  fieldToFieldTransitionCurve: Curves.easeInOut,
-  transitionHighlightColor: Colors.blue.withOpacity(0.3),
-  // Styling
-  primaryColor: Colors.blue,
-  focusedBorderColor: Colors.blue,
-  filledFieldBackgroundColor: Colors.blue.withOpacity(0.1),
-  fieldWidth: 50,
-  borderRadius: 12,
-  enableShadow: true,
-  shadowColor: Colors.blue.withOpacity(0.2),
-  buttonText: 'Verify',
-  resendText: 'Resend',
-  timerPrefix: 'after',
-  onVerify: (otp) => handleVerification(otp),
-  onResend: () => resendOtp(),
-)
-```
-
-### Complete Customization
-```dart
-OtpVerificationWidget(
-  title: 'Fully Customized OTP',
-  subtitle: 'Every aspect is controllable',
-  fieldCount: 6,
-  // Layout configuration
-  layoutType: OtpLayoutType.singleRow,
-  fieldAlignment: OtpFieldAlignment.center,
-  fieldShape: OtpFieldShape.roundedRectangle,
-  // Animation configuration
-  animationConfig: OtpAnimationConfig.smooth,
-  // Theme configuration
-  themeConfig: OtpThemeConfig.material3(context),
-  // Behavior configuration
-  behaviorConfig: OtpBehaviorConfig(
-    enableHapticFeedback: true,
-    enableSoundFeedback: true,
-    enableAutoSubmit: true,
-    enableAutoClearOnError: true,
-  ),
-  // Responsive spacing
   fieldSpacing: 12.0,
-  minFieldSpacing: 8.0,
-  maxFieldSpacing: 20.0,
-  // Gradient background
-  enableGradient: true,
-  gradientConfig: OtpGradientConfig(
-        colors: [Colors.blue, Colors.purple],
-    type: GradientType.linear,
-  ),
-  // Advanced validation
-  enableRealTimeValidation: true,
-  validationRegex: r'^[0-9]{6}$',
-  validationMessage: 'Please enter 6 digits',
-  // Cursor control
-  cursorHeight: 50, // Perfect centering with 6px padding (56 - 12 = 44)
-  cursorWidth: 1.5, // Slightly thicker cursor
-  cursorAlignment: CursorAlignment.center, // Perfect center alignment
-  cursorColor: Colors.purple, // Purple cursor
-  // Accessibility
-  enableScreenReaderSupport: true,
-  semanticLabel: 'OTP verification code',
-  semanticHint: 'Enter the 6-digit code',
-  buttonText: 'Verify',
-  resendText: 'Resend',
-  timerPrefix: 'after',
-  onVerify: (otp) => handleVerification(otp),
+  otpInputType: OtpInputType.numeric,
+  layoutType: OtpLayoutType.responsive,
+  primaryColor: Colors.blue,
+  secondaryColor: Colors.grey,
+  backgroundColor: Colors.white,
+  defaultBorderColor: Colors.grey.shade300,
+  focusedBorderColor: Colors.blue,
+  completedFieldBorderColor: Colors.green,
+  errorBorderColor: Colors.red,
+  hasError: false,
+  errorStateBehavior: ErrorStateBehavior.autoClear,
+  autoClearErrorOnInput: true,
+  onVerify: (otp) => verifyOtp(otp),
   onResend: () => resendOtp(),
+  onChanged: (value) => print('OTP changed: $value'),
+  onCompleted: (value) => print('OTP completed: $value'),
+  onErrorStateChanged: () => print('Error state changed'),
 )
 ```
 
-### Advanced Error State Management
+### Error State Management
+
 ```dart
-class MyOTPPage extends StatefulWidget {
-  @override
-  _MyOTPPageState createState() => _MyOTPPageState();
-}
+// Create a GlobalKey to access the OtpVerificationWidget state
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
 
-class _MyOTPPageState extends State<MyOTPPage> {
-  bool _hasError = false;
-  final GlobalKey<OtpVerificationWidgetState> _otpKey = GlobalKey();
-
-  void _handleVerification(String otp) {
-    // Simulate API call
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        final isSuccess = otp != '0000'; // Simulate failure for '0000'
-        
-        setState(() {
-          _hasError = !isSuccess;
-        });
-        
-        if (isSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('OTP verified successfully!')),
-          );
-        }
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: OtpVerificationWidget(
-          key: _otpKey,
-          title: 'Advanced Error State Management',
-          subtitle: 'Try entering 0000 to see error state behavior',
-          fieldCount: 4,
-          timerDuration: 60,
-          buttonText: 'Verify',
-          resendText: 'Resend',
-          timerPrefix: 'after',
-          // Advanced error state management
-          hasError: _hasError,
-          errorStateBehavior: ErrorStateBehavior.persistent,
-          errorStatePriority: ErrorStatePriority.highest,
-          autoClearErrorOnInput: false, // Don't clear on partial input
-          autoClearErrorOnResend: true,
-          autoClearErrorOnComplete: true,
-          errorStateDuration: const Duration(seconds: 5),
-          defaultBorderColor: Colors.grey.shade300, // Default color for empty fields
-          onErrorStateChanged: () {
-            setState(() {
-              _hasError = false;
-            });
-          },
-          // Enhanced error styling with proper priority
-          errorBorderColor: Colors.red,
-          completedFieldBorderColor: Colors.green,
-          completedFieldBackgroundColor: Colors.green.withOpacity(0.1),
-          completedFieldTextColor: Colors.green,
-          enableProgressiveHighlighting: true,
-          onVerify: _handleVerification,
-          onResend: () => print('Resend requested'),
-        ),
-      ),
-    );
-  }
-}
-```
-
-### Error State Behaviors
-```dart
-// Persistent error state (recommended)
+// In your build method
 OtpVerificationWidget(
+  key: otpKey,
+  title: 'Verification',
+  subtitle: 'Enter OTP',
+  buttonText: 'Verify',
+  resendText: 'Resend',
+  timerPrefix: 'in',
+  onVerify: (otp) {
+    if (otp == '1234') {
+      // Success
+      print('Verification successful');
+    } else {
+      // Error - set error state
+      otpKey.currentState?.setErrorState(true);
+    }
+  },
+  onResend: () => resendOtp(),
+  errorText: 'Invalid OTP. Please try again.',
   errorStateBehavior: ErrorStateBehavior.persistent,
   errorStatePriority: ErrorStatePriority.highest,
-  autoClearErrorOnInput: false, // Don't clear on partial input
-  autoClearErrorOnResend: true,
-  autoClearErrorOnComplete: true,
-  // ... other parameters
-)
-
-// Auto-clear error state
-OtpVerificationWidget(
-  errorStateBehavior: ErrorStateBehavior.autoClear,
-  errorStatePriority: ErrorStatePriority.highest,
-  autoClearErrorOnInput: true, // Clear on any input
-  autoClearErrorOnResend: true,
-  autoClearErrorOnComplete: true,
-  // ... other parameters
-)
-
-// Timed error state
-OtpVerificationWidget(
-  errorStateBehavior: ErrorStateBehavior.timed,
-  errorStatePriority: ErrorStatePriority.highest,
-  errorStateDuration: const Duration(seconds: 3),
-  // ... other parameters
 )
 ```
 
 ### Widget-Based Customization
+
 ```dart
 OtpVerificationWidget(
-  title: 'Custom Widgets Demo',
-  subtitle: 'Fully customized with custom widgets',
-  fieldCount: 4,
-  timerDuration: 90,
-  buttonText: 'Verify',
-  resendText: 'Resend',
-  timerPrefix: 'after',
-  // Custom widgets
-  titleWidget: Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [Colors.purple.shade400, Colors.pink.shade400],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      borderRadius: BorderRadius.circular(16),
-    ),
-    child: Column(
-      children: [
-        Icon(Icons.security, size: 48, color: Colors.white),
-        const SizedBox(height: 8),
-        Text(
-          'Secure Verification',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-      ],
-    ),
-  ),
-  subtitleWidget: Container(
-    padding: const EdgeInsets.all(12),
-    decoration: BoxDecoration(
-      color: Colors.blue.shade50,
-      borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: Colors.blue.shade200),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(Icons.email, color: Colors.blue),
-        const SizedBox(width: 8),
-        Text(
-          'Code sent to your email',
-          style: TextStyle(
-            color: Colors.blue.shade700,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    ),
-  ),
-  errorWidget: Container(
-    padding: const EdgeInsets.all(12),
-    decoration: BoxDecoration(
-      color: Colors.red.shade50,
-      borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: Colors.red),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(Icons.error, color: Colors.red),
-        const SizedBox(width: 8),
-        Text(
-          'Invalid code. Please try again.',
-          style: TextStyle(
-            color: Colors.red,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    ),
-  ),
-  verifyButtonWidget: Container(
-    width: double.infinity,
-    height: 50,
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [Colors.purple, Colors.pink],
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight,
-      ),
-      borderRadius: BorderRadius.circular(25),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.purple.withOpacity(0.3),
-          blurRadius: 10,
-          offset: const Offset(0, 4),
-        ),
-      ],
-    ),
-    child: ElevatedButton(
-      onPressed: () => handleVerification(),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25),
-        ),
-      ),
-      child: Text(
-        'Verify Code',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
-  ),
-  resendWidget: Row(
+  titleWidget: Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      Icon(Icons.refresh, size: 16, color: Colors.grey),
-      const SizedBox(width: 4),
-      TextButton(
-        onPressed: () => resendOtp(),
-        child: Text(
-          'Resend Code',
-          style: TextStyle(
-            color: Colors.purple,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
+      Icon(Icons.security, color: Colors.blue),
+      SizedBox(width: 8),
+      Text('Security Verification', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
     ],
   ),
-  onVerify: (otp) => handleVerification(otp),
+  subtitleWidget: RichText(
+    textAlign: TextAlign.center,
+    text: TextSpan(
+      style: TextStyle(color: Colors.black87, fontSize: 14),
+      children: [
+        TextSpan(text: 'Enter the code sent to '),
+        TextSpan(
+          text: '+1 (555) ***-**67',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ],
+    ),
+  ),
+  verifyButtonWidget: ElevatedButton.icon(
+    onPressed: () {},  // This will be overridden by the widget
+    icon: Icon(Icons.check_circle),
+    label: Text('VERIFY NOW'),
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.green,
+      foregroundColor: Colors.white,
+    ),
+  ),
+  buttonText: 'Verify',  // Fallback
+  subtitle: 'Enter code',  // Fallback
+  resendText: 'Resend',
+  timerPrefix: 'in',
+  onVerify: (otp) => verifyOtp(otp),
   onResend: () => resendOtp(),
 )
+```
+
+## 🏗️ Architecture
+
+Flutter OTP Kit is built with a modern component-based architecture that emphasizes separation of concerns, maintainability, and flexibility. This architecture makes the package highly customizable, easy to extend, and simple to integrate into any Flutter application.
+
+The package is built with a modular architecture for better maintainability:
+
+### Components
+
+The package is organized into several key components, each with a specific responsibility:
+
+#### OtpVerificationWidget
+The main widget that orchestrates all components. It serves as the entry point for the package and manages the overall state and behavior of the OTP verification process.
+
+```dart
+OtpVerificationWidget(
+  title: 'Verify Phone Number',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: '+1 (555) 123-4567',
+  maskingType: MaskingType.phone,
+  buttonText: 'Verify',
+  resendText: 'Resend Code',
+  timerPrefix: 'in',
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => handleResend(),
+)
+```
+
+#### OtpField
+Individual OTP input field with customizable styling and behavior. Each field manages its own state, styling, and input handling.
+
+```dart
+OtpField(
+  controller: textController,
+  focusNode: focusNode,
+  fieldState: OtpFieldState.focused,
+  hasError: false,
+  onChanged: (value) => handleChange(value),
+  config: fieldConfig,
+  fieldColors: fieldColors,
+  inputFormatters: inputFormatters,
+  keyboardType: TextInputType.number,
+  cursorAlignment: TextAlign.center,
+  validator: validator,
+)
+```
+
+#### OtpFieldsRow
+Container for OTP fields that manages layout, spacing, and field arrangement. Supports different layout types (fixed, responsive) and handles overflow protection.
+
+```dart
+OtpFieldsRow(
+  controllers: controllers,
+  focusNodes: focusNodes,
+  fieldStates: fieldStates,
+  fieldHasError: fieldHasError,
+  onDigitChanged: handleDigitChange,
+  config: fieldConfig,
+  getFieldColors: getFieldColors,
+  inputFormatters: inputFormatters,
+  keyboardType: keyboardType,
+  validator: validator,
+  layoutType: OtpLayoutType.responsive,
+  fieldCount: 6,
+  fieldSpacing: 10.0,
+  cursorAlignment: TextAlign.center,
+)
+```
+
+#### OtpHeader
+Title and subtitle component with support for masked contact information. Can be customized with widgets or strings.
+
+```dart
+OtpHeader(
+  title: 'Verify Phone Number',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  primaryColor: Colors.blue,
+  secondaryColor: Colors.grey,
+  spacing: 16.0,
+  titleWidget: customTitleWidget, // Optional
+  subtitleWidget: customSubtitleWidget, // Optional
+  titleStyle: titleTextStyle,
+  subtitleStyle: subtitleTextStyle,
+  contactInfo: '+1 (555) 123-4567',
+  maskingType: MaskingType.phone,
+)
+```
+
+#### OtpFooter
+Verify button, resend button, and timer component. Manages loading states, timer countdown, and button styling.
+
+```dart
+OtpFooter(
+  onVerifyPressed: handleVerify,
+  onResendPressed: handleResend,
+  isLoading: false,
+  remainingTime: 30,
+  primaryColor: Colors.blue,
+  secondaryColor: Colors.grey,
+  spacing: 16.0,
+  buttonText: 'Verify',
+  resendText: 'Resend Code',
+  timerPrefix: 'in',
+  verifyButtonWidget: customButtonWidget, // Optional
+  resendWidget: customResendWidget, // Optional
+  timerWidget: customTimerWidget, // Optional
+)
+```
+
+#### OtpErrorDisplay
+Error message display component that can be customized with widgets or strings.
+
+```dart
+OtpErrorDisplay(
+  errorText: 'Invalid OTP. Please try again.',
+  errorWidget: customErrorWidget, // Optional
+  errorStyle: errorTextStyle,
+  errorColor: Colors.red,
+  topSpacing: 8.0,
+)
+```
+
+### State Management
+
+State management is centralized in dedicated classes that handle all aspects of OTP state, error state, and field state transitions.
+
+#### OtpStateManager
+Centralized state management for the OTP verification process. Handles field state transitions, error state management, focus management, and input handling.
+
+```dart
+// Creating a state manager
+final stateManager = OtpStateManager(
+  fieldCount: 6,
+  errorConfig: errorConfig,
+  onErrorStateChanged: handleErrorStateChange,
+  onOtpChanged: handleOtpChange,
+  onOtpCompleted: handleOtpComplete,
+);
+
+// Managing OTP state
+stateManager.clearOtp(refocus: true, clearError: true);
+stateManager.setOtp('123456', clearFocus: true);
+stateManager.resetFields(preserveFocus: false);
+stateManager.setErrorState(true);
+stateManager.clearErrorState();
+
+// Accessing OTP state
+final otpValue = stateManager.getOtpValue();
+final isComplete = stateManager.isOtpComplete();
+final isValid = stateManager.isOtpValid();
+```
+
+#### OtpFieldState
+Enum that represents the state of an OTP field. Used for styling and behavior.
+
+```dart
+enum OtpFieldState {
+  empty,     // Empty field
+  focused,   // Field with focus
+  filled,    // Field with content but not completed
+  completed, // Field with content and all fields are filled
+  error,     // Field with error
+}
+```
+
+#### ErrorStateBehavior
+Enum that defines how error states should behave.
+
+```dart
+enum ErrorStateBehavior {
+  persistent, // Error state persists until manually cleared
+  autoClear,  // Error state auto-clears based on configuration
+  timed,      // Error state clears after specified duration
+}
+```
+
+#### ErrorStatePriority
+Enum that defines the priority of error state over other field states.
+
+```dart
+enum ErrorStatePriority {
+  highest, // Error state overrides all other states
+  normal,  // Error state follows normal priority rules
+  lowest,  // Error state has lowest priority
+}
+```
+
+### Styling
+
+Styling is managed by dedicated classes that handle all aspects of OTP field appearance based on state.
+
+#### OtpStyleManager
+Manages styling for OTP fields based on state, configuration, and theme. Provides consistent styling across all fields.
+
+```dart
+// Creating a style manager
+final styleManager = OtpStyleManager(
+  fieldConfig: fieldConfig,
+  errorConfig: errorConfig,
+  primaryColor: Colors.blue,
+  secondaryColor: Colors.grey,
+  backgroundColor: Colors.white,
+  defaultBorderColor: Colors.grey.shade300,
+  focusedBorderColor: Colors.blue,
+  completedFieldBorderColor: Colors.green,
+  enableProgressiveHighlighting: true,
+);
+
+// Getting field colors based on state
+final fieldColors = styleManager.getFieldColors(
+  index,
+  OtpFieldState.focused,
+  hasError,
+);
+```
+
+#### FieldColors
+Represents the colors for an OTP field based on its state. Includes border color, background color, and text color.
+
+```dart
+final fieldColors = FieldColors(
+  borderColor: Colors.blue,
+  backgroundColor: Colors.white,
+  textColor: Colors.black,
+);
+
+// Creating a copy with modified values
+final errorColors = fieldColors.copyWith(
+  borderColor: Colors.red,
+);
+```
+
+### Configuration
+
+Configuration is split into logical modules that handle specific aspects of the OTP verification process.
+
+#### OtpFieldConfig
+Configuration for OTP field appearance and behavior. Defines field dimensions, border properties, colors, and other visual aspects.
+
+```dart
+final fieldConfig = OtpFieldConfig(
+  fieldWidth: 60.0,
+  fieldHeight: 60.0,
+  borderRadius: 16.0,
+  borderWidth: 2.0,
+  primaryColor: Colors.blue,
+  secondaryColor: Colors.grey,
+  backgroundColor: Colors.white,
+  fieldStyle: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+  cursorColor: Colors.blue,
+  cursorHeight: 24.0,
+  cursorWidth: 2.0,
+  enableShadow: true,
+  shadowColor: Colors.blue.withOpacity(0.2),
+  shadowBlurRadius: 8.0,
+  shadowSpreadRadius: 0.0,
+);
+```
+
+#### OtpErrorConfig
+Configuration for error state behavior and appearance. Defines error state duration, auto-clear behavior, priority, and styling.
+
+```dart
+final errorConfig = OtpErrorConfig(
+  hasError: false,
+  errorStateDuration: Duration(seconds: 3),
+  autoClearErrorOnInput: false,
+  autoClearErrorOnResend: true,
+  autoClearErrorOnComplete: true,
+  errorStatePriority: ErrorStatePriority.highest,
+  errorStateBehavior: ErrorStateBehavior.autoClear,
+  errorBorderColor: Colors.red,
+  errorBackgroundColor: Colors.red.withOpacity(0.1),
+  errorTextColor: Colors.red,
+  errorText: 'Invalid OTP. Please try again.',
+  errorStyle: TextStyle(color: Colors.red, fontSize: 12),
+);
+```
+
+#### OtpAnimationConfig
+Configuration for animations. Defines animation duration, curves, and behavior.
+
+```dart
+final animationConfig = OtpAnimationConfig(
+  enableAnimation: true,
+  animationDuration: Duration(milliseconds: 300),
+  animationCurve: Curves.easeInOut,
+  enableFieldStateAnimation: true,
+  enableFieldToFieldAnimation: true,
+  fieldTransitionDuration: Duration(milliseconds: 150),
+  fieldTransitionCurve: Curves.easeInOut,
+  transitionHighlightColor: Colors.blue.withOpacity(0.3),
+);
+```
+
+#### OtpConfig
+Main configuration that combines all other configurations. Provides a single point of configuration for the entire widget.
+
+```dart
+final otpConfig = OtpConfig(
+  fieldCount: 6,
+  fieldSpacing: 10.0,
+  spacing: 16.0,
+  otpInputType: OtpInputType.numeric,
+  layoutType: OtpLayoutType.responsive,
+  cursorAlignment: TextAlign.center,
+  obscureText: false,
+  enableInteractiveSelection: true,
+  autoFocus: true,
+  enableAutoValidation: false,
+  enablePaste: true,
+  showTimer: true,
+  timerDuration: 60,
+  primaryColor: Colors.blue,
+  secondaryColor: Colors.grey,
+  backgroundColor: Colors.white,
+  fieldConfig: fieldConfig,
+  errorConfig: errorConfig,
+  animationConfig: animationConfig,
+);
+```
+
+### Utilities
+
+Utility classes provide reusable functionality for common tasks in the OTP verification process.
+
+#### OtpMasker
+Utilities for masking contact information (phone numbers, email addresses) for privacy.
+
+```dart
+// Mask a phone number
+final maskedPhone = OtpMasker.maskContactInfo(
+  '+1 (555) 123-4567',
+  MaskingType.phone,
+); // Returns '+1 (555) ***-**67'
+
+// Mask an email address
+final maskedEmail = OtpMasker.maskContactInfo(
+  'user@example.com',
+  MaskingType.email,
+); // Returns 'us****@example.com'
+```
+
+#### OtpValidator
+Utilities for validating OTP input based on input type, length, and custom rules.
+
+```dart
+// Check if OTP is valid
+final isValid = OtpValidator.isValidOtp(
+  '123456',
+  OtpInputType.numeric,
+  6,
+);
+
+// Create a validator function
+final validator = OtpValidator.createValidator(
+  inputType: OtpInputType.numeric,
+  fieldCount: 6,
+  validationRegex: r'^[0-9]+$',
+  validationMessage: 'Numbers only',
+  customValidator: (value) {
+    if (value == '000000') {
+      return 'Invalid OTP';
+    }
+    return null;
+  },
+);
+```
+
+#### OtpFormatter
+Utilities for formatting OTP input, including input formatters and keyboard type.
+
+```dart
+// Get input formatters based on OTP input type
+final inputFormatters = OtpFormatter.getInputFormatters(
+  OtpInputType.numeric,
+  customFormatters: [
+    FilteringTextInputFormatter.digitsOnly,
+  ],
+);
+
+// Get keyboard type based on OTP input type
+final keyboardType = OtpFormatter.getKeyboardType(
+  OtpInputType.numeric,
+  customKeyboardType: TextInputType.number,
+);
+
+// Format seconds into MM:SS format for timer display
+final formattedTime = OtpFormatter.formatTime(65); // Returns '01:05'
 ```
 
 ## 🔧 Public Methods
 
 ### clearOtp()
-Clears all OTP input fields and refocuses the first field.
+Clears all OTP input fields with configurable options.
 
 ```dart
 final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
 
-// Clear OTP
+// Basic usage
 otpKey.currentState?.clearOtp();
+
+// Advanced usage with options
+otpKey.currentState?.clearOtp(
+  refocus: true,      // Whether to refocus first field
+  clearError: true,   // Whether to clear error state
+  callOnChanged: true // Whether to call onChanged callback
+);
 ```
 
 ### setOtp(String)
-Pre-fills fields with provided OTP (useful for testing/auto-fill).
+Pre-fills fields with provided OTP with configurable options.
 
 ```dart
 final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
 
-// Set OTP
+// Basic usage
 otpKey.currentState?.setOtp('12345');
+
+// Advanced usage with options
+otpKey.currentState?.setOtp('12345',
+  clearFocus: true,   // Whether to clear focus from all fields
+  clearError: true,   // Whether to clear error state
+  callCallbacks: true // Whether to call onChanged and onCompleted callbacks
+);
 ```
 
 ### getCurrentOtp()
-Returns the current OTP value from all input fields.
+Returns the current OTP value.
 
 ```dart
 final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
 
 // Get current OTP
 String currentOtp = otpKey.currentState?.getCurrentOtp() ?? '';
+print('Current OTP: $currentOtp');
 ```
 
 ### setErrorState(bool)
@@ -753,14 +698,7 @@ Sets the error state programmatically.
 final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
 
 // Set error state
-void showError() {
-  otpKey.currentState?.setErrorState(true);
-}
-
-// Clear error state
-void clearError() {
-  otpKey.currentState?.setErrorState(false);
-}
+otpKey.currentState?.setErrorState(true);
 ```
 
 ### clearErrorState()
@@ -770,9 +708,7 @@ Clears the error state programmatically.
 final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
 
 // Clear error state
-void clearError() {
-  otpKey.currentState?.clearErrorState();
-}
+otpKey.currentState?.clearErrorState();
 ```
 
 ### hasErrorState
@@ -785,71 +721,138 @@ final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
 bool isErrorActive = otpKey.currentState?.hasErrorState ?? false;
 ```
 
-## 🎯 Best Practices
+### isOtpValid()
+Checks if the current OTP is valid (complete and passes validation).
 
-### Performance
-- Use `OtpAnimationConfig.disabled` for maximum performance
-- Set `enableShadow: false` if shadows are not needed
-- Use appropriate `fieldCount` for your use case (typically 4-6 digits)
+```dart
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
 
-### Accessibility
-- Always provide meaningful `semanticLabel` and `semanticHint`
-- Use `enableScreenReaderSupport: true` for accessibility
-- Ensure sufficient color contrast for all text and borders
+// Check if OTP is valid
+bool isValid = otpKey.currentState?.isOtpValid() ?? false;
 
-### Security
-- Use `obscureText: true` for sensitive OTPs
-- Implement proper validation with `validationRegex`
-- Use `enableRealTimeValidation: true` for immediate feedback
+// Use in conditional logic
+if (otpKey.currentState?.isOtpValid() ?? false) {
+  // OTP is valid, proceed with verification
+} else {
+  // OTP is invalid, show error
+}
+```
 
-### Responsive Design
-- Test on different screen sizes
-- Use appropriate `minFieldSpacing` and `maxFieldSpacing`
-- Consider using `fieldSpacing` for consistent spacing
+### resetFields()
+Resets all fields to empty state with configurable options.
 
-## 🐛 Troubleshooting
+```dart
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
 
-### Common Issues
+// Basic usage
+otpKey.currentState?.resetFields();
 
-**Fields not appearing**
-- Check if `fieldCount` is greater than 0
-- Ensure `fieldWidth` and `fieldHeight` are positive values
+// Advanced usage with options
+otpKey.currentState?.resetFields(
+  preserveFocus: true,  // Keep focus on currently focused field
+  preserveError: true   // Preserve error state
+);
+```
 
-**Overflow errors**
-- The package automatically handles overflow with safety margins
-- If issues persist, reduce `fieldWidth` or increase `minFieldSpacing`
+## 📋 API Reference
 
-**Validation not working**
-- Ensure `enableAutoValidation: true`
-- Check `validationRegex` pattern
-- Verify `validationMessage` is provided
+### Required Parameters
 
-**Timer not showing**
-- Set `showTimer: true`
-- Ensure `timerDuration` is greater than 0
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `title` | `String` | Title text for the verification screen |
+| `subtitle` | `String` | Subtitle text with optional {contactInfo} placeholder |
+| `buttonText` | `String` | Text for the verify button |
+| `resendText` | `String` | Text for the resend button |
+| `timerPrefix` | `String` | Prefix for the timer text (e.g., "in", "after") |
+| `onVerify` | `Function(String)` | Callback when verify button is pressed with OTP value |
+| `onResend` | `VoidCallback` | Callback when resend button is pressed |
 
-### Debug Mode
-Enable debug mode by setting `enableAutoValidation: false` and handling validation manually.
+### Optional Parameters
 
-## 📄 License
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `contactInfo` | `String?` | `null` | Contact information to display in subtitle |
+| `maskingType` | `MaskingType` | `MaskingType.none` | Type of masking to apply to contact information |
+| `fieldCount` | `int` | `4` | Number of OTP input fields |
+| `fieldSpacing` | `double` | `10.0` | Spacing between OTP fields |
+| `spacing` | `double` | `16.0` | General spacing for the widget |
+| `otpInputType` | `OtpInputType` | `OtpInputType.numeric` | Type of OTP input |
+| `layoutType` | `OtpLayoutType` | `OtpLayoutType.fixed` | Layout type for OTP fields |
+| `cursorAlignment` | `TextAlign` | `TextAlign.center` | Alignment of cursor within OTP fields |
+| `obscureText` | `bool` | `false` | Whether to obscure OTP input |
+| `obscuringCharacter` | `String` | `'•'` | Character to use for obscuring text |
+| `enableInteractiveSelection` | `bool` | `true` | Whether to enable text selection in OTP fields |
+| `textCapitalization` | `TextCapitalization` | `TextCapitalization.none` | Text capitalization for OTP fields |
+| `autoFocus` | `bool` | `true` | Whether to auto-focus the first OTP field |
+| `enableAutoValidation` | `bool` | `false` | Whether to enable automatic validation |
+| `enablePaste` | `bool` | `true` | Whether to enable paste functionality |
+| `showTimer` | `bool` | `true` | Whether to show the resend timer |
+| `timerDuration` | `int` | `60` | Duration for the resend timer in seconds |
+| `primaryColor` | `Color` | `Color(0xFF018CC3)` | Primary color for the widget |
+| `secondaryColor` | `Color` | `Color(0xFF8B8B8B)` | Secondary color for the widget |
+| `backgroundColor` | `Color` | `Colors.white` | Background color for OTP fields |
+| `defaultBorderColor` | `Color?` | `null` | Default border color for empty/unfocused fields |
+| `focusedBorderColor` | `Color?` | `null` | Border color for focused OTP fields |
+| `completedFieldBorderColor` | `Color?` | `null` | Border color for completed OTP fields |
+| `completedFieldBackgroundColor` | `Color?` | `null` | Background color for completed OTP fields |
+| `completedFieldTextColor` | `Color?` | `null` | Text color for completed OTP fields |
+| `filledFieldBackgroundColor` | `Color?` | `null` | Background color for filled OTP fields |
+| `enableProgressiveHighlighting` | `bool` | `false` | Whether to enable progressive highlighting of completed fields |
+| `titleStyle` | `TextStyle?` | `null` | Style for title text |
+| `subtitleStyle` | `TextStyle?` | `null` | Style for subtitle text |
+| `errorStyle` | `TextStyle?` | `null` | Style for error text |
+| `buttonStyle` | `TextStyle?` | `null` | Style for button text |
+| `resendStyle` | `TextStyle?` | `null` | Style for resend text |
+| `timerStyle` | `TextStyle?` | `null` | Style for timer text |
+| `validator` | `FormFieldValidator<String>?` | `null` | Validator function for OTP input |
+| `onChanged` | `ValueChanged<String>?` | `null` | Callback when OTP value changes |
+| `onCompleted` | `ValueChanged<String>?` | `null` | Callback when OTP input is completed |
+| `errorText` | `String?` | `null` | Error text to display |
+| `buttonBackgroundColor` | `Color?` | `null` | Background color for the verify button |
+| `buttonTextColor` | `Color?` | `null` | Text color for the verify button |
+| `buttonBorderRadius` | `double` | `8.0` | Border radius for the verify button |
+| `buttonHeight` | `double` | `50.0` | Height for the verify button |
+| `buttonWidth` | `double` | `double.infinity` | Width for the verify button |
+| `buttonElevation` | `double` | `0.0` | Elevation for the verify button |
+| `loadingIndicatorColor` | `Color?` | `null` | Color for the loading indicator |
+| `loadingIndicatorSize` | `double` | `24.0` | Size for the loading indicator |
+| `customKeyboardType` | `TextInputType?` | `null` | Custom keyboard type for OTP input |
+| `inputFormatters` | `List<TextInputFormatter>?` | `null` | Custom input formatters for OTP input |
+| `validationRegex` | `String?` | `null` | Validation regex pattern for OTP input |
+| `validationMessage` | `String?` | `null` | Validation message for OTP input |
+| `customValidator` | `String? Function(String?)?` | `null` | Custom validator function for OTP input |
+| `semanticLabel` | `String?` | `null` | Semantic label for accessibility |
+| `semanticHint` | `String?` | `null` | Semantic hint for accessibility |
+| `semanticValue` | `String?` | `null` | Semantic value for accessibility |
+| `enableScreenReaderSupport` | `bool` | `true` | Whether to enable screen reader support |
+| `customAccessibilityActions` | `List<Map<String, dynamic>>?` | `null` | Custom accessibility actions |
+| `enableAnimation` | `bool` | `true` | Whether to enable animations |
+| `animationDuration` | `Duration` | `Duration(milliseconds: 300)` | Duration for the main animation |
+| `animationCurve` | `Curve` | `Curves.easeInOut` | Curve for the main animation |
+| `enableFieldStateAnimation` | `bool` | `true` | Whether to enable field state animation |
+| `enableFieldToFieldAnimation` | `bool` | `true` | Whether to enable field-to-field animation |
+| `fieldTransitionDuration` | `Duration` | `Duration(milliseconds: 150)` | Duration for field transition animation |
+| `fieldTransitionCurve` | `Curve` | `Curves.easeInOut` | Curve for field transition animation |
+| `transitionHighlightColor` | `Color?` | `null` | Color for transition highlight |
+| `errorBorderColor` | `Color?` | `null` | Border color for fields in error state |
+| `errorBackgroundColor` | `Color?` | `null` | Background color for fields in error state |
+| `errorTextColor` | `Color?` | `null` | Text color for fields in error state |
+| `hasError` | `bool` | `false` | Whether the OTP is in error state |
+| `onErrorStateChanged` | `VoidCallback?` | `null` | Callback when error state changes |
+| `errorStateDuration` | `Duration` | `Duration(seconds: 3)` | Duration to show error state before auto-clearing |
+| `autoClearErrorOnInput` | `bool` | `false` | Whether to auto-clear error state on input |
+| `autoClearErrorOnResend` | `bool` | `true` | Whether to auto-clear error state on resend |
+| `autoClearErrorOnComplete` | `bool` | `true` | Whether to auto-clear error state on completion |
+| `errorStatePriority` | `ErrorStatePriority` | `ErrorStatePriority.highest` | Priority of error state over other field states |
+| `errorStateBehavior` | `ErrorStateBehavior` | `ErrorStateBehavior.autoClear` | Behavior of error state |
+| `titleWidget` | `Widget?` | `null` | Custom title widget |
+| `subtitleWidget` | `Widget?` | `null` | Custom subtitle widget |
+| `errorWidget` | `Widget?` | `null` | Custom error message widget |
+| `verifyButtonWidget` | `Widget?` | `null` | Custom verify button widget |
+| `resendWidget` | `Widget?` | `null` | Custom resend widget |
+| `timerWidget` | `Widget?` | `null` | Custom timer widget |
+
+## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📞 Support
-
-If you encounter any issues or have questions, please file an issue on the [GitHub repository](https://github.com/seifmoustafa/flutter_otp_kit/issues).
-
-## 🔗 Links
-
-- [pub.dev Package](https://pub.dev/packages/flutter_otp_kit)
-- [GitHub Repository](https://github.com/seifmoustafa/flutter_otp_kit)
-- [Documentation](https://github.com/seifmoustafa/flutter_otp_kit#readme)
-- [Issue Tracker](https://github.com/seifmoustafa/flutter_otp_kit/issues)
-
----
-
-Made with ❤️ for the Flutter community
