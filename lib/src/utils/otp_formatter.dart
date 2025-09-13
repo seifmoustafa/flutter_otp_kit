@@ -20,10 +20,12 @@ class OtpFormatter {
           formatters.add(FilteringTextInputFormatter.digitsOnly);
           break;
         case OtpInputType.alphabetic:
-          formatters.add(FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')));
+          formatters
+              .add(FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')));
           break;
         case OtpInputType.alphanumeric:
-          formatters.add(FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')));
+          formatters
+              .add(FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')));
           break;
         case OtpInputType.custom:
           // Use custom formatters if provided
@@ -35,7 +37,8 @@ class OtpFormatter {
   }
 
   /// Gets keyboard type based on OTP input type
-  static TextInputType getKeyboardType(OtpInputType inputType, {TextInputType? customKeyboardType}) {
+  static TextInputType getKeyboardType(OtpInputType inputType,
+      {TextInputType? customKeyboardType}) {
     if (customKeyboardType != null) {
       return customKeyboardType;
     }

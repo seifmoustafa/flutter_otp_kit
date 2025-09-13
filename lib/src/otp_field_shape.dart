@@ -13,10 +13,10 @@ enum OtpFieldShape {
 
   /// Stadium shape (pill) - completely rounded sides
   stadium,
-  
+
   /// Underlined shape - only bottom border
   underlined,
-  
+
   /// Outlined shape - material design outlined input
   outlined,
 
@@ -37,15 +37,16 @@ class OtpFieldShapeConfig {
 
   /// Border style configuration
   final OtpBorderStyle borderStyle;
-  
+
   /// Custom dash pattern for dashed border style
   final List<double>? dashPattern;
-  
+
   /// Border sides configuration
   final BorderSide Function(Color color, double width)? borderSideBuilder;
-  
+
   /// Create a BoxDecoration for the field
-  final BoxDecoration Function(Color borderColor, Color backgroundColor, double borderWidth, double borderRadius)? decorationBuilder;
+  final BoxDecoration Function(Color borderColor, Color backgroundColor,
+      double borderWidth, double borderRadius)? decorationBuilder;
 
   const OtpFieldShapeConfig({
     this.borderRadius,
@@ -56,14 +57,15 @@ class OtpFieldShapeConfig {
     this.borderSideBuilder,
     this.decorationBuilder,
   });
-  
+
   /// Creates a configuration for a specific border style
   factory OtpFieldShapeConfig.forStyle(OtpBorderStyle style) {
     switch (style) {
       case OtpBorderStyle.bottomOnly:
         return OtpFieldShapeConfig(
           borderStyle: style,
-          decorationBuilder: (borderColor, backgroundColor, borderWidth, borderRadius) {
+          decorationBuilder:
+              (borderColor, backgroundColor, borderWidth, borderRadius) {
             return BoxDecoration(
               color: backgroundColor,
               border: Border(
@@ -75,11 +77,12 @@ class OtpFieldShapeConfig {
             );
           },
         );
-        
+
       case OtpBorderStyle.topOnly:
         return OtpFieldShapeConfig(
           borderStyle: style,
-          decorationBuilder: (borderColor, backgroundColor, borderWidth, borderRadius) {
+          decorationBuilder:
+              (borderColor, backgroundColor, borderWidth, borderRadius) {
             return BoxDecoration(
               color: backgroundColor,
               border: Border(
@@ -91,11 +94,12 @@ class OtpFieldShapeConfig {
             );
           },
         );
-        
+
       case OtpBorderStyle.leftOnly:
         return OtpFieldShapeConfig(
           borderStyle: style,
-          decorationBuilder: (borderColor, backgroundColor, borderWidth, borderRadius) {
+          decorationBuilder:
+              (borderColor, backgroundColor, borderWidth, borderRadius) {
             return BoxDecoration(
               color: backgroundColor,
               border: Border(
@@ -107,11 +111,12 @@ class OtpFieldShapeConfig {
             );
           },
         );
-        
+
       case OtpBorderStyle.rightOnly:
         return OtpFieldShapeConfig(
           borderStyle: style,
-          decorationBuilder: (borderColor, backgroundColor, borderWidth, borderRadius) {
+          decorationBuilder:
+              (borderColor, backgroundColor, borderWidth, borderRadius) {
             return BoxDecoration(
               color: backgroundColor,
               border: Border(
@@ -123,19 +128,19 @@ class OtpFieldShapeConfig {
             );
           },
         );
-        
+
       case OtpBorderStyle.dashed:
         return OtpFieldShapeConfig(
           borderStyle: style,
           dashPattern: [6, 3],
         );
-        
+
       case OtpBorderStyle.dotted:
         return OtpFieldShapeConfig(
           borderStyle: style,
           dashPattern: [1, 3],
         );
-        
+
       default:
         return const OtpFieldShapeConfig(
           borderStyle: OtpBorderStyle.solid,
@@ -157,19 +162,19 @@ enum OtpBorderStyle {
 
   /// No border
   none,
-  
+
   /// Only bottom border
   bottomOnly,
-  
+
   /// Only top border
   topOnly,
-  
+
   /// Only left border
   leftOnly,
-  
+
   /// Only right border
   rightOnly,
-  
+
   /// Inner border
   inner,
 }

@@ -29,7 +29,7 @@ class OtpStyleManager {
 
   /// Configuration for error state
   final OtpErrorConfig errorConfig;
-  
+
   /// Configuration for animations
   final OtpAnimationConfig animationConfig;
 
@@ -64,20 +64,26 @@ class OtpStyleManager {
   final bool enableProgressiveHighlighting;
 
   /// Gets field colors based on state with proper priority
-  FieldColors getFieldColors(int index, OtpFieldState fieldState, bool hasError) {
+  FieldColors getFieldColors(
+      int index, OtpFieldState fieldState, bool hasError) {
     // Clear visual hierarchy: Error > Focused > Completed > Filled > Empty
 
     // Default colors
-    final defaultBorder = defaultBorderColor ?? Colors.grey.shade400; // Grey for empty/unfocused
-    final focusColor = focusedBorderColor ?? Colors.blue.shade600; // Blue for focused
-    final successColor = completedFieldBorderColor ?? Colors.green.shade600; // Green for filled/completed
-    final errorColor = errorConfig.errorBorderColor ?? Colors.red.shade600; // Red for error
+    final defaultBorder =
+        defaultBorderColor ?? Colors.grey.shade400; // Grey for empty/unfocused
+    final focusColor =
+        focusedBorderColor ?? Colors.blue.shade600; // Blue for focused
+    final successColor = completedFieldBorderColor ??
+        Colors.green.shade600; // Green for filled/completed
+    final errorColor =
+        errorConfig.errorBorderColor ?? Colors.red.shade600; // Red for error
 
     // 1. Error state (highest priority) - Red border + red fill
     if (hasError || fieldState == OtpFieldState.error) {
       return FieldColors(
         borderColor: errorColor,
-        backgroundColor: errorConfig.errorBackgroundColor ?? Colors.red.shade50, // Light red fill
+        backgroundColor: errorConfig.errorBackgroundColor ??
+            Colors.red.shade50, // Light red fill
         textColor: errorConfig.errorTextColor ?? Colors.red.shade800,
       );
     }
@@ -95,7 +101,8 @@ class OtpStyleManager {
     if (fieldState == OtpFieldState.completed) {
       return FieldColors(
         borderColor: successColor,
-        backgroundColor: completedFieldBackgroundColor ?? Colors.green.shade50, // Light green fill
+        backgroundColor: completedFieldBackgroundColor ??
+            Colors.green.shade50, // Light green fill
         textColor: completedFieldTextColor ?? Colors.green.shade700,
       );
     }
@@ -119,8 +126,8 @@ class OtpStyleManager {
 
   /// Creates a box decoration for a field
   BoxDecoration createFieldDecoration(
-    FieldColors colors, 
-    double borderRadius, 
+    FieldColors colors,
+    double borderRadius,
     double borderWidth,
     OtpFieldState fieldState,
   ) {
@@ -136,7 +143,7 @@ class OtpStyleManager {
 
     // Add shadows based on state
     List<BoxShadow> shadows = [];
-    
+
     // Error state - subtle red shadow
     if (fieldState == OtpFieldState.error) {
       shadows.add(BoxShadow(
@@ -182,7 +189,8 @@ class OtpStyleManager {
   }
 
   /// Creates a text style for a field
-  TextStyle createFieldTextStyle(FieldColors colors, double fontSize, OtpFieldState fieldState) {
+  TextStyle createFieldTextStyle(
+      FieldColors colors, double fontSize, OtpFieldState fieldState) {
     // Base style with state-specific color
     TextStyle style = TextStyle(
       fontSize: fontSize,
@@ -190,15 +198,16 @@ class OtpStyleManager {
       color: colors.textColor,
       height: 1.0, // Ensure consistent line height
     );
-    
+
     // Add letter spacing for better readability in numeric fields
-    if (fieldState == OtpFieldState.completed || fieldState == OtpFieldState.filled) {
+    if (fieldState == OtpFieldState.completed ||
+        fieldState == OtpFieldState.filled) {
       style = style.copyWith(letterSpacing: 0.5);
     }
-    
+
     return style;
   }
-  
+
   /// Gets animation configuration for the OTP fields
   OtpAnimationConfig getAnimationConfig() {
     return animationConfig;

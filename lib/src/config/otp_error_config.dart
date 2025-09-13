@@ -10,7 +10,7 @@ class OtpErrorConfig {
     this.errorStateDuration = const Duration(seconds: 3),
     this.errorStatePriority = ErrorStatePriority.highest,
     this.errorStateBehavior = ErrorStateBehavior.autoClear,
-    
+
     // Auto-clearing behavior
     this.autoClearErrorOnInput = false,
     this.autoClearErrorOnResend = true,
@@ -18,7 +18,7 @@ class OtpErrorConfig {
     this.autoClearOnFocusChange = false,
     this.requireMinInputToAutoClear = false,
     this.minInputToAutoClear = 1,
-    
+
     // Styling
     this.errorBorderColor,
     this.errorBackgroundColor,
@@ -28,7 +28,7 @@ class OtpErrorConfig {
     this.errorShakeEffect = false,
     this.errorShakeDuration = const Duration(milliseconds: 500),
     this.errorShakeCount = 3,
-    
+
     // Error message
     this.errorText,
     this.errorStyle,
@@ -38,11 +38,11 @@ class OtpErrorConfig {
     this.errorTextMaxLines = 2,
     this.errorAnimationDuration = const Duration(milliseconds: 300),
     this.errorAnimationType = ErrorAnimationType.fadeIn,
-    
+
     // Haptic feedback
     this.enableHapticFeedbackOnError = false,
     this.errorHapticFeedbackType = ErrorHapticFeedbackType.heavy,
-    
+
     // Error recovery
     this.maxErrorRetries = 3,
     this.enableAutoFieldClear = false,
@@ -73,13 +73,13 @@ class OtpErrorConfig {
 
   /// Whether to auto-clear error state on completion
   final bool autoClearErrorOnComplete;
-  
+
   /// Whether to auto-clear error state on focus change
   final bool autoClearOnFocusChange;
-  
+
   /// Whether to require a minimum amount of input to auto-clear
   final bool requireMinInputToAutoClear;
-  
+
   /// Minimum number of fields with input to trigger auto-clear
   final int minInputToAutoClear;
 
@@ -92,19 +92,19 @@ class OtpErrorConfig {
 
   /// Text color for fields in error state
   final Color? errorTextColor;
-  
+
   /// Glow color for error state
   final Color? errorGlowColor;
-  
+
   /// Border width for error state
   final double? errorBorderWidth;
-  
+
   /// Whether to use a shake effect for fields in error state
   final bool errorShakeEffect;
-  
+
   /// Duration of the shake effect
   final Duration errorShakeDuration;
-  
+
   /// Number of shakes in the shake effect
   final int errorShakeCount;
 
@@ -114,45 +114,45 @@ class OtpErrorConfig {
 
   /// Style for error message
   final TextStyle? errorStyle;
-  
+
   /// Icon to display with error message
   final IconData? errorIcon;
-  
+
   /// Whether to show an icon with the error message
   final bool showErrorIcon;
-  
+
   /// Alignment of the error message
   final ErrorAlignment errorAlignment;
-  
+
   /// Maximum number of lines for the error message
   final int errorTextMaxLines;
-  
+
   /// Duration of the error animation
   final Duration errorAnimationDuration;
-  
+
   /// Type of animation for the error message
   final ErrorAnimationType errorAnimationType;
-  
+
   // Haptic feedback
   /// Whether to enable haptic feedback on error
   final bool enableHapticFeedbackOnError;
-  
+
   /// Type of haptic feedback for errors
   final ErrorHapticFeedbackType errorHapticFeedbackType;
-  
+
   // Error recovery
   /// Maximum number of error retries before lockout
   final int maxErrorRetries;
-  
+
   /// Whether to automatically clear fields on error
   final bool clearFieldsOnError;
-  
+
   /// Whether to enable automatic field clearing after an error
   final bool enableAutoFieldClear;
-  
+
   /// Whether to enable field lockout after multiple errors
   final bool enableFieldLockout;
-  
+
   /// Duration of field lockout
   final Duration fieldLockoutDuration;
 
@@ -163,7 +163,7 @@ class OtpErrorConfig {
     Duration? errorStateDuration,
     ErrorStatePriority? errorStatePriority,
     ErrorStateBehavior? errorStateBehavior,
-    
+
     // Auto-clearing behavior
     bool? autoClearErrorOnInput,
     bool? autoClearErrorOnResend,
@@ -171,7 +171,7 @@ class OtpErrorConfig {
     bool? autoClearOnFocusChange,
     bool? requireMinInputToAutoClear,
     int? minInputToAutoClear,
-    
+
     // Styling
     Color? errorBorderColor,
     Color? errorBackgroundColor,
@@ -181,7 +181,7 @@ class OtpErrorConfig {
     bool? errorShakeEffect,
     Duration? errorShakeDuration,
     int? errorShakeCount,
-    
+
     // Error message
     String? errorText,
     TextStyle? errorStyle,
@@ -191,11 +191,11 @@ class OtpErrorConfig {
     int? errorTextMaxLines,
     Duration? errorAnimationDuration,
     ErrorAnimationType? errorAnimationType,
-    
+
     // Haptic feedback
     bool? enableHapticFeedbackOnError,
     ErrorHapticFeedbackType? errorHapticFeedbackType,
-    
+
     // Error recovery
     int? maxErrorRetries,
     bool? clearFieldsOnError,
@@ -209,15 +209,20 @@ class OtpErrorConfig {
       errorStateDuration: errorStateDuration ?? this.errorStateDuration,
       errorStatePriority: errorStatePriority ?? this.errorStatePriority,
       errorStateBehavior: errorStateBehavior ?? this.errorStateBehavior,
-      
+
       // Auto-clearing behavior
-      autoClearErrorOnInput: autoClearErrorOnInput ?? this.autoClearErrorOnInput,
-      autoClearErrorOnResend: autoClearErrorOnResend ?? this.autoClearErrorOnResend,
-      autoClearErrorOnComplete: autoClearErrorOnComplete ?? this.autoClearErrorOnComplete,
-      autoClearOnFocusChange: autoClearOnFocusChange ?? this.autoClearOnFocusChange,
-      requireMinInputToAutoClear: requireMinInputToAutoClear ?? this.requireMinInputToAutoClear,
+      autoClearErrorOnInput:
+          autoClearErrorOnInput ?? this.autoClearErrorOnInput,
+      autoClearErrorOnResend:
+          autoClearErrorOnResend ?? this.autoClearErrorOnResend,
+      autoClearErrorOnComplete:
+          autoClearErrorOnComplete ?? this.autoClearErrorOnComplete,
+      autoClearOnFocusChange:
+          autoClearOnFocusChange ?? this.autoClearOnFocusChange,
+      requireMinInputToAutoClear:
+          requireMinInputToAutoClear ?? this.requireMinInputToAutoClear,
       minInputToAutoClear: minInputToAutoClear ?? this.minInputToAutoClear,
-      
+
       // Styling
       errorBorderColor: errorBorderColor ?? this.errorBorderColor,
       errorBackgroundColor: errorBackgroundColor ?? this.errorBackgroundColor,
@@ -227,7 +232,7 @@ class OtpErrorConfig {
       errorShakeEffect: errorShakeEffect ?? this.errorShakeEffect,
       errorShakeDuration: errorShakeDuration ?? this.errorShakeDuration,
       errorShakeCount: errorShakeCount ?? this.errorShakeCount,
-      
+
       // Error message
       errorText: errorText ?? this.errorText,
       errorStyle: errorStyle ?? this.errorStyle,
@@ -235,13 +240,16 @@ class OtpErrorConfig {
       showErrorIcon: showErrorIcon ?? this.showErrorIcon,
       errorAlignment: errorAlignment ?? this.errorAlignment,
       errorTextMaxLines: errorTextMaxLines ?? this.errorTextMaxLines,
-      errorAnimationDuration: errorAnimationDuration ?? this.errorAnimationDuration,
+      errorAnimationDuration:
+          errorAnimationDuration ?? this.errorAnimationDuration,
       errorAnimationType: errorAnimationType ?? this.errorAnimationType,
-      
+
       // Haptic feedback
-      enableHapticFeedbackOnError: enableHapticFeedbackOnError ?? this.enableHapticFeedbackOnError,
-      errorHapticFeedbackType: errorHapticFeedbackType ?? this.errorHapticFeedbackType,
-      
+      enableHapticFeedbackOnError:
+          enableHapticFeedbackOnError ?? this.enableHapticFeedbackOnError,
+      errorHapticFeedbackType:
+          errorHapticFeedbackType ?? this.errorHapticFeedbackType,
+
       // Error recovery
       maxErrorRetries: maxErrorRetries ?? this.maxErrorRetries,
       clearFieldsOnError: clearFieldsOnError ?? this.clearFieldsOnError,
@@ -250,7 +258,7 @@ class OtpErrorConfig {
       fieldLockoutDuration: fieldLockoutDuration ?? this.fieldLockoutDuration,
     );
   }
-  
+
   /// Creates a preset error configuration
   factory OtpErrorConfig.preset(ErrorConfigPreset preset) {
     switch (preset) {
@@ -263,7 +271,7 @@ class OtpErrorConfig {
           autoClearErrorOnResend: true,
           errorAnimationType: ErrorAnimationType.fadeIn,
         );
-        
+
       case ErrorConfigPreset.gentle:
         return const OtpErrorConfig(
           errorBorderColor: Color(0xFFF44336), // Slightly less aggressive red
@@ -273,7 +281,7 @@ class OtpErrorConfig {
           autoClearOnFocusChange: true,
           errorAnimationType: ErrorAnimationType.fadeIn,
         );
-        
+
       case ErrorConfigPreset.assertive:
         return OtpErrorConfig(
           errorBorderColor: Colors.red.shade700,
@@ -287,7 +295,7 @@ class OtpErrorConfig {
           showErrorIcon: true,
           errorAnimationType: ErrorAnimationType.shakeAndFade,
         );
-        
+
       case ErrorConfigPreset.minimal:
         return const OtpErrorConfig(
           errorBorderColor: Colors.red,
@@ -297,7 +305,7 @@ class OtpErrorConfig {
           showErrorIcon: false,
           errorAnimationType: ErrorAnimationType.fadeIn,
         );
-        
+
       case ErrorConfigPreset.secure:
         return OtpErrorConfig(
           errorBorderColor: Colors.red.shade800,
@@ -318,16 +326,16 @@ class OtpErrorConfig {
 enum ErrorAlignment {
   /// Above the OTP fields
   top,
-  
+
   /// Below the OTP fields
   bottom,
-  
+
   /// To the left of the OTP fields
   left,
-  
+
   /// To the right of the OTP fields
   right,
-  
+
   /// Hidden (no error message)
   none,
 }
@@ -336,19 +344,19 @@ enum ErrorAlignment {
 enum ErrorAnimationType {
   /// Fade in
   fadeIn,
-  
+
   /// Slide in from bottom
   slideInBottom,
-  
+
   /// Slide in from top
   slideInTop,
-  
+
   /// Scale up
   scaleUp,
-  
+
   /// Shake and fade
   shakeAndFade,
-  
+
   /// No animation
   none,
 }
@@ -357,13 +365,13 @@ enum ErrorAnimationType {
 enum ErrorHapticFeedbackType {
   /// Light impact
   light,
-  
+
   /// Medium impact
   medium,
-  
+
   /// Heavy impact
   heavy,
-  
+
   /// Vibrate
   vibrate,
 }
@@ -372,16 +380,16 @@ enum ErrorHapticFeedbackType {
 enum ErrorConfigPreset {
   /// Standard error handling
   standard,
-  
+
   /// Gentle error handling with subtle effects
   gentle,
-  
+
   /// Assertive error handling with strong visual and haptic feedback
   assertive,
-  
+
   /// Minimal error handling with limited visual effects
   minimal,
-  
+
   /// Secure error handling for sensitive applications
   secure,
 }

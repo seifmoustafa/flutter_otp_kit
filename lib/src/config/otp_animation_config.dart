@@ -53,11 +53,15 @@ class OtpAnimationConfig {
       enableAnimation: enableAnimation ?? this.enableAnimation,
       animationDuration: animationDuration ?? this.animationDuration,
       animationCurve: animationCurve ?? this.animationCurve,
-      enableFieldStateAnimation: enableFieldStateAnimation ?? this.enableFieldStateAnimation,
-      enableFieldToFieldAnimation: enableFieldToFieldAnimation ?? this.enableFieldToFieldAnimation,
-      fieldTransitionDuration: fieldTransitionDuration ?? this.fieldTransitionDuration,
+      enableFieldStateAnimation:
+          enableFieldStateAnimation ?? this.enableFieldStateAnimation,
+      enableFieldToFieldAnimation:
+          enableFieldToFieldAnimation ?? this.enableFieldToFieldAnimation,
+      fieldTransitionDuration:
+          fieldTransitionDuration ?? this.fieldTransitionDuration,
       fieldTransitionCurve: fieldTransitionCurve ?? this.fieldTransitionCurve,
-      transitionHighlightColor: transitionHighlightColor ?? this.transitionHighlightColor,
+      transitionHighlightColor:
+          transitionHighlightColor ?? this.transitionHighlightColor,
     );
   }
 }

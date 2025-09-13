@@ -90,7 +90,7 @@ class OtpFieldsRow extends StatefulWidget {
 
   /// Whether the widget has an internal error
   final bool hasInternalError;
-  
+
   /// Animation configuration for the fields
   final OtpAnimationConfig animationConfig;
 
@@ -108,8 +108,9 @@ class _OtpFieldsRowState extends State<OtpFieldsRow> {
         if (widget.layoutType == OtpLayoutType.responsive) {
           // Calculate field width based on available width and spacing
           final totalSpacing = widget.fieldSpacing * (widget.fieldCount - 1);
-          calculatedFieldWidth = (constraints.maxWidth - totalSpacing) / widget.fieldCount;
-          
+          calculatedFieldWidth =
+              (constraints.maxWidth - totalSpacing) / widget.fieldCount;
+
           // Ensure a minimum reasonable size
           final minWidth = widget.config.minResponsiveWidth;
           if (calculatedFieldWidth < minWidth) {
@@ -125,13 +126,16 @@ class _OtpFieldsRowState extends State<OtpFieldsRow> {
               widget.fieldCount,
               (index) {
                 // Get field colors based on state and error
-                final hasError = widget.fieldHasError[index] || widget.hasInternalError;
+                final hasError =
+                    widget.fieldHasError[index] || widget.hasInternalError;
                 final fieldState = widget.fieldStates[index];
-                final fieldColors = widget.getFieldColors(index, fieldState, hasError);
+                final fieldColors =
+                    widget.getFieldColors(index, fieldState, hasError);
 
                 return Padding(
                   padding: EdgeInsets.only(
-                    right: index < widget.fieldCount - 1 ? widget.fieldSpacing : 0,
+                    right:
+                        index < widget.fieldCount - 1 ? widget.fieldSpacing : 0,
                   ),
                   child: OtpField(
                     controller: widget.controllers[index],
@@ -147,14 +151,17 @@ class _OtpFieldsRowState extends State<OtpFieldsRow> {
                     validator: widget.validator,
                     obscureText: widget.obscureText,
                     obscuringCharacter: widget.obscuringCharacter,
-                    enableInteractiveSelection: widget.enableInteractiveSelection,
+                    enableInteractiveSelection:
+                        widget.enableInteractiveSelection,
                     textCapitalization: widget.textCapitalization,
                     fieldWidth: calculatedFieldWidth,
                     index: index,
                     fieldCount: widget.fieldCount,
-                    animationDuration: widget.animationConfig.fieldTransitionDuration,
+                    animationDuration:
+                        widget.animationConfig.fieldTransitionDuration,
                     animationCurve: widget.animationConfig.fieldTransitionCurve,
-                    transitionHighlightColor: widget.animationConfig.transitionHighlightColor,
+                    transitionHighlightColor:
+                        widget.animationConfig.transitionHighlightColor,
                   ),
                 );
               },
