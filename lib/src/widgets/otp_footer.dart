@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import '../utils/otp_formatter.dart';
 
 /// Footer widget for OTP verification widget
@@ -176,7 +175,7 @@ class OtpFooter extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: remainingTime == 0 ? onResendPressed : null,
-          child: PlatformText(
+          child: Text(
             resendText ?? 'Resend Code',
             style: resendStyle ??
                 TextStyle(
@@ -199,7 +198,7 @@ class OtpFooter extends StatelessWidget {
     }
 
     if (remainingTime > 0) {
-      return PlatformText(
+      return Text(
         ' ${timerPrefix ?? 'Resend in'} ${OtpFormatter.formatTime(remainingTime)}',
         style: timerStyle ??
             TextStyle(

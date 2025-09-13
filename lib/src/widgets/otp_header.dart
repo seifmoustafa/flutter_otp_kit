@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import '../utils/otp_masker.dart';
 import '../masking_type.dart';
 
@@ -88,7 +87,7 @@ class OtpHeader extends StatelessWidget {
       return Semantics(
         label: semanticLabel ?? title,
         header: true,
-        child: PlatformText(
+        child: Text(
           title!,
           style: titleStyle ??
               TextStyle(
@@ -111,7 +110,7 @@ class OtpHeader extends StatelessWidget {
     }
 
     if (subtitle != null) {
-      return PlatformText(
+      return Text(
         contactInfo != null
             ? subtitle!.replaceAll('{contactInfo}',
                 OtpMasker.maskContactInfo(contactInfo!, maskingType))
