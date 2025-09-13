@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import '../utils/otp_formatter.dart';
 
-/// Footer component for OTP verification widget
+/// Footer widget for OTP verification widget
 class OtpFooter extends StatelessWidget {
   /// Creates a new OTP footer
   const OtpFooter({

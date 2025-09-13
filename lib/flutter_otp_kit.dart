@@ -15,7 +15,7 @@ export 'src/otp_field_shape.dart';
 // These are kept for backward compatibility but are deprecated
 export 'src/otp_behavior_config.dart';
 
-// New architecture components
+// New architecture widgets
 export 'src/widgets/otp_field.dart';
 export 'src/widgets/otp_fields_row.dart';
 export 'src/widgets/otp_header.dart';

@@ -98,12 +98,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🏗️ Complete Architecture Refactoring
 
-#### 🧩 Component-Based Architecture
-- **Modular Design**: Completely refactored into a component-based architecture for better maintainability
-- **Separation of Concerns**: Clear separation between UI components, state management, and styling
-- **Reusable Components**: Created reusable components that can be used independently
-- **Improved Testability**: Components designed for better testability
-- **Reduced Complexity**: Main widget reduced from 1800+ lines to manageable, focused components
+#### 🧩 Widget-Based Architecture
+- **Modular Design**: Completely refactored into a widget-based architecture for better maintainability
+- **Separation of Concerns**: Clear separation between UI widgets, state management, and styling
+- **Reusable Widgets**: Created reusable widgets that can be used independently
+- **Improved Testability**: Widgets designed for better testability
+- **Reduced Complexity**: Main widget reduced from 1800+ lines to manageable, focused widgets
 
 #### 🧠 Enhanced State Management
 - **Dedicated State Manager**: Extracted state management into a dedicated `OtpStateManager` class
@@ -128,18 +128,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **OTP Validation**: Extracted `OtpValidator` for input validation
 - **OTP Formatting**: Extracted `OtpFormatter` for input formatting
 
-#### 📱 UI Components
-- **OTP Field**: Extracted individual field component
+#### 📱 UI Widgets
+- **OTP Field**: Extracted individual field widget
 - **OTP Fields Row**: Container for OTP fields
-- **OTP Header**: Title and subtitle component
-- **OTP Footer**: Verify button, resend, and timer component
-- **OTP Error Display**: Error message component
+- **OTP Header**: Title and subtitle widget
+- **OTP Footer**: Verify button, resend, and timer widget
+- **OTP Error Display**: Error message widget
 
 #### 📚 Documentation & Examples
 - **Updated README**: Comprehensive documentation of the new architecture
-- **Architecture Section**: Added dedicated section explaining the component architecture
+- **Architecture Section**: Added dedicated section explaining the widget architecture
 - **Screenshots & Demo**: Added section for screenshots and video demonstration
-- **Example App**: Updated with an "Architecture Demo" showing component usage
+- **Example App**: Updated with an "Architecture Demo" showing widget usage
 - **Code Comments**: Improved code documentation
 
 #### 🧪 Other Improvements

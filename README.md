@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)](https://flutter.dev)
 
-A comprehensive, production-ready Flutter package for OTP (One-Time Password) verification with extensive customization options, responsive design, and robust error handling. Built with a modern component-based architecture, this package offers unparalleled flexibility, maintainability, and performance.
+A comprehensive, production-ready Flutter package for OTP (One-Time Password) verification with extensive customization options, responsive design, and robust error handling. Built with a modern widget-based architecture, this package offers unparalleled flexibility, maintainability, and performance.
 
 ## 📸 Screenshots & Demo
 
@@ -117,7 +117,7 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 - **Custom Field Builders**: Complete control over field appearance and behavior
 
 ### 🧩 Architecture
-- **Component-Based Design**: Modular architecture for better maintainability
+- **Widget-Based Design**: Modular architecture for better maintainability
 - **State Management**: Dedicated state management for OTP fields
 - **Styling System**: Centralized styling for consistent appearance
 - **Configuration System**: Comprehensive configuration options
@@ -399,16 +399,16 @@ OtpVerificationWidget(
 
 ## 🏗️ Architecture
 
-Flutter OTP Kit is built with a modern component-based architecture that emphasizes separation of concerns, maintainability, and flexibility. This architecture makes the package highly customizable, easy to extend, and simple to integrate into any Flutter application.
+Flutter OTP Kit is built with a modern widget-based architecture that emphasizes separation of concerns, maintainability, and flexibility. This architecture makes the package highly customizable, easy to extend, and simple to integrate into any Flutter application.
 
 The package is built with a modular architecture for better maintainability:
 
-### Components
+### Widgets
 
-The package is organized into several key components, each with a specific responsibility:
+The package is organized into several key widgets, each with a specific responsibility:
 
 #### OtpVerificationWidget
-The main widget that orchestrates all components. It serves as the entry point for the package and manages the overall state and behavior of the OTP verification process.
+The main widget that orchestrates all widgets. It serves as the entry point for the package and manages the overall state and behavior of the OTP verification process.
 
 ```dart
 OtpVerificationWidget(
@@ -466,7 +466,7 @@ OtpFieldsRow(
 ```
 
 #### OtpHeader
-Title and subtitle component with support for masked contact information. Can be customized with widgets or strings.
+Title and subtitle widget with support for masked contact information. Can be customized with widgets or strings.
 
 ```dart
 OtpHeader(
@@ -485,7 +485,7 @@ OtpHeader(
 ```
 
 #### OtpFooter
-Verify button, resend button, and timer component. Manages loading states, timer countdown, and button styling.
+Verify button, resend button, and timer widget. Manages loading states, timer countdown, and button styling.
 
 ```dart
 OtpFooter(
@@ -506,7 +506,7 @@ OtpFooter(
 ```
 
 #### OtpErrorDisplay
-Error message display component that can be customized with widgets or strings.
+Error message display widget that can be customized with widgets or strings.
 
 ```dart
 OtpErrorDisplay(

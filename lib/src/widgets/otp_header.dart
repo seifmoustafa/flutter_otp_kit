@@ -3,7 +3,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import '../utils/otp_masker.dart';
 import '../masking_type.dart';
 
-/// Header component for OTP verification widget
+/// Header widget for OTP verification widget
 class OtpHeader extends StatelessWidget {
   /// Creates a new OTP header
   const OtpHeader({
