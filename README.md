@@ -55,18 +55,6 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 
 **Tutorial Video**: Complete walkthrough of Flutter OTP Kit features and implementation
 
-> **Screenshots & Video**: 
-> 1. All screenshots are stored in the `screenshots` directory
-> 2. Screenshots showcase different states and designs:
->    - `sc1.png`: Basic design with validation error
->    - `sc2.png`: Widget design while writing
->    - `sc3.png`: Complete typed widget design
->    - `sc4.png`: Empty initial basic design
->    - `sc5.png`: Complete filled inputs
->    - `sc6.png`: Email basic design
-> 3. Video tutorial:
->    - `tutorial.gif`: Complete walkthrough of Flutter OTP Kit features and implementation
-
 ## ✨ Features
 
 ### 🎯 Core Functionality
