@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'widgets/otp_error_display.dart';
+import 'widgets/otp_validation_display.dart';
 import 'widgets/otp_fields_row.dart';
 import 'widgets/otp_footer.dart';
 import 'widgets/otp_header.dart';
@@ -75,19 +76,24 @@ import 'utils/otp_validator.dart';
 class OtpVerificationWidget extends StatefulWidget {
   /// Creates a new OTP verification widget with customizable styling and behavior.
   ///
-  /// The [title], [subtitle], [buttonText], [resendText], [timerPrefix],
-  /// [onVerify], and [onResend] parameters are required.
+  /// Only [onVerify] and [onResend] parameters are required. All text parameters
+  /// ([title], [subtitle], [buttonText], [resendText], [timerPrefix]) are optional
+  /// with sensible defaults. You can use custom widgets instead for complete customization.
   ///
   /// All other parameters have sensible defaults and can be customized as needed.
   const OtpVerificationWidget({
     super.key,
-    required this.title,
-    required this.subtitle,
-    required this.buttonText,
-    required this.resendText,
-    required this.timerPrefix,
+    this.title,
+    this.subtitle,
+    this.buttonText,
+    this.resendText,
+    this.timerPrefix,
     required this.onVerify,
     required this.onResend,
+    this.onTimerChanged,
+    this.onErrorStateChangedCallback,
+    this.onValidationStateChanged,
+    this.onCompletionStateChanged,
     this.contactInfo,
     this.maskingType = MaskingType.none,
     this.fieldCount = 4,
@@ -136,7 +142,6 @@ class OtpVerificationWidget extends StatefulWidget {
     this.customKeyboardType,
     this.inputFormatters,
     this.validationRegex,
-    this.validationMessage,
     this.customValidator,
     this.semanticLabel,
     this.semanticHint,
@@ -155,7 +160,6 @@ class OtpVerificationWidget extends StatefulWidget {
     this.errorBackgroundColor,
     this.errorTextColor,
     this.hasError = false,
-    this.onErrorStateChanged,
     this.errorStateDuration = const Duration(seconds: 3),
     this.autoClearErrorOnInput = false,
     this.autoClearErrorOnResend = true,
@@ -168,29 +172,42 @@ class OtpVerificationWidget extends StatefulWidget {
     this.verifyButtonWidget,
     this.resendWidget,
     this.timerWidget,
+    this.validationMessage,
   });
 
   // Required parameters
-  /// Title text for the verification screen
-  final String title;
+  /// Title text for the verification screen (optional - can use titleWidget instead)
+  final String? title;
 
-  /// Subtitle text with optional {contactInfo} placeholder
-  final String subtitle;
+  /// Subtitle text with optional {contactInfo} placeholder (optional - can use subtitleWidget instead)
+  final String? subtitle;
 
-  /// Text for the verify button
-  final String buttonText;
+  /// Text for the verify button (optional - defaults to "Verify")
+  final String? buttonText;
 
-  /// Text for the resend button
-  final String resendText;
+  /// Text for the resend button (optional - defaults to "Resend Code")
+  final String? resendText;
 
-  /// Prefix for the timer text (e.g., "in", "after")
-  final String timerPrefix;
+  /// Prefix for the timer text (optional - defaults to "Resend in")
+  final String? timerPrefix;
 
   /// Callback when verify button is pressed with OTP value
   final Function(String) onVerify;
 
   /// Callback when resend button is pressed
   final VoidCallback onResend;
+
+  /// Callback when timer state changes (for custom widgets)
+  final ValueChanged<int>? onTimerChanged;
+
+  /// Callback when error state changes (for custom widgets)
+  final ValueChanged<bool>? onErrorStateChangedCallback;
+
+  /// Callback when validation state changes (for custom widgets)
+  final ValueChanged<bool>? onValidationStateChanged;
+
+  /// Callback when OTP completion state changes (for custom widgets)
+  final ValueChanged<bool>? onCompletionStateChanged;
 
   // Optional parameters
   /// Contact information to display in subtitle (masked based on maskingType)
@@ -337,9 +354,6 @@ class OtpVerificationWidget extends StatefulWidget {
   /// Validation regex pattern for OTP input
   final String? validationRegex;
 
-  /// Validation message for OTP input
-  final String? validationMessage;
-
   /// Custom validator function for OTP input
   final String? Function(String?)? customValidator;
 
@@ -394,9 +408,6 @@ class OtpVerificationWidget extends StatefulWidget {
   /// Whether the OTP is in error state
   final bool hasError;
 
-  /// Callback when error state changes
-  final VoidCallback? onErrorStateChanged;
-
   /// Duration to show error state before auto-clearing
   final Duration errorStateDuration;
 
@@ -433,6 +444,9 @@ class OtpVerificationWidget extends StatefulWidget {
 
   /// Custom timer widget (replaces default timer text)
   final Widget? timerWidget;
+
+  /// Custom validation message widget
+  final Widget? validationMessage;
 
   @override
   State<OtpVerificationWidget> createState() => OtpVerificationWidgetState();
@@ -484,13 +498,30 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     _stateManager = OtpStateManager(
       fieldCount: widget.fieldCount,
       errorConfig: errorConfig,
-      onErrorStateChanged: widget.onErrorStateChanged,
+      onErrorStateChanged: () {
+        widget.onErrorStateChangedCallback
+            ?.call(_stateManager.internalErrorState);
+        setState(() {});
+      },
       onErrorTextChanged: () {
         setState(() {});
       },
-      onOtpChanged: widget.onChanged,
-      onOtpCompleted: widget.onCompleted,
+      onOtpChanged: (value) {
+        widget.onChanged?.call(value);
+        // Notify completion state change
+        widget.onCompletionStateChanged?.call(_stateManager.isOtpComplete());
+      },
+      onOtpCompleted: (value) {
+        widget.onCompleted?.call(value);
+        // Notify completion state change
+        widget.onCompletionStateChanged?.call(true);
+      },
     );
+
+    // Initialize error text from widget
+    if (widget.errorText != null) {
+      _stateManager.setErrorText(widget.errorText);
+    }
 
     // Initialize the style manager
     _styleManager = OtpStyleManager(
@@ -611,6 +642,11 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     if (oldWidget.hasError != widget.hasError) {
       _stateManager.setErrorState(widget.hasError);
     }
+
+    // Handle error text changes
+    if (oldWidget.errorText != widget.errorText) {
+      _stateManager.setErrorText(widget.errorText);
+    }
   }
 
   /// Starts the resend timer
@@ -620,10 +656,14 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
       setState(() {
         if (_remainingTime > 0) {
           _remainingTime--;
+          // Notify custom widgets of timer change
+          widget.onTimerChanged?.call(_remainingTime);
         } else {
           _timer?.cancel();
           // Refresh field states when timer ends to ensure proper styling
           _stateManager.refreshAllFieldStates();
+          // Notify custom widgets that timer ended
+          widget.onTimerChanged?.call(0);
         }
       });
     });
@@ -634,16 +674,25 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     if (widget.enableAutoValidation) {
       // Check if OTP is complete first
       if (!_stateManager.isOtpComplete()) {
+        // Clear any existing error state when showing validation
+        _stateManager.clearErrorState();
+        _stateManager.errorText = null;
+
         // Show validation message for incomplete OTP
-        _stateManager.errorText =
-            widget.validationMessage ?? 'Please enter all digits';
+        _stateManager.validationText = 'Please enter all digits';
         setState(() {
           _stateManager.autoValidateMode = AutovalidateMode.always;
         });
+        // Notify validation state change
+        widget.onValidationStateChanged?.call(true);
         return;
       }
 
-      // If OTP is complete, validate the form
+      // If OTP is complete, clear validation text and validate the form
+      _stateManager.validationText = null;
+      // Notify validation state cleared
+      widget.onValidationStateChanged?.call(false);
+
       if (_stateManager.formKey.currentState!.validate()) {
         _stateManager.formKey.currentState!.save();
         setState(() => _isLoading = true);
@@ -676,9 +725,84 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
         _remainingTime = widget.timerDuration;
       });
 
+      // Notify custom widgets that timer started
+      widget.onTimerChanged?.call(_remainingTime);
+
       _startTimer();
       widget.onResend();
     }
+  }
+
+  /// Public method to trigger resend button press
+  void triggerResend() {
+    _onResendPressed();
+  }
+
+  /// Gets the current remaining time for resend
+  int get remainingResendTime => _remainingTime;
+
+  /// Checks if resend is currently available
+  bool get canResend => _remainingTime == 0;
+
+  /// Handles verification result automatically (success or error)
+  void handleVerificationResult(bool isSuccess, {String? errorMessage}) {
+    if (isSuccess) {
+      // Clear all error states on success
+      _stateManager.clearAllErrorStates();
+      // Notify state changes
+      widget.onErrorStateChangedCallback?.call(false);
+      widget.onValidationStateChanged?.call(false);
+    } else {
+      // Set error state and message on failure
+      _stateManager.setErrorState(true);
+      if (errorMessage != null) {
+        _stateManager.setErrorText(errorMessage);
+      }
+      // Notify error state change
+      widget.onErrorStateChangedCallback?.call(true);
+    }
+    setState(() {});
+  }
+
+  /// Handles backend integration states (for Cubit/Bloc integration)
+  void handleBackendState({
+    bool? isLoading,
+    bool? hasError,
+    String? errorMessage,
+    bool? isValidating,
+    String? validationMessage,
+  }) {
+    setState(() {
+      if (isLoading != null) {
+        _isLoading = isLoading;
+      }
+    });
+
+    if (hasError != null) {
+      if (hasError) {
+        _stateManager.setErrorState(true);
+        if (errorMessage != null) {
+          _stateManager.setErrorText(errorMessage);
+        }
+        widget.onErrorStateChangedCallback?.call(true);
+      } else {
+        _stateManager.clearAllErrorStates();
+        widget.onErrorStateChangedCallback?.call(false);
+      }
+    }
+
+    if (isValidating != null) {
+      if (isValidating) {
+        _stateManager.validationText =
+            validationMessage ?? 'Please enter all digits';
+        widget.onValidationStateChanged?.call(true);
+      } else {
+        _stateManager.validationText = null;
+        widget.onValidationStateChanged?.call(false);
+      }
+    }
+
+    setState(() {});
   }
 
   /// Clears all OTP input fields
@@ -735,6 +859,18 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   /// Sets the error state programmatically
   void setErrorState(bool hasError) {
     _stateManager.setErrorState(hasError);
+    setState(() {});
+  }
+
+  /// Sets error text programmatically (clears validation text automatically)
+  void setErrorText(String? errorText) {
+    _stateManager.setErrorText(errorText);
+    setState(() {});
+  }
+
+  /// Clears all error-related states (comprehensive error clearing)
+  void clearAllErrorStates() {
+    _stateManager.clearAllErrorStates();
     setState(() {});
   }
 
@@ -815,7 +951,6 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
                         inputType: widget.otpInputType,
                         fieldCount: widget.fieldCount,
                         validationRegex: widget.validationRegex,
-                        validationMessage: widget.validationMessage,
                         customValidator: widget.customValidator,
                       ),
                       layoutType: widget.layoutType,
@@ -834,9 +969,47 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
 
                   SizedBox(height: widget.spacing),
 
-                  // Error message
+                  // Validation message (shown when auto-validation is enabled and OTP is incomplete)
+                  OtpValidationDisplay(
+                    validationText: _stateManager.validationText,
+                    validationMessageWidget: widget.validationMessage ??
+                        (widget.enableAutoValidation &&
+                                _stateManager.validationText != null
+                            ? Container(
+                                padding: const EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.orange.shade50,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  border:
+                                      Border.all(color: Colors.orange.shade200),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.warning_outlined,
+                                      color: Colors.orange.shade600,
+                                      size: 16.0,
+                                    ),
+                                    const SizedBox(width: 8.0),
+                                    Text(
+                                      _stateManager.validationText ??
+                                          'Please enter all digits',
+                                      style: TextStyle(
+                                        color: Colors.orange.shade700,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : null),
+                  ),
+
+                  // Error message (shown when there's an actual error)
                   OtpErrorDisplay(
-                    errorText: _stateManager.errorText ?? widget.errorText,
+                    errorText: _stateManager.errorText,
                     errorWidget: widget.errorWidget,
                     errorStyle: widget.errorStyle,
                     errorColor: widget.errorBorderColor ?? Colors.red,

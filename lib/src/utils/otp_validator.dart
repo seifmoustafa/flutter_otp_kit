@@ -23,7 +23,6 @@ class OtpValidator {
     required OtpInputType inputType,
     required int fieldCount,
     String? validationRegex,
-    String? validationMessage,
     String? Function(String?)? customValidator,
   }) {
     if (customValidator != null) {
@@ -33,10 +32,10 @@ class OtpValidator {
     if (validationRegex != null) {
       return (value) {
         if (value == null || value.isEmpty) {
-          return validationMessage ?? 'This field is required';
+          return 'This field is required';
         }
         if (!RegExp(validationRegex).hasMatch(value)) {
-          return validationMessage ?? 'Invalid input';
+          return 'Invalid input';
         }
         return null;
       };
@@ -49,7 +48,7 @@ class OtpValidator {
             return null; // Empty is allowed during input
           }
           if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-            return validationMessage ?? 'Numbers only';
+            return 'Numbers only';
           }
           return null;
         };
@@ -59,7 +58,7 @@ class OtpValidator {
             return null; // Empty is allowed during input
           }
           if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
-            return validationMessage ?? 'Letters only';
+            return 'Letters only';
           }
           return null;
         };
@@ -69,7 +68,7 @@ class OtpValidator {
             return null; // Empty is allowed during input
           }
           if (!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(value)) {
-            return validationMessage ?? 'Letters and numbers only';
+            return 'Letters and numbers only';
           }
           return null;
         };

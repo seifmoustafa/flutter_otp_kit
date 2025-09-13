@@ -41,7 +41,7 @@ class OtpConfig {
     this.customKeyboardType,
     this.inputFormatters,
     this.validationRegex,
-    this.validationMessage,
+    this.validationMessageWidget,
     this.customValidator,
     this.semanticHint,
     this.semanticValue,
@@ -142,8 +142,8 @@ class OtpConfig {
   /// Validation regex pattern
   final String? validationRegex;
 
-  /// Validation message
-  final String? validationMessage;
+  /// Custom validation message widget (completely generic - can be any widget with any styling and animation)
+  final Widget? validationMessageWidget;
 
   /// Custom validator function
   final String? Function(String?)? customValidator;
@@ -193,7 +193,7 @@ class OtpConfig {
     TextInputType? customKeyboardType,
     List<TextInputFormatter>? inputFormatters,
     String? validationRegex,
-    String? validationMessage,
+    Widget? validationMessageWidget,
     String? Function(String?)? customValidator,
     String? semanticHint,
     String? semanticValue,
@@ -209,7 +209,8 @@ class OtpConfig {
       cursorAlignment: cursorAlignment ?? this.cursorAlignment,
       obscureText: obscureText ?? this.obscureText,
       obscuringCharacter: obscuringCharacter ?? this.obscuringCharacter,
-      enableInteractiveSelection: enableInteractiveSelection ?? this.enableInteractiveSelection,
+      enableInteractiveSelection:
+          enableInteractiveSelection ?? this.enableInteractiveSelection,
       textCapitalization: textCapitalization ?? this.textCapitalization,
       autoFocus: autoFocus ?? this.autoFocus,
       enableAutoValidation: enableAutoValidation ?? this.enableAutoValidation,
@@ -221,23 +222,31 @@ class OtpConfig {
       backgroundColor: backgroundColor ?? this.backgroundColor,
       defaultBorderColor: defaultBorderColor ?? this.defaultBorderColor,
       focusedBorderColor: focusedBorderColor ?? this.focusedBorderColor,
-      completedFieldBorderColor: completedFieldBorderColor ?? this.completedFieldBorderColor,
-      completedFieldBackgroundColor: completedFieldBackgroundColor ?? this.completedFieldBackgroundColor,
-      completedFieldTextColor: completedFieldTextColor ?? this.completedFieldTextColor,
-      filledFieldBackgroundColor: filledFieldBackgroundColor ?? this.filledFieldBackgroundColor,
-      enableProgressiveHighlighting: enableProgressiveHighlighting ?? this.enableProgressiveHighlighting,
+      completedFieldBorderColor:
+          completedFieldBorderColor ?? this.completedFieldBorderColor,
+      completedFieldBackgroundColor:
+          completedFieldBackgroundColor ?? this.completedFieldBackgroundColor,
+      completedFieldTextColor:
+          completedFieldTextColor ?? this.completedFieldTextColor,
+      filledFieldBackgroundColor:
+          filledFieldBackgroundColor ?? this.filledFieldBackgroundColor,
+      enableProgressiveHighlighting:
+          enableProgressiveHighlighting ?? this.enableProgressiveHighlighting,
       fieldConfig: fieldConfig ?? this.fieldConfig,
       errorConfig: errorConfig ?? this.errorConfig,
       animationConfig: animationConfig ?? this.animationConfig,
       customKeyboardType: customKeyboardType ?? this.customKeyboardType,
       inputFormatters: inputFormatters ?? this.inputFormatters,
       validationRegex: validationRegex ?? this.validationRegex,
-      validationMessage: validationMessage ?? this.validationMessage,
+      validationMessageWidget:
+          validationMessageWidget ?? this.validationMessageWidget,
       customValidator: customValidator ?? this.customValidator,
       semanticHint: semanticHint ?? this.semanticHint,
       semanticValue: semanticValue ?? this.semanticValue,
-      enableScreenReaderSupport: enableScreenReaderSupport ?? this.enableScreenReaderSupport,
-      customAccessibilityActions: customAccessibilityActions ?? this.customAccessibilityActions,
+      enableScreenReaderSupport:
+          enableScreenReaderSupport ?? this.enableScreenReaderSupport,
+      customAccessibilityActions:
+          customAccessibilityActions ?? this.customAccessibilityActions,
     );
   }
 }

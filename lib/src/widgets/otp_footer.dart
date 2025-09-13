@@ -14,9 +14,9 @@ class OtpFooter extends StatelessWidget {
     required this.primaryColor,
     required this.secondaryColor,
     required this.spacing,
-    required this.buttonText,
-    required this.resendText,
-    required this.timerPrefix,
+    this.buttonText,
+    this.resendText,
+    this.timerPrefix,
     this.verifyButtonWidget,
     this.resendWidget,
     this.timerWidget,
@@ -55,14 +55,14 @@ class OtpFooter extends StatelessWidget {
   /// Spacing between elements
   final double spacing;
 
-  /// Text for verify button
-  final String buttonText;
+  /// Text for verify button (optional - defaults to "Verify")
+  final String? buttonText;
 
-  /// Text for resend button
-  final String resendText;
+  /// Text for resend button (optional - defaults to "Resend Code")
+  final String? resendText;
 
-  /// Prefix for timer text
-  final String timerPrefix;
+  /// Prefix for timer text (optional - defaults to "Resend in")
+  final String? timerPrefix;
 
   /// Custom verify button widget
   final Widget? verifyButtonWidget;
@@ -154,7 +154,7 @@ class OtpFooter extends StatelessWidget {
                 ),
               )
             : Text(
-                buttonText,
+                buttonText ?? 'Verify',
                 style: buttonStyle,
               ),
       ),
@@ -177,7 +177,7 @@ class OtpFooter extends StatelessWidget {
         GestureDetector(
           onTap: remainingTime == 0 ? onResendPressed : null,
           child: PlatformText(
-            resendText,
+            resendText ?? 'Resend Code',
             style: resendStyle ??
                 TextStyle(
                   fontSize: 14,
@@ -200,7 +200,7 @@ class OtpFooter extends StatelessWidget {
 
     if (remainingTime > 0) {
       return PlatformText(
-        ' $timerPrefix ${OtpFormatter.formatTime(remainingTime)}',
+        ' ${timerPrefix ?? 'Resend in'} ${OtpFormatter.formatTime(remainingTime)}',
         style: timerStyle ??
             TextStyle(
               fontSize: 14,

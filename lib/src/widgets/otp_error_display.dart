@@ -192,8 +192,8 @@ class _OtpErrorDisplayState extends State<OtpErrorDisplay>
 
   @override
   Widget build(BuildContext context) {
-    // If no error text, don't show anything (even if errorWidget is provided)
-    if (widget.errorText == null) {
+    // If no error text or error widget, don't show anything
+    if (widget.errorText == null && widget.errorWidget == null) {
       return const SizedBox.shrink();
     }
 

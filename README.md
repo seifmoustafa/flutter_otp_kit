@@ -79,6 +79,8 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 - **Timer Integration**: Enhanced timer with automatic start and proper reset on resend
 - **Smart Validation**: Prevents verification with incomplete fields and shows user-friendly error messages
 - **Instant Error Clearing**: Validation errors clear immediately when user starts typing for better UX
+- **Backend Integration Ready**: Perfect for Cubit/Bloc patterns with automatic state management
+- **Real-time State Callbacks**: Custom widgets get notified of all state changes instantly
 
 ### 🎨 Design & Customization
 - **Perfect Visual Hierarchy**: Strict visual hierarchy: Error > Focused > Completed > Filled > Empty
@@ -115,6 +117,9 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 - **Voice Input**: Voice input capabilities
 - **Swipe Navigation**: Touch gesture support for field navigation
 - **Custom Field Builders**: Complete control over field appearance and behavior
+- **Backend Integration**: Built-in methods for Cubit/Bloc state management
+- **Automatic State Handling**: Package handles all error/validation states automatically
+- **Custom Widget Synchronization**: Real-time callbacks for custom widget state updates
 
 ### 🧩 Architecture
 - **Widget-Based Design**: Modular architecture for better maintainability
@@ -147,7 +152,6 @@ OtpVerificationWidget(
   resendText: 'Resend Code',
   timerPrefix: 'in',
   enableAutoValidation: true, // Enable validation to prevent verify with missing fields
-  validationMessage: 'Please enter all digits', // Custom validation message
   onVerify: (otp) {
     // Handle OTP verification
     print('Verifying OTP: $otp');
@@ -155,6 +159,60 @@ OtpVerificationWidget(
   onResend: () {
     // Handle resend OTP
     print('Resending OTP');
+  },
+)
+```
+
+### Backend Integration (Cubit/Bloc Ready)
+
+```dart
+import 'package:flutter_otp_kit/flutter_otp_kit.dart';
+
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+
+OtpVerificationWidget(
+  key: otpKey,
+  title: 'Verify Phone Number',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: '+1 (555) 123-4567',
+  maskingType: MaskingType.phone,
+  buttonText: 'Verify',
+  resendText: 'Resend Code',
+  timerPrefix: 'in',
+  enableAutoValidation: true,
+  onVerify: (otp) {
+    // Your business logic
+    if (otp == '1234') {
+      // Success - package handles state automatically
+      otpKey.currentState?.handleVerificationResult(true);
+    } else {
+      // Error - package handles state automatically
+      otpKey.currentState?.handleVerificationResult(
+        false, 
+        errorMessage: 'Invalid OTP. Please try again.'
+      );
+    }
+  },
+  onResend: () {
+    // Your resend logic
+    print('Resending OTP');
+  },
+  // Real-time state callbacks for custom widgets
+  onTimerChanged: (remainingTime) {
+    // Custom widgets get notified of timer changes
+    setState(() { _customTimer = remainingTime; });
+  },
+  onErrorStateChangedCallback: (hasError) {
+    // Custom widgets get notified of error state changes
+    print('Error state changed: $hasError');
+  },
+  onValidationStateChanged: (isValidating) {
+    // Custom widgets get notified of validation state changes
+    print('Validation state changed: $isValidating');
+  },
+  onCompletionStateChanged: (isComplete) {
+    // Custom widgets get notified of completion state changes
+    print('Completion state changed: $isComplete');
   },
 )
 ```
@@ -226,13 +284,12 @@ OtpVerificationWidget(
 )
 ```
 
-### Error State Management
+### Advanced Backend Integration
 
 ```dart
-// Create a GlobalKey to access the OtpVerificationWidget state
+// For Cubit/Bloc integration with comprehensive state management
 final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
 
-// In your build method
 OtpVerificationWidget(
   key: otpKey,
   title: 'Verification',
@@ -241,19 +298,71 @@ OtpVerificationWidget(
   resendText: 'Resend',
   timerPrefix: 'in',
   onVerify: (otp) {
-    if (otp == '1234') {
-      // Success
-      print('Verification successful');
-    } else {
-      // Error - set error state
-      otpKey.currentState?.setErrorState(true);
-    }
+    // Your business logic
+    verifyOtpWithBackend(otp);
   },
-  onResend: () => resendOtp(),
-  errorText: 'Invalid OTP. Please try again.',
-  errorStateBehavior: ErrorStateBehavior.persistent,
-  errorStatePriority: ErrorStatePriority.highest,
+  onResend: () => resendOtpWithBackend(),
 )
+
+// In your Cubit/Bloc
+void verifyOtpWithBackend(String otp) {
+  emit(LoadingState());
+  
+  // Update package loading state
+  otpKey.currentState?.handleBackendState(isLoading: true);
+  
+  try {
+    final result = await api.verifyOtp(otp);
+    emit(SuccessState());
+    
+    // Package handles success state automatically
+    otpKey.currentState?.handleBackendState(
+      isLoading: false,
+      hasError: false,
+    );
+  } catch (e) {
+    emit(ErrorState(e.message));
+    
+    // Package handles error state automatically
+    otpKey.currentState?.handleBackendState(
+      isLoading: false,
+      hasError: true,
+      errorMessage: e.message,
+    );
+  }
+}
+```
+
+### Custom Widget with Real-time State Sync
+
+```dart
+// Custom resend widget that syncs with package timer
+Widget _buildCustomResendWidget() {
+  return GestureDetector(
+    onTap: _customTimer == 0 ? () {
+      // Trigger package resend functionality
+      otpKey.currentState?.triggerResend();
+    } : null,
+    child: Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: _customTimer == 0 ? Colors.green : Colors.grey),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        _customTimer == 0 ? 'Custom Resend' : 'Resend in ${_customTimer}s',
+        style: TextStyle(
+          color: _customTimer == 0 ? Colors.green : Colors.grey,
+        ),
+      ),
+    ),
+  );
+}
+
+// Timer callback updates custom widget instantly
+onTimerChanged: (remainingTime) {
+  setState(() { _customTimer = remainingTime; });
+},
 ```
 
 ### Widget-Based Customization
@@ -789,6 +898,81 @@ final formattedTime = OtpFormatter.formatTime(65); // Returns '01:05'
 
 ## 🔧 Public Methods
 
+### handleVerificationResult(bool, {String?})
+**NEW**: Automatically handles verification results with comprehensive state management.
+
+```dart
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+
+// Success - clears all error states automatically
+otpKey.currentState?.handleVerificationResult(true);
+
+// Error - sets error state and message automatically
+otpKey.currentState?.handleVerificationResult(
+  false, 
+  errorMessage: 'Invalid OTP. Please try again.'
+);
+```
+
+### handleBackendState({bool?, bool?, String?, bool?, String?})
+**NEW**: Comprehensive backend integration for Cubit/Bloc patterns.
+
+```dart
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+
+// Loading state
+otpKey.currentState?.handleBackendState(isLoading: true);
+
+// Success state
+otpKey.currentState?.handleBackendState(
+  isLoading: false,
+  hasError: false,
+);
+
+// Error state
+otpKey.currentState?.handleBackendState(
+  isLoading: false,
+  hasError: true,
+  errorMessage: 'Backend error message',
+);
+
+// Validation state
+otpKey.currentState?.handleBackendState(
+  isValidating: true,
+  validationMessage: 'Custom validation message',
+);
+```
+
+### triggerResend()
+**NEW**: Public method to trigger resend functionality programmatically.
+
+```dart
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+
+// Trigger resend programmatically
+otpKey.currentState?.triggerResend();
+```
+
+### remainingResendTime
+**NEW**: Getter for current remaining resend time.
+
+```dart
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+
+// Get remaining time
+int remainingTime = otpKey.currentState?.remainingResendTime ?? 0;
+```
+
+### canResend
+**NEW**: Getter to check if resend is currently available.
+
+```dart
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+
+// Check if resend is available
+bool canResend = otpKey.currentState?.canResend ?? false;
+```
+
 ### clearOtp()
 Clears all OTP input fields with configurable options.
 
@@ -903,13 +1087,18 @@ otpKey.currentState?.resetFields(
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `title` | `String` | Title text for the verification screen |
-| `subtitle` | `String` | Subtitle text with optional {contactInfo} placeholder |
-| `buttonText` | `String` | Text for the verify button |
-| `resendText` | `String` | Text for the resend button |
-| `timerPrefix` | `String` | Prefix for the timer text (e.g., "in", "after") |
 | `onVerify` | `Function(String)` | Callback when verify button is pressed with OTP value |
 | `onResend` | `VoidCallback` | Callback when resend button is pressed |
+
+### Optional Text Parameters (with defaults)
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `title` | `String?` | `null` | Title text for the verification screen |
+| `subtitle` | `String?` | `null` | Subtitle text with optional {contactInfo} placeholder |
+| `buttonText` | `String?` | `"Verify"` | Text for the verify button |
+| `resendText` | `String?` | `"Resend Code"` | Text for the resend button |
+| `timerPrefix` | `String?` | `"Resend in"` | Prefix for the timer text |
 
 ### Optional Parameters
 
@@ -995,6 +1184,11 @@ otpKey.currentState?.resetFields(
 | `verifyButtonWidget` | `Widget?` | `null` | Custom verify button widget |
 | `resendWidget` | `Widget?` | `null` | Custom resend widget |
 | `timerWidget` | `Widget?` | `null` | Custom timer widget |
+| `validationMessage` | `Widget?` | `null` | Custom validation message widget |
+| `onTimerChanged` | `ValueChanged<int>?` | `null` | Callback when timer state changes |
+| `onErrorStateChangedCallback` | `ValueChanged<bool>?` | `null` | Callback when error state changes |
+| `onValidationStateChanged` | `ValueChanged<bool>?` | `null` | Callback when validation state changes |
+| `onCompletionStateChanged` | `ValueChanged<bool>?` | `null` | Callback when completion state changes |
 
 ## 📝 License
 

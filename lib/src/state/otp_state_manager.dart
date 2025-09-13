@@ -62,6 +62,9 @@ class OtpStateManager {
   /// Error text to display
   String? errorText;
 
+  /// Validation text to display
+  String? validationText;
+
   /// Whether the widget is loading
   bool isLoading = false;
 
@@ -110,6 +113,8 @@ class OtpStateManager {
       internalErrorState = hasError;
 
       if (hasError) {
+        // Clear validation text when showing error
+        validationText = null;
         _startErrorStateTimer();
       } else {
         errorStateTimer?.cancel();
@@ -125,13 +130,60 @@ class OtpStateManager {
       internalErrorState = false;
       errorStateTimer?.cancel();
 
+      // Clear error text when clearing error state
+      errorText = null;
+
       // Critical: Update all field states to ensure they reflect the cleared error state
       for (int i = 0; i < fieldCount; i++) {
         updateFieldState(i);
       }
 
       onErrorStateChanged?.call();
+      onErrorTextChanged?.call();
     }
+  }
+
+  /// Sets error text and clears validation text (ensures mutual exclusivity)
+  void setErrorText(String? text) {
+    errorText = text;
+    // Clear validation text when setting error text
+    if (text != null) {
+      validationText = null;
+    }
+    // Update all field states to reflect error state
+    for (int i = 0; i < fieldCount; i++) {
+      updateFieldState(i);
+    }
+    onErrorTextChanged?.call();
+  }
+
+  /// Clears ALL error-related states (comprehensive error clearing)
+  void clearAllErrorStates() {
+    // Clear internal error state
+    if (internalErrorState) {
+      internalErrorState = false;
+      errorStateTimer?.cancel();
+    }
+
+    // Clear error text
+    errorText = null;
+
+    // Clear validation text
+    validationText = null;
+
+    // Clear all field error flags
+    for (int i = 0; i < fieldHasError.length; i++) {
+      fieldHasError[i] = false;
+    }
+
+    // Update all field states to reflect cleared error state
+    for (int i = 0; i < fieldCount; i++) {
+      updateFieldState(i);
+    }
+
+    // Notify callbacks
+    onErrorStateChanged?.call();
+    onErrorTextChanged?.call();
   }
 
   /// Starts the error state timer
@@ -284,21 +336,9 @@ class OtpStateManager {
 
   /// Handles digit input changes
   void onDigitChanged(String value, int index) {
-    // Always clear error when user starts interacting (typing or deleting)
-    if (internalErrorState) {
-      clearErrorState();
-    }
-
-    // Clear validation error text when user starts typing
-    if (errorText != null) {
-      errorText = null;
-      // Update all field states to reflect cleared error text
-      for (int i = 0; i < fieldCount; i++) {
-        updateFieldState(i);
-      }
-      // Notify widget that error text has changed
-      onErrorTextChanged?.call();
-    }
+    // CRITICAL: Clear ALL error-related states when user starts interacting
+    // This ensures the error state is completely cleared on any user input
+    clearAllErrorStates();
 
     // Clear individual field error state if this field had an error
     if (fieldHasError[index]) {
@@ -445,9 +485,12 @@ class OtpStateManager {
       fieldHasError[i] = false;
     }
 
-    // Clear error state if requested
-    if (clearError && internalErrorState) {
-      clearErrorState();
+    // Clear all error states if requested
+    if (clearError) {
+      clearAllErrorStates();
+    } else {
+      // Only clear validation text if not clearing errors
+      validationText = null;
     }
 
     // Call onChanged callback if requested
@@ -555,6 +598,9 @@ class OtpStateManager {
 
       // Clear any error text
       errorText = null;
+
+      // Clear any validation text
+      validationText = null;
 
       // Clear internal error state if configured to do so
       if (errorConfig.autoClearErrorOnInput) {

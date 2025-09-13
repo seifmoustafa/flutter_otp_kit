@@ -8,8 +8,8 @@ class OtpHeader extends StatelessWidget {
   /// Creates a new OTP header
   const OtpHeader({
     Key? key,
-    required this.title,
-    required this.subtitle,
+    this.title,
+    this.subtitle,
     required this.primaryColor,
     required this.secondaryColor,
     required this.spacing,
@@ -22,11 +22,11 @@ class OtpHeader extends StatelessWidget {
     this.semanticLabel,
   }) : super(key: key);
 
-  /// Title text
-  final String title;
+  /// Title text (optional - can use titleWidget instead)
+  final String? title;
 
-  /// Subtitle text
-  final String subtitle;
+  /// Subtitle text (optional - can use subtitleWidget instead)
+  final String? subtitle;
 
   /// Primary color for styling
   final Color primaryColor;
@@ -60,55 +60,72 @@ class OtpHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _buildTitle(),
-        SizedBox(height: spacing * 1.25),
-        _buildSubtitle(),
-      ],
-    );
+    final List<Widget> children = [];
+
+    // Add title if available
+    final titleWidget = _buildTitle();
+    if (titleWidget != null) {
+      children.add(titleWidget);
+      children.add(SizedBox(height: spacing * 1.25));
+    }
+
+    // Add subtitle if available
+    final subtitleWidget = _buildSubtitle();
+    if (subtitleWidget != null) {
+      children.add(subtitleWidget);
+    }
+
+    return Column(children: children);
   }
 
   /// Builds the title widget (custom or default)
-  Widget _buildTitle() {
+  Widget? _buildTitle() {
     if (titleWidget != null) {
       return titleWidget!;
     }
 
-    return Semantics(
-      label: semanticLabel ?? title,
-      header: true,
-      child: PlatformText(
-        title,
-        style: titleStyle ??
-            TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: primaryColor,
-            ),
-        textAlign: TextAlign.center,
-      ),
-    );
+    if (title != null) {
+      return Semantics(
+        label: semanticLabel ?? title,
+        header: true,
+        child: PlatformText(
+          title!,
+          style: titleStyle ??
+              TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: primaryColor,
+              ),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+
+    return null;
   }
 
   /// Builds the subtitle widget (custom or default)
-  Widget _buildSubtitle() {
+  Widget? _buildSubtitle() {
     if (subtitleWidget != null) {
       return subtitleWidget!;
     }
 
-    return PlatformText(
-      contactInfo != null
-          ? subtitle.replaceAll('{contactInfo}',
-              OtpMasker.maskContactInfo(contactInfo!, maskingType))
-          : subtitle,
-      style: subtitleStyle ??
-          TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: secondaryColor,
-          ),
-      textAlign: TextAlign.center,
-    );
+    if (subtitle != null) {
+      return PlatformText(
+        contactInfo != null
+            ? subtitle!.replaceAll('{contactInfo}',
+                OtpMasker.maskContactInfo(contactInfo!, maskingType))
+            : subtitle!,
+        style: subtitleStyle ??
+            TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: secondaryColor,
+            ),
+        textAlign: TextAlign.center,
+      );
+    }
+
+    return null;
   }
 }
