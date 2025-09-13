@@ -16,11 +16,11 @@ export 'src/otp_field_shape.dart';
 export 'src/otp_behavior_config.dart';
 
 // New architecture components
-export 'src/components/otp_field.dart';
-export 'src/components/otp_fields_row.dart';
-export 'src/components/otp_header.dart';
-export 'src/components/otp_footer.dart';
-export 'src/components/otp_error_display.dart';
+export 'src/widgets/otp_field.dart';
+export 'src/widgets/otp_fields_row.dart';
+export 'src/widgets/otp_header.dart';
+export 'src/widgets/otp_footer.dart';
+export 'src/widgets/otp_error_display.dart';
 
 // Configuration
 export 'src/config/otp_error_config.dart';

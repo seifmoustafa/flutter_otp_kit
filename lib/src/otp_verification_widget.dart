@@ -2,10 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'components/otp_error_display.dart';
-import 'components/otp_fields_row.dart';
-import 'components/otp_footer.dart';
-import 'components/otp_header.dart';
+import 'widgets/otp_error_display.dart';
+import 'widgets/otp_fields_row.dart';
+import 'widgets/otp_footer.dart';
+import 'widgets/otp_header.dart';
 import 'config/otp_error_config.dart';
 import 'config/otp_field_config.dart';
 import 'config/otp_animation_config.dart';
