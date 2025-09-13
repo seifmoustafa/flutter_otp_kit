@@ -4,35 +4,46 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)](https://flutter.dev)
 
-🚀 **The Ultimate OTP Package!** 🚀
+A comprehensive Flutter package for OTP (One-Time Password) verification with complete customization, reactive state management, and composable components.
 
-A comprehensive, production-ready Flutter package for OTP (One-Time Password) verification with extensive customization options, responsive design, and robust error handling. Built with a modern widget-based architecture, this package offers unparalleled flexibility, maintainability, and performance.
+## Features
 
-## 🎯 **Why Choose flutter_otp_kit?**
+- **Highly Customizable Fields** - Complete control over field appearance and behavior
+- **Reactive State Management** - Efficient updates with ValueNotifier
+- **Composable Components** - Build your own OTP UI with modular pieces
+- **Platform-Specific Adaptations** - Native look and feel on each platform
+- **Advanced Animations** - Smooth transitions and feedback
+- **Enhanced Validation** - Comprehensive validation options
+- **SMS Autofill** - Native implementation for Android and iOS
+- **Accessibility** - Screen reader support and semantic labels
+- **Form Integration** - Seamless integration with Flutter forms
+- **Builder Pattern** - Fluent API for configuration
+## Installation
 
-| Feature | flutter_otp_kit |
-|---------|----------------|
-| **Architecture** | ✅ Widget-based modular design |
-| **State Management** | ✅ Dedicated state manager with error handling |
-| **Customization** | ✅ Complete widget-based customization |
-| **Error Handling** | ✅ Multiple error states, auto-clearing, validation |
-| **Accessibility** | ✅ Comprehensive screen reader support |
-| **Timer Integration** | ✅ Built-in resend timer |
-| **SMS Autofill** | ✅ Enhanced iOS/Android SMS autofill |
-| **Haptic Feedback** | ✅ Enhanced haptic feedback system |
-| **Animation System** | ✅ Enhanced animation system |
-| **Obscuring Widgets** | ✅ Enhanced obscuring widget support |
-| **Cursor Management** | ✅ Enhanced cursor handling and animation |
-| **Form Validation** | ✅ Enhanced form validation with autovalidate modes |
-| **Clipboard Integration** | ✅ Enhanced clipboard and paste handling |
-| **Theme System** | ✅ Unified internal design system - completely self-contained |
-| **Design Customization** | ✅ 10+ predefined styles, animated decorations, custom cursors |
-| **Field Animations** | ✅ Scale, rotate, slide, fade animations |
-| **Visual Effects** | ✅ Shadows, gradients, glassmorphism, neon glow |
+```yaml
+dependencies:
+  flutter_otp_kit: ^3.0.0
+```
 
-## 📸 Screenshots & Demo
+## Quick Start
 
-<table>
+```dart
+// Simple OTP Field
+FlexibleOtpField(
+  length: 4,
+  onChanged: (value) => print('OTP: $value'),
+  onCompleted: (value) => print('Completed: $value'),
+)
+
+// Complete Verification Flow
+FlexibleOtpVerification(
+  title: 'Verification Code',
+  subtitle: 'Enter the code sent to +1 (555) 123-****',
+  otpLength: 4,
+  onVerify: (value) => print('Verifying: $value'),
+  onResend: () => print('Resending code'),
+)
+```
   <tr>
     <td align="center">
       <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/sc1.png" width="200px" alt="Basic Design with Validation Error">

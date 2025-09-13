@@ -1,8 +1,12 @@
-import 'package:flutter/services.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'platform_sms_autofill.dart';
 
-/// Enhanced SMS autofill manager for OTP input
-/// Provides comprehensive SMS autofill support for iOS and Android
+/// A comprehensive SMS autofill manager for OTP input
+///
+/// This class provides SMS autofill functionality for both iOS and Android platforms,
+/// with a simple API for listening for SMS messages.
 class SmsAutofillManager {
   /// Creates a new SMS autofill manager
   const SmsAutofillManager({
@@ -10,8 +14,11 @@ class SmsAutofillManager {
     this.platform = SmsAutofillPlatform.auto,
     this.appSignature,
     this.timeout = const Duration(seconds: 30),
+    this.expectedLength = 6,
+    this.extractionPattern,
     this.onSmsReceived,
     this.onError,
+    this.onTimeout,
   });
 
   /// Whether SMS autofill is enabled
@@ -26,11 +33,20 @@ class SmsAutofillManager {
   /// Timeout for SMS retrieval
   final Duration timeout;
 
+  /// Expected length of OTP code
+  final int expectedLength;
+
+  /// Custom pattern for extracting OTP code
+  final String? extractionPattern;
+
   /// Callback when SMS is received
   final ValueChanged<String>? onSmsReceived;
 
   /// Callback when an error occurs
   final ValueChanged<String>? onError;
+
+  /// Callback when timeout occurs
+  final VoidCallback? onTimeout;
 
   /// Starts listening for SMS messages
   static Future<void> startListening({
@@ -38,165 +54,55 @@ class SmsAutofillManager {
     SmsAutofillPlatform platform = SmsAutofillPlatform.auto,
     String? appSignature,
     Duration timeout = const Duration(seconds: 30),
+    int expectedLength = 6,
+    String? extractionPattern,
     ValueChanged<String>? onSmsReceived,
     ValueChanged<String>? onError,
+    VoidCallback? onTimeout,
   }) async {
     if (!enabled) return;
 
-    try {
-      switch (platform) {
-        case SmsAutofillPlatform.auto:
-          // Auto-detect platform - use default Android for now
-          await _startAndroidListening(
-              appSignature, timeout, onSmsReceived, onError);
-          break;
-        case SmsAutofillPlatform.ios:
-          await _startIosListening(onSmsReceived, onError);
-          break;
-        case SmsAutofillPlatform.android:
-          await _startAndroidListening(
-              appSignature, timeout, onSmsReceived, onError);
-          break;
-        case SmsAutofillPlatform.web:
-          await _startWebListening(onSmsReceived, onError);
-          break;
-      }
-    } catch (e) {
-      onError?.call('Failed to start SMS listening: $e');
-    }
-  }
+    final manager = EnhancedSmsAutofillManager(
+      enabled: enabled,
+      platform: platform,
+      appSignature: appSignature,
+      timeout: timeout,
+      expectedLength: expectedLength,
+      extractionPattern: extractionPattern,
+      onCodeReceived: onSmsReceived,
+      onError: onError,
+      onTimeout: onTimeout,
+    );
 
-  /// Starts iOS SMS listening
-  static Future<void> _startIosListening(
-    ValueChanged<String>? onSmsReceived,
-    ValueChanged<String>? onError,
-  ) async {
-    try {
-      // iOS SMS autofill works automatically with TextField
-      // We just need to set up the proper configuration
-      await _configureIosSmsAutofill();
-    } catch (e) {
-      onError?.call('iOS SMS autofill setup failed: $e');
-    }
-  }
-
-  /// Starts Android SMS listening
-  static Future<void> _startAndroidListening(
-    String? appSignature,
-    Duration timeout,
-    ValueChanged<String>? onSmsReceived,
-    ValueChanged<String>? onError,
-  ) async {
-    try {
-      if (appSignature != null) {
-        // Use SMS Retriever API
-        await _startSmsRetriever(appSignature, timeout, onSmsReceived, onError);
-      } else {
-        // Use SMS User Consent API
-        await _startSmsUserConsent(timeout, onSmsReceived, onError);
-      }
-    } catch (e) {
-      onError?.call('Android SMS listening failed: $e');
-    }
-  }
-
-  /// Starts web SMS listening
-  static Future<void> _startWebListening(
-    ValueChanged<String>? onSmsReceived,
-    ValueChanged<String>? onError,
-  ) async {
-    try {
-      // Web SMS autofill is handled by the browser
-      // We just need to set up the proper configuration
-      await _configureWebSmsAutofill();
-    } catch (e) {
-      onError?.call('Web SMS autofill setup failed: $e');
-    }
-  }
-
-  /// Configures iOS SMS autofill
-  static Future<void> _configureIosSmsAutofill() async {
-    // iOS SMS autofill is handled automatically by the system
-    // when using TextField with proper configuration
-  }
-
-  /// Starts SMS Retriever API (Android)
-  static Future<void> _startSmsRetriever(
-    String appSignature,
-    Duration timeout,
-    ValueChanged<String>? onSmsReceived,
-    ValueChanged<String>? onError,
-  ) async {
-    try {
-      // This would typically use a platform channel to native Android code
-      // For now, we'll simulate the behavior
-      await _simulateSmsRetriever(
-          appSignature, timeout, onSmsReceived, onError);
-    } catch (e) {
-      onError?.call('SMS Retriever failed: $e');
-    }
-  }
-
-  /// Starts SMS User Consent API (Android)
-  static Future<void> _startSmsUserConsent(
-    Duration timeout,
-    ValueChanged<String>? onSmsReceived,
-    ValueChanged<String>? onError,
-  ) async {
-    try {
-      // This would typically use a platform channel to native Android code
-      // For now, we'll simulate the behavior
-      await _simulateSmsUserConsent(timeout, onSmsReceived, onError);
-    } catch (e) {
-      onError?.call('SMS User Consent failed: $e');
-    }
-  }
-
-  /// Configures web SMS autofill
-  static Future<void> _configureWebSmsAutofill() async {
-    // Web SMS autofill is handled by the browser
-    // We just need to set up the proper configuration
-  }
-
-  /// Simulates SMS Retriever API behavior
-  static Future<void> _simulateSmsRetriever(
-    String appSignature,
-    Duration timeout,
-    ValueChanged<String>? onSmsReceived,
-    ValueChanged<String>? onError,
-  ) async {
-    // This is a simulation - in a real implementation, this would
-    // use platform channels to communicate with native Android code
-    await Future.delayed(timeout);
-    onError?.call('SMS Retriever timeout - no SMS received');
-  }
-
-  /// Simulates SMS User Consent API behavior
-  static Future<void> _simulateSmsUserConsent(
-    Duration timeout,
-    ValueChanged<String>? onSmsReceived,
-    ValueChanged<String>? onError,
-  ) async {
-    // This is a simulation - in a real implementation, this would
-    // use platform channels to communicate with native Android code
-    await Future.delayed(timeout);
-    onError?.call('SMS User Consent timeout - no SMS received');
+    await manager.startListening();
   }
 
   /// Stops listening for SMS messages
   static Future<void> stopListening() async {
     try {
-      // Stop any active SMS listening
-      await _stopSmsListening();
+      await PlatformSmsAutofill.instance.stopListening();
     } catch (e) {
-      // Handle error silently
+      debugPrint('Failed to stop SMS listening: $e');
     }
   }
 
-  /// Stops SMS listening
-  static Future<void> _stopSmsListening() async {
-    // This would typically use a platform channel to native code
-    // For now, we'll just return
+  /// Gets app signature for Android SMS Retriever API
+  static Future<String?> getAppSignature() async {
+    try {
+      return await PlatformSmsAutofill.instance.getAppSignature();
+    } catch (e) {
+      debugPrint('Failed to get app signature: $e');
+      return null;
+    }
+  }
+
+  /// Checks if SMS autofill is supported on current platform
+  static Future<bool> isSupported() async {
+    try {
+      return await PlatformSmsAutofill.instance.isSupported();
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Extracts OTP from SMS text
@@ -205,132 +111,96 @@ class SmsAutofillManager {
     int? expectedLength,
     String? pattern,
   }) {
-    try {
-      // Default pattern for OTP extraction
-      final defaultPattern = expectedLength != null
-          ? RegExp(r'\b\d{' + expectedLength.toString() + r'}\b')
-          : RegExp(r'\b\d{4,8}\b');
-
-      final regex = pattern != null ? RegExp(pattern) : defaultPattern;
-      final match = regex.firstMatch(smsText);
-
-      return match?.group(0);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  /// Validates SMS format for OTP
-  static bool isValidOtpSms(
-    String smsText, {
-    int? expectedLength,
-    String? appSignature,
-  }) {
-    try {
-      // Check if SMS contains OTP
-      final hasOtp =
-          extractOtpFromSms(smsText, expectedLength: expectedLength) != null;
-
-      // Check app signature if provided
-      if (appSignature != null) {
-        final hasSignature = smsText.contains(appSignature);
-        return hasOtp && hasSignature;
-      }
-
-      return hasOtp;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /// Gets app signature for Android SMS Retriever API
-  static Future<String?> getAppSignature() async {
-    try {
-      // This would typically use a platform channel to native Android code
-      // For now, we'll return null
-      return null;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  /// Checks if SMS autofill is supported on current platform
-  static bool isSupported() {
-    try {
-      // Check if SMS autofill is supported
-      return true; // Simplified for now
-    } catch (e) {
-      return false;
-    }
-  }
-}
-
-/// Enum for SMS autofill platforms
-enum SmsAutofillPlatform {
-  auto,
-  ios,
-  android,
-  web,
-}
-
-/// SMS autofill configuration
-class SmsAutofillConfig {
-  /// Creates a new SMS autofill configuration
-  const SmsAutofillConfig({
-    this.enabled = true,
-    this.platform = SmsAutofillPlatform.auto,
-    this.appSignature,
-    this.timeout = const Duration(seconds: 30),
-    this.expectedLength,
-    this.pattern,
-    this.onSmsReceived,
-    this.onError,
-  });
-
-  /// Whether SMS autofill is enabled
-  final bool enabled;
-
-  /// Platform-specific implementation to use
-  final SmsAutofillPlatform platform;
-
-  /// App signature for Android SMS Retriever API
-  final String? appSignature;
-
-  /// Timeout for SMS retrieval
-  final Duration timeout;
-
-  /// Expected length of OTP
-  final int? expectedLength;
-
-  /// Custom pattern for OTP extraction
-  final String? pattern;
-
-  /// Callback when SMS is received
-  final ValueChanged<String>? onSmsReceived;
-
-  /// Callback when an error occurs
-  final ValueChanged<String>? onError;
-
-  /// Creates a copy with the given fields replaced
-  SmsAutofillConfig copyWith({
-    bool? enabled,
-    SmsAutofillPlatform? platform,
-    String? appSignature,
-    Duration? timeout,
-    int? expectedLength,
-    String? pattern,
-    ValueChanged<String>? onSmsReceived,
-    ValueChanged<String>? onError,
-  }) {
-    return SmsAutofillConfig(
-      enabled: enabled ?? this.enabled,
-      platform: platform ?? this.platform,
-      appSignature: appSignature ?? this.appSignature,
-      timeout: timeout ?? this.timeout,
-      expectedLength: expectedLength ?? this.expectedLength,
-      pattern: pattern ?? this.pattern,
-      onSmsReceived: onSmsReceived ?? this.onSmsReceived,
-      onError: onError ?? this.onError,
+    return PlatformSmsAutofill.extractOtpFromSms(
+      smsText,
+      expectedLength: expectedLength,
+      pattern: pattern,
     );
+  }
+
+  /// Creates autofill input formatters for use with TextField
+  static List<TextInputFormatter> createInputFormatters({int maxLength = 1}) {
+    return [
+      LengthLimitingTextInputFormatter(maxLength),
+      FilteringTextInputFormatter.digitsOnly,
+    ];
+  }
+
+  /// Creates autofill configuration for TextField
+  static InputDecoration createAutofillDecoration() {
+    return const InputDecoration(
+      border: InputBorder.none,
+      counterText: '',
+      contentPadding: EdgeInsets.zero,
+      isDense: true,
+    );
+  }
+
+  /// Sets up a TextField for iOS autofill
+  static void setupIOSAutofill(TextInputConfiguration configuration) {
+    // iOS autofill is handled automatically by the system
+    // Just ensure the textContentType is set to oneTimeCode
+  }
+}
+
+/// Utility extension for TextField to enable SMS autofill
+extension SmsAutofillExtension on TextField {
+  /// Enables SMS autofill for this TextField
+  TextField enableSmsAutofill() {
+    // For iOS, we use the oneTimeCode textContentType
+    if (this.textInputAction == TextInputAction.next &&
+        this.keyboardType == TextInputType.number) {
+      return TextField(
+        controller: this.controller,
+        focusNode: this.focusNode,
+        decoration: this.decoration,
+        keyboardType: TextInputType.number,
+        textInputAction: TextInputAction.next,
+        autofillHints: const ['oneTimeCode'],
+        style: this.style,
+        textAlign: this.textAlign,
+        textAlignVertical: this.textAlignVertical,
+        textDirection: this.textDirection,
+        readOnly: this.readOnly,
+        toolbarOptions: this.toolbarOptions,
+        showCursor: this.showCursor,
+        obscuringCharacter: this.obscuringCharacter,
+        obscureText: this.obscureText,
+        autocorrect: this.autocorrect,
+        smartDashesType: this.smartDashesType,
+        smartQuotesType: this.smartQuotesType,
+        enableSuggestions: this.enableSuggestions,
+        maxLines: this.maxLines,
+        minLines: this.minLines,
+        expands: this.expands,
+        maxLength: this.maxLength,
+        maxLengthEnforcement: this.maxLengthEnforcement,
+        onChanged: this.onChanged,
+        onEditingComplete: this.onEditingComplete,
+        onSubmitted: this.onSubmitted,
+        onAppPrivateCommand: this.onAppPrivateCommand,
+        inputFormatters: this.inputFormatters,
+        enabled: this.enabled,
+        cursorWidth: this.cursorWidth,
+        cursorHeight: this.cursorHeight,
+        cursorRadius: this.cursorRadius,
+        cursorColor: this.cursorColor,
+        selectionHeightStyle: this.selectionHeightStyle,
+        selectionWidthStyle: this.selectionWidthStyle,
+        keyboardAppearance: this.keyboardAppearance,
+        scrollPadding: this.scrollPadding,
+        enableInteractiveSelection: this.enableInteractiveSelection,
+        selectionControls: this.selectionControls,
+        buildCounter: this.buildCounter,
+        scrollController: this.scrollController,
+        scrollPhysics: this.scrollPhysics,
+        autofocus: this.autofocus,
+        restorationId: this.restorationId,
+        enableIMEPersonalizedLearning: this.enableIMEPersonalizedLearning,
+      );
+    }
+
+    // If we don't need to modify anything, return the original TextField
+    return this;
   }
 }
