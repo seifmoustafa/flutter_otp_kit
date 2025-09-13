@@ -1,5 +1,6 @@
 /// A comprehensive Flutter package for OTP (One-Time Password) verification
 /// with customizable styling, localization support, and robust functionality.
+/// Enhanced with advanced features and comprehensive capabilities.
 library flutter_otp_kit;
 
 // Main widget
@@ -38,3 +39,31 @@ export 'src/styling/otp_style_manager.dart';
 export 'src/utils/otp_formatter.dart';
 export 'src/utils/otp_masker.dart';
 export 'src/utils/otp_validator.dart';
+
+// Enhanced Features (New)
+// Enhanced theming system (PinTheme-like)
+export 'src/theming/pin_theme.dart';
+
+// Enhanced validation system
+export 'src/validation/otp_form_validation.dart';
+
+// Enhanced haptic feedback
+export 'src/feedback/haptic_feedback_manager.dart';
+
+// Enhanced SMS autofill
+export 'src/autofill/sms_autofill_manager.dart';
+
+// Enhanced clipboard handling
+export 'src/clipboard/enhanced_clipboard_manager.dart';
+
+// Enhanced animation system
+export 'src/animations/enhanced_animation_manager.dart';
+
+// Enhanced obscuring widget support
+export 'src/obscuring/obscuring_widget_manager.dart';
+
+// Enhanced cursor management
+export 'src/cursor/enhanced_cursor_manager.dart';
+
+// Generic field system (Complete customizable field design)
+export 'src/design/generic_field_system.dart';

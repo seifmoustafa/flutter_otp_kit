@@ -18,6 +18,7 @@ import 'state/otp_state_manager.dart';
 import 'styling/otp_style_manager.dart';
 import 'utils/otp_formatter.dart';
 import 'utils/otp_validator.dart';
+import 'design/generic_field_system.dart';
 
 /// A comprehensive OTP verification widget with customizable styling and behavior.
 ///
@@ -173,6 +174,7 @@ class OtpVerificationWidget extends StatefulWidget {
     this.resendWidget,
     this.timerWidget,
     this.validationMessage,
+    this.customTheme,
   });
 
   // Required parameters
@@ -447,6 +449,9 @@ class OtpVerificationWidget extends StatefulWidget {
 
   /// Custom validation message widget
   final Widget? validationMessage;
+
+  /// Custom theme (optional - completely customizable field design)
+  final OtpFieldTheme? customTheme;
 
   @override
   State<OtpVerificationWidget> createState() => OtpVerificationWidgetState();
@@ -964,6 +969,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
                       textCapitalization: widget.textCapitalization,
                       hasInternalError: _stateManager.internalErrorState,
                       animationConfig: animationConfig,
+                      customTheme: widget.customTheme,
                     ),
                   ),
 

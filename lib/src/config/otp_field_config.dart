@@ -77,7 +77,7 @@ class OtpFieldConfig {
 
     // Feedback
     this.enableHapticFeedback = false,
-    this.hapticFeedbackType = HapticFeedbackType.light,
+    this.hapticFeedbackType = OtpFieldHapticFeedbackType.light,
   });
 
   // Field dimensions
@@ -245,7 +245,7 @@ class OtpFieldConfig {
   final bool enableHapticFeedback;
 
   /// Type of haptic feedback
-  final HapticFeedbackType hapticFeedbackType;
+  final OtpFieldHapticFeedbackType hapticFeedbackType;
 
   /// Creates a copy of this object with the given fields replaced with the new values
   OtpFieldConfig copyWith({
@@ -321,7 +321,7 @@ class OtpFieldConfig {
 
     // Feedback
     bool? enableHapticFeedback,
-    HapticFeedbackType? hapticFeedbackType,
+    OtpFieldHapticFeedbackType? hapticFeedbackType,
   }) {
     return OtpFieldConfig(
       // Field dimensions
@@ -533,8 +533,8 @@ enum CompletedEffect {
   none,
 }
 
-/// Type of haptic feedback
-enum HapticFeedbackType {
+/// Type of haptic feedback for OTP fields
+enum OtpFieldHapticFeedbackType {
   /// Light impact
   light,
 

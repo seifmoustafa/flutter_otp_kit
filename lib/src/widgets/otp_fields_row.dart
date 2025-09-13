@@ -5,6 +5,7 @@ import '../styling/field_colors.dart';
 import '../config/otp_field_config.dart';
 import '../config/otp_animation_config.dart';
 import '../otp_layout_type.dart';
+import '../design/generic_field_system.dart';
 import 'otp_field.dart';
 
 /// A row of OTP input fields
@@ -32,6 +33,7 @@ class OtpFieldsRow extends StatefulWidget {
     this.textCapitalization = TextCapitalization.none,
     this.hasInternalError = false,
     this.animationConfig = const OtpAnimationConfig(),
+    this.customTheme,
   }) : super(key: key);
 
   /// Text controllers for the fields
@@ -93,6 +95,9 @@ class OtpFieldsRow extends StatefulWidget {
 
   /// Animation configuration for the fields
   final OtpAnimationConfig animationConfig;
+
+  /// Custom theme (optional - completely customizable field design)
+  final OtpFieldTheme? customTheme;
 
   @override
   State<OtpFieldsRow> createState() => _OtpFieldsRowState();
@@ -162,6 +167,7 @@ class _OtpFieldsRowState extends State<OtpFieldsRow> {
                     animationCurve: widget.animationConfig.fieldTransitionCurve,
                     transitionHighlightColor:
                         widget.animationConfig.transitionHighlightColor,
+                    customTheme: widget.customTheme,
                   ),
                 );
               },

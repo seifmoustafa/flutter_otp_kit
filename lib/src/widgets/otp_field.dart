@@ -4,6 +4,7 @@ import '../styling/field_colors.dart';
 import '../config/otp_field_config.dart';
 import '../state/otp_field_state.dart';
 import '../otp_field_shape.dart';
+import '../design/generic_field_system.dart';
 
 /// A single OTP input field with customizable styling and behavior
 class OtpField extends StatefulWidget {
@@ -32,6 +33,7 @@ class OtpField extends StatefulWidget {
     this.animationDuration = const Duration(milliseconds: 300),
     this.animationCurve = Curves.easeInOut,
     this.transitionHighlightColor,
+    this.customTheme,
   }) : super(key: key);
 
   /// Text controller for the field
@@ -99,6 +101,9 @@ class OtpField extends StatefulWidget {
 
   /// Optional color for transition highlight
   final Color? transitionHighlightColor;
+
+  /// Custom theme (optional - completely customizable field design)
+  final OtpFieldTheme? customTheme;
 
   @override
   State<OtpField> createState() => _OtpFieldState();
@@ -194,6 +199,11 @@ class _OtpFieldState extends State<OtpField>
   Widget build(BuildContext context) {
     final width = widget.fieldWidth ?? widget.config.fieldWidth;
     final height = widget.fieldHeight ?? widget.config.fieldHeight;
+
+    // Check if custom theme is provided
+    if (widget.customTheme != null) {
+      return _buildCustomStyledField(width, height);
+    }
 
     // The visual state is now handled entirely by the style manager
     // No need for special decoration logic here - the container handles all styling
@@ -329,6 +339,76 @@ class _OtpFieldState extends State<OtpField>
           ),
         );
       },
+    );
+  }
+
+  /// Builds a custom styled field with full input functionality
+  Widget _buildCustomStyledField(double width, double height) {
+    final theme = widget.customTheme!;
+
+    // Determine which decoration to use based on field state
+    BoxDecoration decoration;
+    if (widget.hasError) {
+      decoration = theme.errorDecoration;
+    } else if (widget.fieldState == OtpFieldState.completed) {
+      decoration = theme.completedDecoration;
+    } else if (widget.focusNode.hasFocus) {
+      decoration = theme.focusedDecoration;
+    } else {
+      decoration = theme.decoration;
+    }
+
+    // Determine cursor visibility based on cursor style
+    bool showCursor = true;
+    switch (theme.cursorStyle) {
+      case CursorStyle.none:
+        showCursor = false;
+        break;
+      case CursorStyle.vertical:
+        showCursor = true;
+        break;
+      case CursorStyle.bottom:
+        showCursor =
+            false; // Bottom cursor uses decoration, not TextField cursor
+        break;
+      case CursorStyle.custom:
+        showCursor = true; // User can customize this
+        break;
+    }
+
+    // Create a fully functional TextField with custom styling
+    return Container(
+      width: width,
+      height: height,
+      decoration: decoration,
+      child: TextField(
+        controller: widget.controller,
+        focusNode: widget.focusNode,
+        textAlign: widget.cursorAlignment,
+        obscureText: widget.obscureText,
+        obscuringCharacter: widget.obscuringCharacter,
+        textCapitalization: widget.textCapitalization,
+        keyboardType: widget.keyboardType,
+        inputFormatters: widget.inputFormatters,
+        maxLength: 1,
+        onChanged: widget.onChanged,
+        style: theme.textStyle,
+        showCursor: showCursor,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          counterText: '',
+          contentPadding: EdgeInsets.zero,
+          hintText: widget.config.showPlaceholder
+              ? widget.config.placeholderCharacter
+              : null,
+          hintStyle: widget.config.placeholderStyle ??
+              TextStyle(
+                color: widget.config.placeholderColor ??
+                    theme.textStyle.color?.withAlpha(128),
+                fontSize: theme.textStyle.fontSize,
+              ),
+        ),
+      ),
     );
   }
 }

@@ -4,7 +4,31 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)](https://flutter.dev)
 
+🚀 **The Ultimate OTP Package!** 🚀
+
 A comprehensive, production-ready Flutter package for OTP (One-Time Password) verification with extensive customization options, responsive design, and robust error handling. Built with a modern widget-based architecture, this package offers unparalleled flexibility, maintainability, and performance.
+
+## 🎯 **Why Choose flutter_otp_kit?**
+
+| Feature | flutter_otp_kit |
+|---------|----------------|
+| **Architecture** | ✅ Widget-based modular design |
+| **State Management** | ✅ Dedicated state manager with error handling |
+| **Customization** | ✅ Complete widget-based customization |
+| **Error Handling** | ✅ Multiple error states, auto-clearing, validation |
+| **Accessibility** | ✅ Comprehensive screen reader support |
+| **Timer Integration** | ✅ Built-in resend timer |
+| **SMS Autofill** | ✅ Enhanced iOS/Android SMS autofill |
+| **Haptic Feedback** | ✅ Enhanced haptic feedback system |
+| **Animation System** | ✅ Enhanced animation system |
+| **Obscuring Widgets** | ✅ Enhanced obscuring widget support |
+| **Cursor Management** | ✅ Enhanced cursor handling and animation |
+| **Form Validation** | ✅ Enhanced form validation with autovalidate modes |
+| **Clipboard Integration** | ✅ Enhanced clipboard and paste handling |
+| **Theme System** | ✅ Unified internal design system - completely self-contained |
+| **Design Customization** | ✅ 10+ predefined styles, animated decorations, custom cursors |
+| **Field Animations** | ✅ Scale, rotate, slide, fade animations |
+| **Visual Effects** | ✅ Shadows, gradients, glassmorphism, neon glow |
 
 ## 📸 Screenshots & Demo
 
@@ -54,6 +78,126 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 </p>
 
 **Tutorial Video**: Complete walkthrough of Flutter OTP Kit features and implementation
+
+## 🚀 **NEW: Enhanced Features**
+
+### 🎨 **Enhanced Theme System (PinTheme-like)**
+```dart
+// Enhanced PinTheme with advanced capabilities
+final defaultPinTheme = PinTheme(
+  width: 56,
+  height: 56,
+  textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+  decoration: BoxDecoration(
+    border: Border.all(color: Colors.grey),
+    borderRadius: BorderRadius.circular(8),
+  ),
+);
+
+final focusedPinTheme = defaultPinTheme.copyDecorationWith(
+  border: Border.all(color: Colors.blue),
+  borderRadius: BorderRadius.circular(8),
+);
+```
+
+### 🔧 **Enhanced Form Validation**
+```dart
+// Comprehensive validation with autovalidate modes
+final validation = OtpFormValidation(
+  autovalidateMode: AutovalidateMode.onSubmit,
+  validator: (value) => value == '1234' ? null : 'Invalid OTP',
+  enableRealTimeValidation: true,
+  customValidationRules: [
+    LengthValidationRule(expectedLength: 4),
+    NumericValidationRule(),
+  ],
+);
+```
+
+### 📱 **Enhanced SMS Autofill**
+```dart
+// Enhanced SMS autofill for iOS/Android
+await SmsAutofillManager.startListening(
+  enabled: true,
+  platform: SmsAutofillPlatform.auto,
+  onSmsReceived: (sms) {
+    final otp = SmsAutofillManager.extractOtpFromSms(sms, expectedLength: 4);
+    if (otp != null) {
+      _otpKey.currentState?.setOtp(otp);
+    }
+  },
+);
+```
+
+### 🎯 **Enhanced Haptic Feedback**
+```dart
+// Comprehensive haptic feedback system
+await HapticFeedbackManager.triggerInput(
+  enabled: true,
+  type: HapticFeedbackType.light,
+);
+
+await HapticFeedbackManager.triggerSuccess(
+  enabled: true,
+  type: HapticFeedbackType.medium,
+);
+```
+
+### 🎭 **Enhanced Obscuring Widgets**
+```dart
+// Custom obscuring widgets
+final obscuringManager = ObscuringWidgetManager(
+  enabled: true,
+  obscuringWidget: ObscuringWidgets.star(color: Colors.blue),
+  obscuringAnimation: ObscuringAnimation(
+    type: ObscuringAnimationType.fade,
+    duration: Duration(milliseconds: 200),
+  ),
+);
+```
+
+### 🎨 **Enhanced Cursor Management**
+```dart
+// Advanced cursor handling and animation
+final cursorManager = EnhancedCursorManager(
+  enabled: true,
+  cursorColor: Colors.blue,
+  cursorAnimation: CursorAnimation(
+    type: CursorAnimationType.pulse,
+    duration: Duration(milliseconds: 1000),
+  ),
+  cursorPulseAnimation: true,
+);
+```
+
+### 📋 **Enhanced Clipboard Handling**
+```dart
+// Advanced clipboard and paste handling
+await EnhancedClipboardManager.handlePasteOperation(
+  controllers: controllers,
+  focusNodes: focusNodes,
+  fieldCount: 4,
+  onPasteDetected: (text) => print('Paste detected: $text'),
+  onPasteProcessed: (text) => print('Paste processed: $text'),
+);
+```
+
+### 🎬 **Enhanced Animation System**
+```dart
+// Comprehensive animation system
+final animationManager = EnhancedAnimationManager(
+  enabled: true,
+  duration: Duration(milliseconds: 300),
+  enableFieldStateAnimation: true,
+  enableFieldToFieldAnimation: true,
+  enableShakeAnimation: true,
+  enableSuccessAnimation: true,
+  customAnimations: [
+    OtpAnimations.defaultShakeAnimation,
+    OtpAnimations.defaultSuccessAnimation,
+  ],
+);
+```
 
 ## ✨ Features
 
@@ -121,10 +265,215 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 
 ```yaml
 dependencies:
-  flutter_otp_kit: ^2.0.0
+  flutter_otp_kit: ^3.0.0
 ```
 
 ## 🚀 Usage
+
+### 🎯 **Quick Start - Enhanced Edition**
+
+```dart
+import 'package:flutter_otp_kit/flutter_otp_kit.dart';
+
+// Enhanced OTP with all new features
+OtpVerificationWidget(
+  title: 'Enhanced OTP Verification',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: '+1 (555) 123-4567',
+  maskingType: MaskingType.phone,
+  fieldCount: 4,
+  enableAutoValidation: true,
+  enablePaste: true,
+  showTimer: true,
+  timerDuration: 60,
+  
+  // Enhanced theming
+  primaryColor: Colors.blue,
+  focusedBorderColor: Colors.blue,
+  completedFieldBorderColor: Colors.green,
+  errorBorderColor: Colors.red,
+  
+  // Enhanced callbacks
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => handleResend(),
+  onTimerChanged: (remainingTime) => print('Timer: $remainingTime'),
+  onErrorStateChangedCallback: (hasError) => print('Error: $hasError'),
+  onValidationStateChanged: (isValidating) => print('Validating: $isValidating'),
+  onCompletionStateChanged: (isComplete) => print('Complete: $isComplete'),
+)
+```
+
+### 🎨 **Enhanced Theme System**
+
+```dart
+// Create enhanced PinTheme
+final defaultPinTheme = PinTheme(
+  width: 56,
+  height: 56,
+  textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+  decoration: BoxDecoration(
+    border: Border.all(color: Colors.grey),
+    borderRadius: BorderRadius.circular(8),
+  ),
+);
+
+final focusedPinTheme = defaultPinTheme.copyDecorationWith(
+  border: Border.all(color: Colors.blue),
+  borderRadius: BorderRadius.circular(8),
+);
+
+final errorPinTheme = defaultPinTheme.copyWith(
+  errorBorderColor: Colors.red,
+  errorBackgroundColor: Colors.red.withValues(alpha: 0.1),
+);
+```
+
+### 🔧 **Enhanced Form Validation**
+
+```dart
+// Comprehensive validation system
+final validation = OtpFormValidation(
+  autovalidateMode: AutovalidateMode.onSubmit,
+  validator: (value) => value == '1234' ? null : 'Invalid OTP',
+  enableRealTimeValidation: true,
+  customValidationRules: [
+    LengthValidationRule(expectedLength: 4),
+    NumericValidationRule(),
+    RegexValidationRule(pattern: r'^[0-9]+$'),
+  ],
+);
+```
+
+### 📱 **Enhanced SMS Autofill**
+
+```dart
+// Enhanced SMS autofill for iOS/Android
+await SmsAutofillManager.startListening(
+  enabled: true,
+  platform: SmsAutofillPlatform.auto,
+  onSmsReceived: (sms) {
+    final otp = SmsAutofillManager.extractOtpFromSms(sms, expectedLength: 4);
+    if (otp != null) {
+      _otpKey.currentState?.setOtp(otp);
+    }
+  },
+  onError: (error) => print('SMS autofill error: $error'),
+);
+```
+
+### 🎯 **Enhanced Haptic Feedback**
+
+```dart
+// Comprehensive haptic feedback system
+await HapticFeedbackManager.triggerInput(
+  enabled: true,
+  type: HapticFeedbackType.light,
+);
+
+await HapticFeedbackManager.triggerSuccess(
+  enabled: true,
+  type: HapticFeedbackType.medium,
+);
+
+// Predefined patterns
+await HapticFeedbackManager.triggerCustomPattern(
+  pattern: HapticPatterns.success,
+  enabled: true,
+);
+```
+
+### 🎭 **Enhanced Obscuring Widgets**
+
+```dart
+// Custom obscuring widgets
+final obscuringManager = ObscuringWidgetManager(
+  enabled: true,
+  obscuringWidget: ObscuringWidgets.star(color: Colors.blue),
+  obscuringAnimation: ObscuringAnimation(
+    type: ObscuringAnimationType.fade,
+    duration: Duration(milliseconds: 200),
+  ),
+);
+```
+
+### 🎨 **Enhanced Cursor Management**
+
+```dart
+// Advanced cursor handling and animation
+final cursorManager = EnhancedCursorManager(
+  enabled: true,
+  cursorColor: Colors.blue,
+  cursorAnimation: CursorAnimation(
+    type: CursorAnimationType.pulse,
+    duration: Duration(milliseconds: 1000),
+  ),
+  cursorPulseAnimation: true,
+);
+```
+
+### 📋 **Enhanced Clipboard Handling**
+
+```dart
+// Advanced clipboard and paste handling
+await EnhancedClipboardManager.handlePasteOperation(
+  controllers: controllers,
+  focusNodes: focusNodes,
+  fieldCount: 4,
+  onPasteDetected: (text) => print('Paste detected: $text'),
+  onPasteProcessed: (text) => print('Paste processed: $text'),
+);
+```
+
+### 🎬 **Enhanced Animation System**
+
+```dart
+// Comprehensive animation system
+final animationManager = EnhancedAnimationManager(
+  enabled: true,
+  duration: Duration(milliseconds: 300),
+  enableFieldStateAnimation: true,
+  enableFieldToFieldAnimation: true,
+  enableShakeAnimation: true,
+  enableSuccessAnimation: true,
+  customAnimations: [
+    OtpAnimations.defaultShakeAnimation,
+    OtpAnimations.defaultSuccessAnimation,
+  ],
+);
+```
+
+### 🎨 **Unified Design System**
+
+```dart
+// Complete internal design system - no external dependencies
+final defaultTheme = UnifiedDesignSystem.defaultTheme();
+final roundedFilled = UnifiedDesignSystem.roundedFilledTheme();
+final roundedWithShadow = UnifiedDesignSystem.roundedWithShadowTheme();
+final bottomCursor = UnifiedDesignSystem.bottomCursorTheme();
+final gradient = UnifiedDesignSystem.gradientTheme();
+final neonGlow = UnifiedDesignSystem.neonGlowTheme();
+final glassmorphism = UnifiedDesignSystem.glassmorphismTheme();
+final cursorless = UnifiedDesignSystem.cursorlessTheme();
+
+// Predefined themes
+final themes = OtpDesignThemes.defaultTheme;
+final roundedTheme = OtpDesignThemes.roundedFilled;
+final shadowTheme = OtpDesignThemes.roundedWithShadow;
+
+// Field customization options
+final options = FieldCustomizationOptions(
+  enableAnimatedDecoration: true,
+  enableCursorAnimation: true,
+  enableObscuringAnimation: true,
+  enableHapticFeedback: true,
+  enableFieldAnimation: true,
+  enableGradientBorder: false,
+  enableShadowAnimation: true,
+  enableRippleEffect: true,
+  animationDuration: Duration(milliseconds: 200),
+  fieldAnimationType: FieldAnimationType.scale,
+);
+```
 
 ### Basic Usage
 
@@ -250,7 +599,7 @@ OtpVerificationWidget(
   buttonText: 'Submit',
   resendText: 'Send Again',
   timerPrefix: 'after',
-  fieldCount: 6,
+  fieldCount: 4,
   fieldSpacing: 12.0,
   otpInputType: OtpInputType.numeric,
   layoutType: OtpLayoutType.responsive,
@@ -556,7 +905,7 @@ OtpFieldsRow(
   keyboardType: keyboardType,
   validator: validator,
   layoutType: OtpLayoutType.responsive,
-  fieldCount: 6,
+  fieldCount: 4,
   fieldSpacing: 10.0,
   cursorAlignment: TextAlign.center,
 )
@@ -625,7 +974,7 @@ Centralized state management for the OTP verification process. Handles field sta
 ```dart
 // Creating a state manager
 final stateManager = OtpStateManager(
-  fieldCount: 6,
+  fieldCount: 4,
   errorConfig: errorConfig,
   onErrorStateChanged: handleErrorStateChange,
   onOtpChanged: handleOtpChange,
@@ -634,7 +983,7 @@ final stateManager = OtpStateManager(
 
 // Managing OTP state
 stateManager.clearOtp(refocus: true, clearError: true);
-stateManager.setOtp('123456', clearFocus: true);
+stateManager.setOtp('1234', clearFocus: true);
 stateManager.resetFields(preserveFocus: false);
 stateManager.setErrorState(true);
 stateManager.clearErrorState();
@@ -746,7 +1095,7 @@ final fieldConfig = OtpFieldConfig(
   cursorHeight: 24.0,
   cursorWidth: 2.0,
   enableShadow: true,
-  shadowColor: Colors.blue.withOpacity(0.2),
+  shadowColor: Colors.blue.withValues(alpha: 0.2),
   shadowBlurRadius: 8.0,
   shadowSpreadRadius: 0.0,
 );
@@ -765,7 +1114,7 @@ final errorConfig = OtpErrorConfig(
   errorStatePriority: ErrorStatePriority.highest,
   errorStateBehavior: ErrorStateBehavior.autoClear,
   errorBorderColor: Colors.red,
-  errorBackgroundColor: Colors.red.withOpacity(0.1),
+  errorBackgroundColor: Colors.red.withValues(alpha: 0.1),
   errorTextColor: Colors.red,
   errorText: 'Invalid OTP. Please try again.',
   errorStyle: TextStyle(color: Colors.red, fontSize: 12),
@@ -784,7 +1133,7 @@ final animationConfig = OtpAnimationConfig(
   enableFieldToFieldAnimation: true,
   fieldTransitionDuration: Duration(milliseconds: 150),
   fieldTransitionCurve: Curves.easeInOut,
-  transitionHighlightColor: Colors.blue.withOpacity(0.3),
+  transitionHighlightColor: Colors.blue.withValues(alpha: 0.3),
 );
 ```
 
@@ -793,7 +1142,7 @@ Main configuration that combines all other configurations. Provides a single poi
 
 ```dart
 final otpConfig = OtpConfig(
-  fieldCount: 6,
+  fieldCount: 4,
   fieldSpacing: 10.0,
   spacing: 16.0,
   otpInputType: OtpInputType.numeric,
@@ -842,15 +1191,15 @@ Utilities for validating OTP input based on input type, length, and custom rules
 ```dart
 // Check if OTP is valid
 final isValid = OtpValidator.isValidOtp(
-  '123456',
+  '1234',
   OtpInputType.numeric,
-  6,
+  4,
 );
 
 // Create a validator function
 final validator = OtpValidator.createValidator(
   inputType: OtpInputType.numeric,
-  fieldCount: 6,
+  fieldCount: 4,
   validationRegex: r'^[0-9]+$',
   validationMessage: 'Numbers only',
   customValidator: (value) {
