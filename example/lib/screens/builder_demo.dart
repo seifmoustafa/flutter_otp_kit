@@ -70,8 +70,8 @@ class _BuilderDemoState extends State<BuilderDemo> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).primaryColor.withOpacity(0.1),
-            Theme.of(context).primaryColor.withOpacity(0.05),
+            Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            Theme.of(context).primaryColor.withValues(alpha: 0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -180,7 +180,7 @@ class _BuilderDemoState extends State<BuilderDemo> {
                     boxShadow: isSelected
                         ? [
                             BoxShadow(
-                              color: color.withOpacity(0.5),
+                              color: color.withValues(alpha: 0.5),
                               blurRadius: 8,
                               spreadRadius: 2,
                             ),
@@ -383,14 +383,14 @@ class _BuilderDemoState extends State<BuilderDemo> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            _selectedColor.withOpacity(0.05),
-            _selectedColor.withOpacity(0.02),
+            _selectedColor.withValues(alpha: 0.05),
+            _selectedColor.withValues(alpha: 0.02),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _selectedColor.withOpacity(0.2)),
+        border: Border.all(color: _selectedColor.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [

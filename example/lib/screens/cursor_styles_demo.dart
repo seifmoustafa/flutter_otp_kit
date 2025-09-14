@@ -69,8 +69,8 @@ class _CursorStylesDemoState extends State<CursorStylesDemo> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).primaryColor.withOpacity(0.1),
-            Theme.of(context).primaryColor.withOpacity(0.05),
+            Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            Theme.of(context).primaryColor.withValues(alpha: 0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -97,11 +97,11 @@ class _CursorStylesDemoState extends State<CursorStylesDemo> {
                   children: [
                     Text(
                       'Cursor Styles',
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).primaryColor,
-                              ),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -164,7 +164,7 @@ class _CursorStylesDemoState extends State<CursorStylesDemo> {
                   ),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? _cursorColor.withOpacity(0.1)
+                        ? _cursorColor.withValues(alpha: 0.1)
                         : Colors.white,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
@@ -176,8 +176,9 @@ class _CursorStylesDemoState extends State<CursorStylesDemo> {
                     _getCursorStyleName(style),
                     style: TextStyle(
                       color: isSelected ? _cursorColor : Colors.grey[700],
-                      fontWeight:
-                          isSelected ? FontWeight.w600 : FontWeight.normal,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.normal,
                     ),
                   ),
                 ),
@@ -240,7 +241,7 @@ class _CursorStylesDemoState extends State<CursorStylesDemo> {
                     boxShadow: isSelected
                         ? [
                             BoxShadow(
-                              color: color.withOpacity(0.5),
+                              color: color.withValues(alpha: 0.5),
                               blurRadius: 8,
                               spreadRadius: 2,
                             ),
@@ -322,23 +323,23 @@ class _CursorStylesDemoState extends State<CursorStylesDemo> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            _cursorColor.withOpacity(0.05),
-            _cursorColor.withOpacity(0.02),
+            _cursorColor.withValues(alpha: 0.05),
+            _cursorColor.withValues(alpha: 0.02),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _cursorColor.withOpacity(0.2)),
+        border: Border.all(color: _cursorColor.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
           Text(
             'Live Preview',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: _cursorColor,
-                ),
+              fontWeight: FontWeight.w600,
+              color: _cursorColor,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -371,7 +372,7 @@ class _CursorStylesDemoState extends State<CursorStylesDemo> {
               focusedDecoration: BoxDecoration(
                 border: Border.all(color: _cursorColor, width: 2),
                 borderRadius: BorderRadius.circular(8),
-                color: _cursorColor.withOpacity(0.1),
+                color: _cursorColor.withValues(alpha: 0.1),
               ),
             ),
           ),
@@ -380,9 +381,9 @@ class _CursorStylesDemoState extends State<CursorStylesDemo> {
             Text(
               'Current value: $_otpValue',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: _cursorColor,
-                    fontWeight: FontWeight.w500,
-                  ),
+                color: _cursorColor,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         ],
@@ -456,7 +457,7 @@ class _CursorStylesDemoState extends State<CursorStylesDemo> {
     required CursorStyle cursorStyle,
     required Color cursorColor,
     Widget Function(BuildContext context, Color cursorColor)?
-        customCursorBuilder,
+    customCursorBuilder,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -500,7 +501,7 @@ class _CursorStylesDemoState extends State<CursorStylesDemo> {
               focusedDecoration: BoxDecoration(
                 border: Border.all(color: cursorColor, width: 2),
                 borderRadius: BorderRadius.circular(6),
-                color: cursorColor.withOpacity(0.1),
+                color: cursorColor.withValues(alpha: 0.1),
               ),
               onChanged: (value) {},
               onCompleted: (value) {},
@@ -525,93 +526,94 @@ class _CursorStylesDemoState extends State<CursorStylesDemo> {
   }
 
   Widget Function(BuildContext context, Color cursorColor)?
-      _getCustomCursorBuilder() {
+  _getCustomCursorBuilder() {
     if (_selectedCursorStyle != CursorStyle.custom) return null;
 
     // Return different custom cursor examples based on cursor color
     switch (_cursorColor) {
       case Colors.blue:
         return (context, color) => Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: color.withOpacity(0.3),
-                    blurRadius: 4,
-                    spreadRadius: 1,
-                  ),
-                ],
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: 0.3),
+                blurRadius: 4,
+                spreadRadius: 1,
               ),
-            );
+            ],
+          ),
+        );
       case Colors.green:
         return (context, color) => Container(
-              width: 12,
-              height: 12,
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            );
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        );
       case Colors.orange:
         return (context, color) => Icon(Icons.edit, color: color, size: 14);
       case Colors.purple:
         return (context, color) => Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                gradient:
-                    LinearGradient(colors: [color, color.withOpacity(0.5)]),
-                shape: BoxShape.circle,
-              ),
-            );
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [color, color.withValues(alpha: 0.5)],
+            ),
+            shape: BoxShape.circle,
+          ),
+        );
       case Colors.red:
         return (context, color) => Container(
-              width: 6,
-              height: 6,
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 1),
-              ),
-            );
+          width: 6,
+          height: 6,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 1),
+          ),
+        );
       case Colors.teal:
         return (context, color) => Container(
-              width: 14,
-              height: 2,
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(1),
-              ),
-            );
+          width: 14,
+          height: 2,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(1),
+          ),
+        );
       case Colors.indigo:
         return (context, color) => Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: Colors.white, width: 1),
-              ),
-            );
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: Colors.white, width: 1),
+          ),
+        );
       case Colors.pink:
         return (context, color) => Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 2),
-              ),
-            );
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 2),
+          ),
+        );
       default:
         return (context, color) => Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-            );
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        );
     }
   }
 }

@@ -67,8 +67,8 @@ class _StylesDemoState extends State<StylesDemo> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).primaryColor.withOpacity(0.1),
-            Theme.of(context).primaryColor.withOpacity(0.05),
+            Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            Theme.of(context).primaryColor.withValues(alpha: 0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -162,7 +162,7 @@ class _StylesDemoState extends State<StylesDemo> {
                   ),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? _themeColor.withOpacity(0.1)
+                        ? _themeColor.withValues(alpha: 0.1)
                         : Colors.white,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
@@ -230,7 +230,7 @@ class _StylesDemoState extends State<StylesDemo> {
                     boxShadow: isSelected
                         ? [
                             BoxShadow(
-                              color: color.withOpacity(0.5),
+                              color: color.withValues(alpha: 0.5),
                               blurRadius: 8,
                               spreadRadius: 2,
                             ),
@@ -255,14 +255,14 @@ class _StylesDemoState extends State<StylesDemo> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            _themeColor.withOpacity(0.05),
-            _themeColor.withOpacity(0.02),
+            _themeColor.withValues(alpha: 0.05),
+            _themeColor.withValues(alpha: 0.02),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _themeColor.withOpacity(0.2)),
+        border: Border.all(color: _themeColor.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
@@ -398,7 +398,7 @@ class _StylesDemoState extends State<StylesDemo> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: _themeColor.withOpacity(0.1),
+                color: _themeColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(Icons.info_outline, color: _themeColor, size: 20),
@@ -431,7 +431,7 @@ class _StylesDemoState extends State<StylesDemo> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: _themeColor.withOpacity(0.1),
+                color: _themeColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(

@@ -821,7 +821,7 @@ class FlexibleOtpFieldState extends State<FlexibleOtpField>
               borderRadius: BorderRadius.circular(1.5),
               boxShadow: [
                 BoxShadow(
-                  color: cursorColor.withOpacity(0.3),
+                  color: cursorColor.withValues(alpha: 0.3),
                   blurRadius: 2,
                   spreadRadius: 0.5,
                 ),
@@ -874,7 +874,7 @@ class FlexibleOtpFieldState extends State<FlexibleOtpField>
         width: 2,
       ),
       borderRadius: BorderRadius.circular(8),
-      color: Colors.green.withOpacity(0.1),
+      color: Colors.green.withValues(alpha: 0.1),
     );
   }
 
@@ -885,7 +885,7 @@ class FlexibleOtpFieldState extends State<FlexibleOtpField>
         width: 2,
       ),
       borderRadius: BorderRadius.circular(8),
-      color: Colors.red.withOpacity(0.1),
+      color: Colors.red.withValues(alpha: 0.1),
     );
   }
 }

@@ -5,6 +5,228 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2025-09-15
+
+### 🚀 **MAJOR RELEASE: Advanced Cursor Styles & Animation System**
+
+#### 🎨 **Revolutionary Cursor Styles System**
+- **Multiple Cursor Styles**: Complete cursor customization with 4 distinct styles
+  - `CursorStyle.vertical`: Traditional vertical line cursor (default Flutter TextField cursor)
+  - `CursorStyle.bottom`: Enhanced underlined cursor that looks like "_" with better positioning and shadow effects
+  - `CursorStyle.custom`: Complete control over cursor appearance with custom widget builder
+  - `CursorStyle.none`: Clean look without visible cursor for minimal designs
+- **Custom Cursor Builder**: Full control over cursor appearance with `customCursorBuilder` parameter
+- **Interactive Cursor Examples**: Live preview with different cursor styles based on color selection
+- **Enhanced Bottom Cursor**: Improved styling with better positioning (6px from bottom), larger size (16px × 3px), and subtle shadow effects
+- **Color-based Cursor Examples**: Different cursor styles for each color selection (8 unique examples)
+
+#### 🎬 **Advanced Animation System**
+- **Shake Animation**: Customizable shake animation with smooth return to original position
+  - `shakeAnimationDuration`: Configurable duration (default: 500ms)
+  - `shakeAnimationIntensity`: Configurable intensity (default: 10.0)
+  - Smooth return to original position without overlapping
+  - Generic and reusable across all field states
+- **Field Animations**: Multiple animation types for field interactions
+  - `FieldAnimationType.scale`: Scale animation for field focus
+  - `FieldAnimationType.fade`: Fade animation for smooth transitions
+  - `FieldAnimationType.slide`: Slide animation for field changes
+  - `FieldAnimationType.bounce`: Bounce animation for playful interactions
+  - `FieldAnimationType.elastic`: Elastic animation for dynamic effects
+- **Error Animations**: Smooth error state transitions with elastic curves
+- **Success Animations**: Celebration animations for successful verification
+- **Custom Animation Curves**: Support for all Flutter animation curves
+- **Animation Presets**: Predefined animation configurations for common use cases
+- **Performance Optimized**: Smooth animations without performance impact
+
+#### 🔧 **Enhanced Widget Architecture**
+- **FlexibleOtpField**: Individual OTP input field with complete customization
+  - Complete cursor style integration
+  - Advanced animation support
+  - Custom decoration system
+  - Error state management
+- **FlexibleOtpVerification**: Complete verification widget with all features
+  - Integrated cursor styles
+  - Animation system integration
+  - Backend integration ready
+- **OtpBuilder**: Builder pattern for advanced configuration
+  - Fluent API for cursor styles
+  - Animation configuration
+  - Custom cursor builder support
+- **OtpPredefinedStyle**: Predefined styling options with cursor integration
+
+#### 🎯 **Comprehensive Customization System**
+- **Complete Field Styling**: Full control over field appearance
+  - `decoration`: Decoration for empty fields
+  - `focusedDecoration`: Decoration for focused fields
+  - `errorDecoration`: Decoration for error fields
+  - `completedDecoration`: Decoration for completed fields
+- **Custom Cursor Examples**: 8 different cursor examples based on color selection
+  - Blue: Circular cursor with shadow effect
+  - Green: Square cursor with rounded corners
+  - Orange: Edit icon cursor
+  - Purple: Gradient circular cursor
+  - Red: Small circular cursor with white border
+  - Teal: Horizontal line cursor
+  - Indigo: Square cursor with white border
+  - Pink: Circular cursor with thick white border
+- **Enhanced Visual Hierarchy**: Strict visual hierarchy: Error > Focused > Completed > Filled > Empty
+- **Generic Color System**: All colors (including error colors) are completely customizable
+
+#### 🎨 **Interactive Demo System**
+- **Cursor Styles Demo**: Comprehensive demo showcasing all cursor styles
+  - Live preview with real-time cursor style changes
+  - Color-based cursor examples
+  - Interactive customization options
+  - Cursor dimensions control (width/height sliders)
+- **Comprehensive Demo**: Consolidated demo with multiple features
+  - Cursor styles integration
+  - Animation demonstrations
+  - Customization examples
+- **Shake Animation Demo**: Dedicated demo for shake animation
+  - Customizable animation parameters
+  - Smooth animation demonstrations
+  - Error state integration
+
+#### 🔧 **Enhanced Backend Integration**
+- **State Management Methods**: Complete state management API
+  - `handleVerificationResult()`: Automatic success/error handling
+  - `clearOtp()`: Clear OTP fields with options
+  - `setOtp()`: Set OTP programmatically
+  - `getCurrentOtp()`: Get current OTP value
+  - `setErrorState()`: Set error state programmatically
+  - `clearErrorState()`: Clear error state programmatically
+  - `isOtpValid()`: Check if OTP is valid
+  - `resetFields()`: Reset fields with options
+- **Cubit/Bloc Integration**: Perfect integration with state management patterns
+- **Real-time State Callbacks**: Custom widgets get notified of all state changes
+- **Automatic State Handling**: Package handles all error/validation states automatically
+
+#### 📱 **Enhanced User Experience**
+- **Smart Paste Detection**: Enhanced clipboard detection with intelligent full OTP vs single-digit handling
+- **Consecutive Digit Support**: Fixed issue preventing consecutive identical digits (e.g., "2244" now works perfectly)
+- **Real-time Validation**: Live validation with custom regex patterns and error messages
+- **Instant Error Clearing**: Validation errors clear immediately when user starts typing for better UX
+- **Keyboard Navigation**: Full keyboard navigation support with backspace handling
+- **Focus Management**: Proper focus handling and auto-focus capabilities
+- **Haptic Feedback**: Optional haptic feedback for better user experience
+
+#### 🏗️ **Architecture Improvements**
+- **Widget-Based Design**: Modular architecture for better maintainability
+- **State Management**: Dedicated state management for OTP fields
+- **Styling System**: Centralized styling for consistent appearance
+- **Configuration System**: Comprehensive configuration options
+- **Utility Functions**: Reusable utility functions for common tasks
+- **Public API**: Clean and well-documented public API
+
+#### 📚 **Comprehensive Documentation**
+- **Complete README Rewrite**: Documentation completely rewritten from scratch
+  - Comprehensive feature overview with all current capabilities
+  - Complete cursor styles documentation with examples
+  - Animation system documentation with presets
+  - Full API reference with all parameters
+  - Backend integration examples for Cubit/Bloc
+  - Customization examples with complete code samples
+  - Architecture overview explaining the design
+  - Public methods documentation for state management
+- **Interactive Examples**: Live preview examples for all features
+- **Code Samples**: Copy-paste ready code examples for every feature
+- **API Reference**: Complete parameter documentation with types and defaults
+
+#### 🎯 **Breaking Changes**
+- **Cursor Style Integration**: New `cursorStyle` parameter required for cursor customization
+- **Animation System**: New animation parameters for field and shake animations
+- **Custom Cursor Builder**: New `customCursorBuilder` parameter for custom cursor creation
+- **Enhanced Decorations**: New decoration parameters for complete field styling control
+
+#### 🐛 **Critical Bug Fixes**
+- **Cursor Style Application**: Fixed cursor styles not being applied correctly
+- **Backspace Handling**: Fixed backspace button not working and not moving between fields
+- **Error Border Display**: Fixed error borders not showing correctly
+- **Completion Fill Display**: Fixed completion fills not displaying correctly
+- **Shake Animation**: Fixed shake animation not returning to original position and causing overlapping
+- **Error Widget Override**: Fixed error widget not overriding error string, preventing duplicate error messages
+- **Visual State Handling**: Fixed all visual states (normal, error, completion) not being handled generically and customizably
+
+#### 🎨 **Visual Enhancements**
+- **Enhanced Bottom Cursor**: Better size (16px × 3px), positioning (6px from bottom), and visual enhancement with shadow
+- **Custom Cursor Examples**: 8 unique cursor examples based on color selection
+- **Smooth Animations**: All animations use `Curves.easeInOut` for professional transitions
+- **Visual Hierarchy**: Strict visual hierarchy implementation across all states
+- **Responsive Design**: Fixed pixel overflow issues with proper text wrapping and flexible layouts
+
+### 🎯 **Migration Guide from 2.0.0 to 3.0.0**
+
+#### **New Required Parameters**
+```dart
+// Old way (2.0.0)
+FlexibleOtpField(
+  length: 4,
+  onChanged: (value) => print('OTP: $value'),
+  onCompleted: (value) => print('Completed: $value'),
+)
+
+// New way (3.0.0) - with cursor styles
+FlexibleOtpField(
+  length: 4,
+  cursorStyle: CursorStyle.custom, // New required parameter
+  cursorColor: Colors.blue, // New parameter
+  customCursorBuilder: (context, color) => Container( // New parameter
+    width: 10,
+    height: 10,
+    decoration: BoxDecoration(
+      color: color,
+      shape: BoxShape.circle,
+    ),
+  ),
+  onChanged: (value) => print('OTP: $value'),
+  onCompleted: (value) => print('Completed: $value'),
+)
+```
+
+#### **New Animation Parameters**
+```dart
+// New animation parameters
+FlexibleOtpField(
+  length: 4,
+  shakeAnimationDuration: Duration(milliseconds: 500), // New
+  shakeAnimationIntensity: 10.0, // New
+  fieldAnimationType: FieldAnimationType.scale, // New
+  animationDuration: Duration(milliseconds: 300), // New
+  animationCurve: Curves.elasticOut, // New
+  onChanged: (value) => print('OTP: $value'),
+  onCompleted: (value) => print('Completed: $value'),
+)
+```
+
+#### **New Decoration Parameters**
+```dart
+// New decoration parameters for complete control
+FlexibleOtpField(
+  length: 4,
+  decoration: BoxDecoration( // New
+    border: Border.all(color: Colors.grey.shade300),
+    borderRadius: BorderRadius.circular(8),
+  ),
+  focusedDecoration: BoxDecoration( // New
+    border: Border.all(color: Colors.blue, width: 2),
+    borderRadius: BorderRadius.circular(8),
+    color: Colors.blue.withOpacity(0.1),
+  ),
+  errorDecoration: BoxDecoration( // New
+    border: Border.all(color: Colors.red, width: 2),
+    borderRadius: BorderRadius.circular(8),
+    color: Colors.red.withOpacity(0.1),
+  ),
+  completedDecoration: BoxDecoration( // New
+    border: Border.all(color: Colors.green, width: 2),
+    borderRadius: BorderRadius.circular(8),
+    color: Colors.green.withOpacity(0.1),
+  ),
+  onChanged: (value) => print('OTP: $value'),
+  onCompleted: (value) => print('Completed: $value'),
+)
+```
+
 ## [2.0.0] - 2025-01-13
 
 ### 🚀 Complete Backend Integration & Real-time State Management (Current Version)

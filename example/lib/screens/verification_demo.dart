@@ -58,8 +58,8 @@ class _VerificationDemoState extends State<VerificationDemo> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).primaryColor.withOpacity(0.1),
-            Theme.of(context).primaryColor.withOpacity(0.05),
+            Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            Theme.of(context).primaryColor.withValues(alpha: 0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -126,13 +126,13 @@ class _VerificationDemoState extends State<VerificationDemo> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: _isVerified
-            ? Colors.green.withOpacity(0.1)
-            : Colors.blue.withOpacity(0.1),
+            ? Colors.green.withValues(alpha: 0.1)
+            : Colors.blue.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: _isVerified
-              ? Colors.green.withOpacity(0.3)
-              : Colors.blue.withOpacity(0.3),
+              ? Colors.green.withValues(alpha: 0.3)
+              : Colors.blue.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -246,8 +246,8 @@ class _VerificationDemoState extends State<VerificationDemo> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Colors.green.withOpacity(0.1),
-            Colors.green.withOpacity(0.05),
+            Colors.green.withValues(alpha: 0.1),
+            Colors.green.withValues(alpha: 0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -363,7 +363,7 @@ class _VerificationDemoState extends State<VerificationDemo> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withOpacity(0.1),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: Theme.of(context).primaryColor, size: 20),

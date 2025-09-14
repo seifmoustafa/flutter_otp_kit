@@ -70,8 +70,8 @@ class _AnimationsDemoState extends State<AnimationsDemo> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).primaryColor.withOpacity(0.1),
-            Theme.of(context).primaryColor.withOpacity(0.05),
+            Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            Theme.of(context).primaryColor.withValues(alpha: 0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -201,7 +201,9 @@ class _AnimationsDemoState extends State<AnimationsDemo> {
                     ),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? Theme.of(context).primaryColor.withOpacity(0.1)
+                          ? Theme.of(
+                              context,
+                            ).primaryColor.withValues(alpha: 0.1)
                           : Colors.white,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
@@ -278,7 +280,9 @@ class _AnimationsDemoState extends State<AnimationsDemo> {
                     ),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? Theme.of(context).primaryColor.withOpacity(0.1)
+                          ? Theme.of(
+                              context,
+                            ).primaryColor.withValues(alpha: 0.1)
                           : Colors.white,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
@@ -316,15 +320,15 @@ class _AnimationsDemoState extends State<AnimationsDemo> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).primaryColor.withOpacity(0.05),
-            Theme.of(context).primaryColor.withOpacity(0.02),
+            Theme.of(context).primaryColor.withValues(alpha: 0.05),
+            Theme.of(context).primaryColor.withValues(alpha: 0.02),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Theme.of(context).primaryColor.withOpacity(0.2),
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -373,7 +377,7 @@ class _AnimationsDemoState extends State<AnimationsDemo> {
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(8),
-                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
               ),
             ),
           ),
@@ -504,7 +508,7 @@ class _AnimationsDemoState extends State<AnimationsDemo> {
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(6),
-                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
               ),
               onChanged: (value) {},
               onCompleted: (value) {},
