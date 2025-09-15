@@ -1,10 +1,14 @@
 # Flutter OTP Kit
 
+<div align="center">
+  <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/flutter_otp_kit_logo.png" width="200" alt="Flutter OTP Kit Logo">
+</div>
+
 [![pub package](https://img.shields.io/pub/v/flutter_otp_kit.svg)](https://pub.dev/packages/flutter_otp_kit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)](https://flutter.dev)
 
-A comprehensive, production-ready Flutter package for OTP (One-Time Password) verification with extensive customization options, responsive design, and robust error handling. Built with a modern widget-based architecture, this package offers unparalleled flexibility, maintainability, and performance.
+A comprehensive, production-ready Flutter package for OTP (One-Time Password) verification with extensive customization options, responsive design, robust error handling, RTL/LTR support, and intelligent focus management. Built with a modern widget-based architecture, this package offers unparalleled flexibility, maintainability, and performance.
 
 ## 📸 Screenshots & Demo
 
@@ -69,6 +73,9 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 - **Instant Error Clearing**: Validation errors clear immediately when user starts typing for better UX
 - **Backend Integration Ready**: Perfect for Cubit/Bloc patterns with automatic state management
 - **Real-time State Callbacks**: Custom widgets get notified of all state changes instantly
+- **Isolated Validation States**: Complete separation between validation and error states
+- **Persistent Validation Borders**: Validation borders reappear correctly on subsequent validation triggers
+- **Real-time Focus Synchronization**: Cursor position always matches focused field border with zero delay
 
 ### 🎨 Design & Customization
 - **Perfect Visual Hierarchy**: Strict visual hierarchy: Error > Focused > Completed > Filled > Empty
@@ -97,6 +104,11 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 - **Haptic Feedback**: Optional haptic feedback for better user experience
 - **Interactive Selection**: Configurable text selection behavior
 - **Contact Masking**: Automatic phone/email masking for privacy
+- **RTL/LTR Support**: Complete right-to-left and left-to-right language support
+- **Auto Direction Detection**: Automatic text direction detection based on app locale
+- **Manual Direction Override**: Option to manually specify text direction
+- **Tap Outside Unfocus**: Global tap outside functionality to unfocus fields
+- **Intelligent Focus Management**: Real-time focus state synchronization with visual feedback
 
 ### 🔧 Advanced Features
 - **Custom Validators**: Complete validation control with custom logic
@@ -121,7 +133,7 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 
 ```yaml
 dependencies:
-  flutter_otp_kit: ^2.0.0
+  flutter_otp_kit: ^2.1.0
 ```
 
 ## 🚀 Usage
@@ -140,6 +152,7 @@ OtpVerificationWidget(
   resendText: 'Resend Code',
   timerPrefix: 'in',
   enableAutoValidation: true, // Enable validation to prevent verify with missing fields
+  unfocusOnTapOutside: true, // Enable tap outside to unfocus fields
   onVerify: (otp) {
     // Handle OTP verification
     print('Verifying OTP: $otp');
@@ -148,6 +161,72 @@ OtpVerificationWidget(
     // Handle resend OTP
     print('Resending OTP');
   },
+)
+```
+
+### RTL/LTR Support
+
+```dart
+// Automatic direction detection based on app locale
+OtpVerificationWidget(
+  title: 'تحقق من رقم الهاتف', // Arabic title
+  subtitle: 'أدخل الرمز المرسل إلى {contactInfo}', // Arabic subtitle
+  contactInfo: '+966501234567',
+  maskingType: MaskingType.phone,
+  buttonText: 'تحقق', // Arabic button text
+  resendText: 'إعادة إرسال الرمز', // Arabic resend text
+  timerPrefix: 'بعد', // Arabic timer prefix
+  // textDirection: TextDirection.rtl, // Optional: Force RTL
+  onVerify: (otp) {
+    // Handle OTP verification
+    print('Verifying OTP: $otp');
+  },
+  onResend: () {
+    // Handle resend OTP
+    print('Resending OTP');
+  },
+)
+
+// Manual direction override
+OtpVerificationWidget(
+  title: 'Verify Phone Number',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: '+1 (555) 123-4567',
+  textDirection: TextDirection.ltr, // Force LTR
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => handleResend(),
+)
+```
+
+### Tap Outside Unfocus
+
+```dart
+// Package handles tap outside automatically
+OtpVerificationWidget(
+  title: 'Verify Phone Number',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: '+1 (555) 123-4567',
+  unfocusOnTapOutside: true, // Enable global tap outside unfocus
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => handleResend(),
+)
+
+// External handler with priority
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+
+OtpVerificationWidget(
+  key: otpKey,
+  title: 'Verify Phone Number',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: '+1 (555) 123-4567',
+  unfocusOnTapOutside: true, // Package would handle it, but external handler takes priority
+  externalTapOutsideHandler: () {
+    // Your custom tap outside logic
+    otpKey.currentState?.unfocusAllFields();
+    // Additional custom logic here
+  },
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => handleResend(),
 )
 ```
 
@@ -1368,6 +1447,9 @@ otpKey.currentState?.resetFields(
 | `onErrorStateChangedCallback` | `ValueChanged<bool>?` | `null` | Callback when error state changes |
 | `onValidationStateChanged` | `ValueChanged<bool>?` | `null` | Callback when validation state changes |
 | `onCompletionStateChanged` | `ValueChanged<bool>?` | `null` | Callback when completion state changes |
+| `textDirection` | `TextDirection?` | `null` | Text direction (RTL/LTR) - auto-detected if null |
+| `unfocusOnTapOutside` | `bool` | `false` | Enable tap outside to unfocus fields globally |
+| `externalTapOutsideHandler` | `VoidCallback?` | `null` | External handler for tap outside (takes priority) |
 
 ## 📝 License
 
