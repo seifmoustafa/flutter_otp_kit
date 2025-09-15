@@ -239,6 +239,197 @@ OtpVerificationWidget(
 - ✅ **Programmatic control**: Set/clear error states programmatically
 - ✅ **Smart error handling**: Errors clear automatically on user interaction
 
+### 🎯 External Validation Control (Complete Package Control)
+
+**YES!** You can completely handle validation outside the package with `enableAutoValidation = false` (default) and everything will work perfectly! Here's exactly how:
+
+#### **Method 1: Using `handleBackendState()` (Recommended)**
+
+```dart
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+
+OtpVerificationWidget(
+  key: otpKey,
+  enableAutoValidation: false, // 🎯 DISABLE auto-validation
+  onVerify: (otp) {
+    // Your custom validation logic
+    if (otp.length < 4) {
+      // 🎯 SHOW VALIDATION: Package handles borders + message
+      otpKey.currentState?.handleBackendState(
+        isValidating: true,
+        validationMessage: 'Please enter all 4 digits',
+      );
+      return; // Don't proceed with verification
+    }
+    
+    // Your verification logic
+    if (otp == '1234') {
+      // ✅ SUCCESS: Package handles success state
+      otpKey.currentState?.handleVerificationResult(true);
+    } else {
+      // ❌ ERROR: Package handles error state
+      otpKey.currentState?.handleVerificationResult(
+        false,
+        errorMessage: 'Invalid OTP. Please try again.',
+      );
+    }
+  },
+  onResend: () => resendOtp(),
+)
+```
+
+#### **Method 2: Direct State Management**
+
+```dart
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+
+OtpVerificationWidget(
+  key: otpKey,
+  enableAutoValidation: false, // 🎯 DISABLE auto-validation
+  onVerify: (otp) {
+    // Custom validation logic
+    if (otp.length < 4) {
+      // 🎯 SHOW VALIDATION: Set validation state directly
+      otpKey.currentState?.setValidationText('Please enter all 4 digits');
+      return;
+    }
+    
+    // Your verification logic
+    if (otp == '1234') {
+      // ✅ SUCCESS: Clear all states
+      otpKey.currentState?.clearErrorState();
+      otpKey.currentState?.clearValidationText();
+    } else {
+      // ❌ ERROR: Set error state
+      otpKey.currentState?.setErrorState(true);
+      otpKey.currentState?.setErrorText('Invalid OTP. Please try again.');
+    }
+  },
+  onResend: () => resendOtp(),
+)
+```
+
+#### **Method 3: Cubit/Bloc Integration**
+
+```dart
+// In your Cubit/Bloc
+class OtpCubit extends Cubit<OtpState> {
+  final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+  
+  void verifyOtp(String otp) {
+    // Custom validation logic
+    if (otp.length < 4) {
+      // 🎯 SHOW VALIDATION: Package handles UI
+      otpKey.currentState?.handleBackendState(
+        isValidating: true,
+        validationMessage: 'Please enter all 4 digits',
+      );
+      return;
+    }
+    
+    emit(LoadingState());
+    
+    // Update package loading state
+    otpKey.currentState?.handleBackendState(isLoading: true);
+    
+    try {
+      final result = await api.verifyOtp(otp);
+      emit(SuccessState());
+      
+      // ✅ SUCCESS: Package handles success state
+      otpKey.currentState?.handleBackendState(
+        isLoading: false,
+        hasError: false,
+      );
+    } catch (e) {
+      emit(ErrorState(e.message));
+      
+      // ❌ ERROR: Package handles error state
+      otpKey.currentState?.handleBackendState(
+        isLoading: false,
+        hasError: true,
+        errorMessage: e.message,
+      );
+    }
+  }
+}
+```
+
+#### **Method 4: Custom Validation Widget**
+
+```dart
+OtpVerificationWidget(
+  enableAutoValidation: false, // 🎯 DISABLE auto-validation
+  validationMessage: Container( // 🎨 CUSTOM VALIDATION WIDGET
+    padding: const EdgeInsets.all(12.0),
+    decoration: BoxDecoration(
+      color: Colors.orange.shade50,
+      borderRadius: BorderRadius.circular(12.0),
+      border: Border.all(color: Colors.orange.shade300, width: 1.5),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.warning_amber_rounded, color: Colors.orange.shade700, size: 18.0),
+        const SizedBox(width: 12.0),
+        Text(
+          'Please enter all digits',
+          style: TextStyle(
+            color: Colors.orange.shade800,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    ),
+  ),
+  onVerify: (otp) {
+    // Your custom validation logic
+    if (otp.length < 4) {
+      // 🎯 SHOW VALIDATION: Package shows your custom widget
+      otpKey.currentState?.handleBackendState(
+        isValidating: true,
+        validationMessage: 'Please enter all 4 digits',
+      );
+      return;
+    }
+    
+    // Your verification logic...
+  },
+  onResend: () => resendOtp(),
+)
+```
+
+#### **🎯 Key Benefits of External Validation Control:**
+
+- ✅ **Complete Control**: You handle all validation logic outside the package
+- ✅ **Perfect Borders**: Package automatically handles red borders for validation/error states
+- ✅ **Custom Messages**: Use your own validation messages and widgets
+- ✅ **State Management**: Perfect integration with Cubit/Bloc patterns
+- ✅ **Flexible Logic**: Implement any validation rules you need
+- ✅ **Consistent UX**: Package handles all visual states (borders, colors, animations)
+- ✅ **Real-time Updates**: Validation states update instantly when you call the methods
+
+#### **🔧 Available External Control Methods:**
+
+| Method | Purpose | Usage |
+|--------|---------|-------|
+| `handleBackendState()` | **Main method** - handles all states | `otpKey.currentState?.handleBackendState(isValidating: true, validationMessage: 'Custom message')` |
+| `setValidationText()` | Set validation message directly | `otpKey.currentState?.setValidationText('Custom validation')` |
+| `clearValidationText()` | Clear validation message | `otpKey.currentState?.clearValidationText()` |
+| `setErrorState()` | Set error state | `otpKey.currentState?.setErrorState(true)` |
+| `setErrorText()` | Set error message | `otpKey.currentState?.setErrorText('Custom error')` |
+| `clearErrorState()` | Clear error state | `otpKey.currentState?.clearErrorState()` |
+| `handleVerificationResult()` | Handle verification results | `otpKey.currentState?.handleVerificationResult(true/false, errorMessage: 'Error')` |
+
+#### **🎨 Visual States Handled Automatically:**
+
+- **🔴 Red Borders**: Automatically applied for validation and error states
+- **🎨 Background Colors**: Error/validation background colors applied automatically
+- **📝 Text Colors**: Error/validation text colors applied automatically
+- **✨ Animations**: Smooth transitions between states
+- **🔄 State Transitions**: Proper state hierarchy (Error > Focused > Completed > Filled > Empty)
+
 ### Customization Example
 
 ```dart

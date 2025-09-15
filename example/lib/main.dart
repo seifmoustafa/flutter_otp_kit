@@ -12,10 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter OTP Kit Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
       home: const OtpDemoScreen(),
     );
   }
@@ -35,6 +32,7 @@ class _OtpDemoScreenState extends State<OtpDemoScreen> {
   final GlobalKey<OtpVerificationWidgetState> _widgetOtpKey = GlobalKey();
   final GlobalKey<OtpVerificationWidgetState> _minimalOtpKey = GlobalKey();
   final GlobalKey<OtpVerificationWidgetState> _notitleOtpKey = GlobalKey();
+  final GlobalKey<OtpVerificationWidgetState> _rtlOtpKey = GlobalKey();
 
   GlobalKey<OtpVerificationWidgetState> _getCurrentKey() {
     switch (_selectedExample) {
@@ -46,6 +44,12 @@ class _OtpDemoScreenState extends State<OtpDemoScreen> {
         return _minimalOtpKey;
       case 'notitle':
         return _notitleOtpKey;
+      case 'rtl':
+        return _rtlOtpKey;
+      case 'tapoutside':
+        return _basicOtpKey; // Reuse basic key for tap outside test
+      case 'external':
+        return _basicOtpKey; // Reuse basic key for external handler test
       default:
         return _basicOtpKey;
     }
@@ -174,6 +178,53 @@ class _OtpDemoScreenState extends State<OtpDemoScreen> {
                         });
                       },
                     ),
+                    RadioListTile<String>(
+                      title: const Text('RTL (Arabic)'),
+                      subtitle: const Text('Right-to-left layout for Arabic'),
+                      value: 'rtl',
+                      groupValue: _selectedExample,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedExample = value!;
+                        });
+                      },
+                    ),
+                    RadioListTile<String>(
+                      title: const Text('Auto Direction'),
+                      subtitle: const Text(
+                          'Automatically detects app locale direction'),
+                      value: 'auto',
+                      groupValue: _selectedExample,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedExample = value!;
+                        });
+                      },
+                    ),
+                    RadioListTile<String>(
+                      title: const Text('Tap Outside Test'),
+                      subtitle:
+                          const Text('Test tap outside to unfocus fields'),
+                      value: 'tapoutside',
+                      groupValue: _selectedExample,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedExample = value!;
+                        });
+                      },
+                    ),
+                    RadioListTile<String>(
+                      title: const Text('External Handler Test'),
+                      subtitle: const Text(
+                          'Developer handles tap outside from screen level'),
+                      value: 'external',
+                      groupValue: _selectedExample,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedExample = value!;
+                        });
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -187,37 +238,208 @@ class _OtpDemoScreenState extends State<OtpDemoScreen> {
             const SizedBox(height: 32),
 
             // Test Buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    _getCurrentKey().currentState?.triggerVerify();
-                  },
-                  child: const Text('Test Verify'),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Test All Fixes:',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Wrap(
+                      spacing: 8.0,
+                      runSpacing: 8.0,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            _getCurrentKey().currentState?.triggerVerify();
+                          },
+                          child: const Text('Test Verify'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            final currentKey = _getCurrentKey();
+                            if (currentKey.currentState?.hasErrorState ==
+                                true) {
+                              currentKey.currentState?.clearAllErrorStates();
+                            } else {
+                              currentKey.currentState?.handleVerificationResult(
+                                false,
+                                errorMessage: 'Test error message',
+                              );
+                            }
+                          },
+                          child: Text(
+                            _getCurrentKey().currentState?.hasErrorState == true
+                                ? 'Clear Error'
+                                : 'Show Error',
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            _getCurrentKey().currentState?.clearOtp();
+                          },
+                          child: const Text('Clear OTP'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            // 🎯 TEST VALIDATION: Show validation message and red borders
+                            _getCurrentKey().currentState?.handleBackendState(
+                                  isValidating: true,
+                                  validationMessage:
+                                      'Please complete all fields',
+                                );
+                          },
+                          child: const Text('🎯 Show Validation'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            // 🎯 TEST VALIDATION BORDERS: Trigger validation multiple times
+                            final currentKey = _getCurrentKey();
+                            // First trigger
+                            currentKey.currentState?.handleBackendState(
+                              isValidating: true,
+                              validationMessage: 'Please complete all fields',
+                            );
+                            // Wait a bit then trigger again to test if borders reappear
+                            Future.delayed(const Duration(milliseconds: 500),
+                                () {
+                              currentKey.currentState?.handleBackendState(
+                                isValidating: true,
+                                validationMessage: 'Please complete all fields',
+                              );
+                            });
+                          },
+                          child: const Text('🎯 Test Validation Borders'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            // 🎯 TEST UNFOCUS: Manually test unfocus functionality
+                            print('🎯 Manual unfocus test triggered');
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Manual unfocus test - check console for logs'),
+                                backgroundColor: Colors.orange,
+                              ),
+                            );
+                          },
+                          child: const Text('🎯 Test Unfocus'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Test validation isolation from error
+                            final currentKey = _getCurrentKey();
+                            // First show error
+                            final errorMsg = _selectedExample == 'rtl'
+                                ? 'رمز غير صحيح. يرجى المحاولة مرة أخرى.'
+                                : 'Invalid OTP. Please try again.';
+                            currentKey.currentState?.handleBackendState(
+                              hasError: true,
+                              errorMessage: errorMsg,
+                            );
+                            // Then show validation
+                            Future.delayed(const Duration(milliseconds: 1000),
+                                () {
+                              // Use Arabic message for RTL example, English for others
+                              final validationMsg = _selectedExample == 'rtl'
+                                  ? 'يرجى إدخال جميع الأرقام'
+                                  : 'Please complete all fields';
+                              currentKey.currentState?.handleBackendState(
+                                isValidating: true,
+                                validationMessage: validationMsg,
+                              );
+                            });
+                          },
+                          child: const Text('Test Error vs Validation'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Test validation borders specifically
+                            final currentKey = _getCurrentKey();
+                            // Clear any existing states first
+                            currentKey.currentState?.clearOtp();
+                            // Wait a bit then trigger validation
+                            Future.delayed(const Duration(milliseconds: 500),
+                                () {
+                              // Use Arabic message for RTL example, English for others
+                              final validationMsg = _selectedExample == 'rtl'
+                                  ? 'يرجى إدخال جميع الأرقام'
+                                  : 'Please complete all fields';
+                              currentKey.currentState?.handleBackendState(
+                                isValidating: true,
+                                validationMessage: validationMsg,
+                              );
+                            });
+                          },
+                          child: const Text('Test Validation Borders'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Test RTL field order
+                            if (_selectedExample == 'rtl') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content:
+                                      Text('RTL: Fields fill right-to-left!'),
+                                  backgroundColor: Colors.blue,
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text('Test RTL'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(12.0),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade50,
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(color: Colors.blue.shade200),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                color: Colors.blue.shade600,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Fixed Issues',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.blue.shade700,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            '✅ RTL/LTR directionality support\n'
+                            '✅ Validation borders reappear after clearing\n'
+                            '✅ Validation messages disappear when typing\n'
+                            '✅ Complete separation of validation vs error states\n'
+                            '✅ Proper field spacing in RTL layout',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    final currentKey = _getCurrentKey();
-                    if (currentKey.currentState?.hasErrorState == true) {
-                      currentKey.currentState?.clearAllErrorStates();
-                    } else {
-                      currentKey.currentState?.handleVerificationResult(false,
-                          errorMessage: 'Test error message');
-                    }
-                  },
-                  child: Text(
-                      _getCurrentKey().currentState?.hasErrorState == true
-                          ? 'Clear Error'
-                          : 'Show Error'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    _getCurrentKey().currentState?.clearOtp();
-                  },
-                  child: const Text('Clear OTP'),
-                ),
-              ],
+              ),
             ),
 
             const SizedBox(height: 32),
@@ -239,21 +461,26 @@ class _OtpDemoScreenState extends State<OtpDemoScreen> {
                     const SizedBox(height: 16),
                     _buildFeatureItem('✅ Automatic error/validation handling'),
                     _buildFeatureItem(
-                        '✅ Error widget shows only for actual errors'),
+                      '✅ Error widget shows only for actual errors',
+                    ),
                     _buildFeatureItem(
-                        '✅ Validation message shows only for incomplete input'),
+                      '✅ Validation message shows only for incomplete input',
+                    ),
                     _buildFeatureItem('✅ Completely customizable widgets'),
                     _buildFeatureItem(
-                        '✅ Optional text parameters with defaults'),
+                      '✅ Optional text parameters with defaults',
+                    ),
                     _buildFeatureItem('✅ Smart paste detection'),
                     _buildFeatureItem('✅ Auto-focus and navigation'),
                     _buildFeatureItem('✅ Custom resend widget with timer'),
                     _buildFeatureItem(
-                        '✅ Automatic verification result handling'),
+                      '✅ Automatic verification result handling',
+                    ),
                     _buildFeatureItem('✅ Built-in resend timer management'),
                     _buildFeatureItem('✅ Real-time state change callbacks'),
                     _buildFeatureItem(
-                        '✅ Backend integration ready (Cubit/Bloc)'),
+                      '✅ Backend integration ready (Cubit/Bloc)',
+                    ),
                     _buildFeatureItem('✅ Custom widget state synchronization'),
                     const SizedBox(height: 16),
                     Container(
@@ -314,6 +541,14 @@ class _OtpDemoScreenState extends State<OtpDemoScreen> {
         return _buildMinimalExample();
       case 'notitle':
         return _buildNoTitleExample();
+      case 'rtl':
+        return _buildRtlExample();
+      case 'auto':
+        return _buildAutoDirectionExample();
+      case 'tapoutside':
+        return _buildTapOutsideExample();
+      case 'external':
+        return _buildExternalHandlerExample();
       default:
         return _buildBasicExample();
     }
@@ -326,11 +561,14 @@ class _OtpDemoScreenState extends State<OtpDemoScreen> {
       subtitle: 'Enter the code sent to {contactInfo}',
       contactInfo: '+1 (555) 123-4567',
       maskingType: MaskingType.phone,
-      enableAutoValidation: true,
+      enableAutoValidation:
+          true, // 🎯 AUTO-VALIDATION: Shows validation when OTP incomplete
+      unfocusOnTapOutside:
+          true, // 🎯 TAP OUTSIDE UNFOCUS: Tap anywhere on screen to unfocus (works globally)
       onVerify: (otp) {
-        // Simulate error for demonstration
+        // 🎯 SUPER SIMPLE VERIFICATION LOGIC
         if (otp == '1234') {
-          // Success - package handles clearing error states automatically
+          // ✅ SUCCESS: Package automatically clears all states
           _basicOtpKey.currentState?.handleVerificationResult(true);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -339,9 +577,11 @@ class _OtpDemoScreenState extends State<OtpDemoScreen> {
             ),
           );
         } else {
-          // Error - package handles setting error states automatically
-          _basicOtpKey.currentState?.handleVerificationResult(false,
-              errorMessage: 'Invalid OTP. Please try again.');
+          // ❌ ERROR: Package automatically shows error message and red borders
+          _basicOtpKey.currentState?.handleVerificationResult(
+            false,
+            errorMessage: 'Invalid OTP. Please try again.',
+          );
         }
       },
       onResend: () {
@@ -446,8 +686,10 @@ class _OtpDemoScreenState extends State<OtpDemoScreen> {
           );
         } else {
           // Error - package handles setting error states automatically
-          _widgetOtpKey.currentState?.handleVerificationResult(false,
-              errorMessage: 'Invalid OTP. Please try again.');
+          _widgetOtpKey.currentState?.handleVerificationResult(
+            false,
+            errorMessage: 'Invalid OTP. Please try again.',
+          );
         }
       },
       onResend: () {
@@ -493,8 +735,10 @@ class _OtpDemoScreenState extends State<OtpDemoScreen> {
           );
         } else {
           // Error - package handles setting error states automatically
-          _minimalOtpKey.currentState?.handleVerificationResult(false,
-              errorMessage: 'Invalid OTP. Please try again.');
+          _minimalOtpKey.currentState?.handleVerificationResult(
+            false,
+            errorMessage: 'Invalid OTP. Please try again.',
+          );
         }
       },
       onResend: () {
@@ -525,8 +769,10 @@ class _OtpDemoScreenState extends State<OtpDemoScreen> {
           );
         } else {
           // Error - package handles setting error states automatically
-          _notitleOtpKey.currentState?.handleVerificationResult(false,
-              errorMessage: 'Invalid OTP. Please try again.');
+          _notitleOtpKey.currentState?.handleVerificationResult(
+            false,
+            errorMessage: 'Invalid OTP. Please try again.',
+          );
         }
       },
       onResend: () {
@@ -540,6 +786,339 @@ class _OtpDemoScreenState extends State<OtpDemoScreen> {
     );
   }
 
+  Widget _buildRtlExample() {
+    return OtpVerificationWidget(
+      key: _rtlOtpKey,
+      title: 'تحقق من رقم الهاتف', // Arabic title
+      subtitle: 'أدخل الرمز المرسل إلى {contactInfo}', // Arabic subtitle
+      contactInfo: '+966501234567',
+      maskingType: MaskingType.phone,
+      buttonText: 'تحقق', // Arabic button text
+      resendText: 'إعادة إرسال الرمز', // Arabic resend text
+      timerPrefix: 'بعد', // Arabic timer prefix
+      validationMessage: Container(
+        // 🎨 BEAUTIFUL ARABIC VALIDATION MESSAGE
+        padding: const EdgeInsets.all(12.0),
+        decoration: BoxDecoration(
+          color: Colors.orange.shade50,
+          borderRadius: BorderRadius.circular(12.0),
+          border: Border.all(color: Colors.orange.shade300, width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.orange.shade100,
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(6.0),
+              decoration: BoxDecoration(
+                color: Colors.orange.shade100,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Icon(
+                Icons.warning_amber_rounded,
+                color: Colors.orange.shade700,
+                size: 18.0,
+              ),
+            ),
+            const SizedBox(width: 12.0),
+            Flexible(
+              child: Text(
+                'يرجى إدخال جميع الأرقام',
+                style: TextStyle(
+                  color: Colors.orange.shade800,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  height: 1.3,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      ),
+      fieldCount: 4,
+      fieldSpacing: 8.0,
+      enableAutoValidation:
+          true, // 🎯 AUTO-VALIDATION: Shows Arabic validation message
+      textDirection:
+          TextDirection.rtl, // 🌍 FORCE RTL: Arabic layout (right-to-left)
+      errorBorderColor: Colors.red.shade600,
+      errorBackgroundColor: Colors.red.shade50,
+      errorTextColor: Colors.red.shade800,
+      onVerify: (otp) {
+        if (otp == '1234') {
+          // Success - package handles clearing error states automatically
+          _rtlOtpKey.currentState?.handleVerificationResult(true);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('تم التحقق بنجاح!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else {
+          // Error - package handles setting error states automatically
+          _rtlOtpKey.currentState?.handleVerificationResult(
+            false,
+            errorMessage: 'رمز غير صحيح. يرجى المحاولة مرة أخرى.',
+          );
+        }
+      },
+      onResend: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('تم إعادة إرسال الرمز بنجاح!'),
+            backgroundColor: Colors.blue,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildAutoDirectionExample() {
+    return OtpVerificationWidget(
+      key: _rtlOtpKey,
+      title: 'Auto Direction Detection',
+      subtitle: 'Automatically detects app locale direction',
+      contactInfo: '+966501234567',
+      maskingType: MaskingType.phone,
+      buttonText: 'Verify',
+      resendText: 'Resend Code',
+      timerPrefix: 'after',
+      fieldCount: 4,
+      fieldSpacing: 8.0,
+      enableAutoValidation: true,
+      // No textDirection specified - will auto-detect from app locale
+      errorBorderColor: Colors.red.shade600,
+      errorBackgroundColor: Colors.red.shade50,
+      errorTextColor: Colors.red.shade800,
+      onVerify: (otp) {
+        if (otp == '1234') {
+          _rtlOtpKey.currentState?.handleVerificationResult(true);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('OTP verified successfully!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else {
+          _rtlOtpKey.currentState?.handleVerificationResult(
+            false,
+            errorMessage: 'Invalid OTP. Please try again.',
+          );
+        }
+      },
+      onResend: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('OTP resent successfully!'),
+            backgroundColor: Colors.blue,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTapOutsideExample() {
+    return Column(
+      children: [
+        // Instructions card
+        Card(
+          color: Colors.blue.shade50,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.touch_app, color: Colors.blue.shade700),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Tap Outside Test',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue.shade700,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  '🎯 Test the tap outside unfocus feature:',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 8),
+                _buildFeatureItem('✅ Tap on any OTP field to focus it'),
+                _buildFeatureItem(
+                    '✅ Tap ANYWHERE on the screen to unfocus and close keyboard'),
+                _buildFeatureItem(
+                    '✅ Works on app bar, empty space, other UI elements'),
+                _buildFeatureItem(
+                    '✅ Notice how the blue border disappears when unfocused'),
+                _buildFeatureItem(
+                    '✅ Try tapping the app bar, empty areas, or other buttons'),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        // OTP Widget with tap outside enabled
+        OtpVerificationWidget(
+          key: _basicOtpKey,
+          title: 'Tap Outside Test',
+          subtitle: 'Focus a field, then tap outside to unfocus',
+          contactInfo: '+1 (555) 123-4567',
+          maskingType: MaskingType.phone,
+          enableAutoValidation: true,
+          unfocusOnTapOutside:
+              true, // 🎯 TAP OUTSIDE UNFOCUS: Tap anywhere on screen to unfocus (works globally)
+          onVerify: (otp) {
+            if (otp == '1234') {
+              _basicOtpKey.currentState?.handleVerificationResult(true);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('OTP verified successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            } else {
+              _basicOtpKey.currentState?.handleVerificationResult(
+                false,
+                errorMessage: 'Invalid OTP. Please try again.',
+              );
+            }
+          },
+          onResend: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('OTP resent successfully!'),
+                backgroundColor: Colors.blue,
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildExternalHandlerExample() {
+    return GestureDetector(
+      onTap: () {
+        // TRUE global screen-level handling
+        _basicOtpKey.currentState?.unfocusAllFields();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content:
+                Text('🎯 Screen-level handler triggered - fields unfocused!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 1),
+          ),
+        );
+      },
+      behavior: HitTestBehavior.translucent,
+      child: Column(
+        children: [
+          // Instructions card
+          Card(
+            color: Colors.green.shade50,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.code, color: Colors.green.shade700),
+                      const SizedBox(width: 8),
+                      Text(
+                        'External Handler Test',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green.shade700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    '🎯 Test TRUE global screen-level handling:',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 8),
+                  _buildFeatureItem('✅ GestureDetector wraps entire screen'),
+                  _buildFeatureItem(
+                      '✅ Tap ANYWHERE on screen (app bar, empty space, etc.)'),
+                  _buildFeatureItem(
+                      '✅ External handler takes PRIORITY over package handling'),
+                  _buildFeatureItem(
+                      '✅ Package provides unfocusAllFields() method for external use'),
+                  _buildFeatureItem(
+                      '✅ Perfect for custom screen-level implementations'),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          // OTP Widget with external handler
+          OtpVerificationWidget(
+            key: _basicOtpKey,
+            title: 'External Handler Test',
+            subtitle: 'Developer handles tap outside from screen level',
+            contactInfo: '+1 (555) 123-4567',
+            maskingType: MaskingType.phone,
+            enableAutoValidation: true,
+            unfocusOnTapOutside:
+                true, // Package would handle it, but external handler takes priority
+            externalTapOutsideHandler: () {
+              // This will be called by the package's GestureDetector
+              _basicOtpKey.currentState?.unfocusAllFields();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content:
+                      Text('🎯 Package handler triggered - fields unfocused!'),
+                  backgroundColor: Colors.blue,
+                  duration: Duration(seconds: 1),
+                ),
+              );
+            },
+            onVerify: (otp) {
+              if (otp == '1234') {
+                _basicOtpKey.currentState?.handleVerificationResult(true);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('OTP verified successfully!'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              } else {
+                _basicOtpKey.currentState?.handleVerificationResult(
+                  false,
+                  errorMessage: 'Invalid OTP. Please try again.',
+                );
+              }
+            },
+            onResend: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('OTP resent successfully!'),
+                  backgroundColor: Colors.blue,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildFeatureItem(String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -547,12 +1126,7 @@ class _OtpDemoScreenState extends State<OtpDemoScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(fontSize: 14),
-            ),
-          ),
+          Expanded(child: Text(text, style: const TextStyle(fontSize: 14))),
         ],
       ),
     );

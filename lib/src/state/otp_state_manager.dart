@@ -74,6 +74,29 @@ class OtpStateManager {
     focusNodes = List.generate(fieldCount, (index) => FocusNode());
     fieldHasError = List.generate(fieldCount, (_) => false);
     fieldStates = List.generate(fieldCount, (_) => OtpFieldState.empty);
+
+    // Add focus listeners to update field states when focus changes
+    _setupFocusListeners();
+  }
+
+  /// Sets up focus listeners for all focus nodes
+  void _setupFocusListeners() {
+    for (int i = 0; i < focusNodes.length; i++) {
+      final focusNode = focusNodes[i];
+      final index = i; // Capture index for immediate update
+
+      focusNode.addListener(() {
+        // Immediately update the specific field that changed focus
+        updateFieldState(index);
+
+        // Also update all other fields to ensure proper state
+        for (int j = 0; j < focusNodes.length; j++) {
+          if (j != index) {
+            updateFieldState(j);
+          }
+        }
+      });
+    }
   }
 
   /// Disposes of resources
@@ -104,6 +127,9 @@ class OtpStateManager {
       focusNodes = List.generate(newFieldCount, (index) => FocusNode());
       fieldHasError = List.generate(newFieldCount, (_) => false);
       fieldStates = List.generate(newFieldCount, (_) => OtpFieldState.empty);
+
+      // Set up focus listeners for new focus nodes
+      _setupFocusListeners();
     }
   }
 
@@ -154,6 +180,18 @@ class OtpStateManager {
     for (int i = 0; i < fieldCount; i++) {
       updateFieldState(i);
     }
+    onErrorTextChanged?.call();
+  }
+
+  /// Sets validation text and clears error text (ensures mutual exclusivity)
+  void setValidationText(String? text) {
+    validationText = text;
+    // Clear error text when setting validation text
+    if (text != null) {
+      errorText = null;
+    }
+    // Update all field states to reflect validation state
+    refreshAllFieldStates();
     onErrorTextChanged?.call();
   }
 
@@ -260,8 +298,11 @@ class OtpStateManager {
 
     // Check current error state - take into account the latest error state
     // If internalErrorState was just cleared, we need to ensure it's not applied to fields
-    final fieldHasError =
-        this.fieldHasError[index] || errorText != null || internalErrorState;
+    // Both validation messages and error messages should trigger red borders
+    final fieldHasError = this.fieldHasError[index] ||
+        errorText != null ||
+        validationText != null ||
+        internalErrorState;
     final fieldIsFocused = focusNodes[index].hasFocus;
     // Check if the field is actually filled with content
     final fieldIsFilled = controllers[index].text.isNotEmpty;
@@ -336,9 +377,16 @@ class OtpStateManager {
 
   /// Handles digit input changes
   void onDigitChanged(String value, int index) {
-    // CRITICAL: Clear ALL error-related states when user starts interacting
-    // This ensures the error state is completely cleared on any user input
-    clearAllErrorStates();
+    // Always clear validation text when user types (validation is for incomplete input)
+    if (validationText != null) {
+      validationText = null;
+      // Refresh all field states to ensure borders are updated
+      refreshAllFieldStates();
+      onErrorTextChanged?.call(); // Notify UI to hide validation message
+    }
+
+    // Handle error state clearing based on configuration
+    handleErrorStateOnInput(value);
 
     // Clear individual field error state if this field had an error
     if (fieldHasError[index]) {

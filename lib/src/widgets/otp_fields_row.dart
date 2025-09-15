@@ -132,11 +132,19 @@ class _OtpFieldsRowState extends State<OtpFieldsRow> {
                 final fieldColors =
                     widget.getFieldColors(index, fieldState, hasError);
 
+                // Handle RTL/LTR directionality for spacing
+                final isRTL = Directionality.of(context) == TextDirection.rtl;
+                final spacing = EdgeInsets.only(
+                  right: !isRTL && index < widget.fieldCount - 1
+                      ? widget.fieldSpacing
+                      : 0,
+                  left: isRTL && index < widget.fieldCount - 1
+                      ? widget.fieldSpacing
+                      : 0,
+                );
+
                 return Padding(
-                  padding: EdgeInsets.only(
-                    right:
-                        index < widget.fieldCount - 1 ? widget.fieldSpacing : 0,
-                  ),
+                  padding: spacing,
                   child: OtpField(
                     controller: widget.controllers[index],
                     focusNode: widget.focusNodes[index],

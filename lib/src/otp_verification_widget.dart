@@ -19,14 +19,29 @@ import 'styling/otp_style_manager.dart';
 import 'utils/otp_formatter.dart';
 import 'utils/otp_validator.dart';
 
-/// A comprehensive OTP verification widget with customizable styling and behavior.
+/// 🎯 EASY-TO-USE OTP VERIFICATION WIDGET
 ///
-/// This widget provides a complete OTP verification experience including:
-/// - Title and subtitle with masked contact info
-/// - Customizable OTP input fields
-/// - Error handling and validation
-/// - Verify button with loading state
-/// - Resend functionality with timer
+/// This widget handles EVERYTHING automatically:
+/// ✅ Shows validation messages when OTP is incomplete
+/// ✅ Turns borders RED when validation/error occurs
+/// ✅ Clears validation when user types
+/// ✅ Handles RTL/LTR automatically
+/// ✅ Manages all states (loading, error, validation)
+///
+/// 🚀 SUPER SIMPLE USAGE:
+/// ```dart
+/// OtpVerificationWidget(
+///   title: 'Verify Phone',
+///   onVerify: (otp) => handleVerification(otp),
+///   onResend: () => resendCode(),
+/// )
+/// ```
+///
+/// 🎨 CUSTOMIZATION OPTIONS:
+/// - enableAutoValidation: true (shows validation automatically)
+/// - validationMessage: Custom widget (beautiful Arabic/English messages)
+/// - errorBorderColor: Colors.red (red borders for validation/errors)
+/// - textDirection: TextDirection.rtl (for Arabic apps)
 ///
 /// ## Features:
 /// - **Customizable appearance**: Colors, dimensions, spacing all configurable
@@ -107,8 +122,12 @@ class OtpVerificationWidget extends StatefulWidget {
     this.enableInteractiveSelection = true,
     this.textCapitalization = TextCapitalization.none,
     this.autoFocus = true,
-    this.enableAutoValidation = false,
+    this.enableAutoValidation =
+        false, // 🎯 AUTO-VALIDATION: Shows validation message when OTP incomplete
     this.enablePaste = true,
+    this.unfocusOnTapOutside =
+        true, // 🎯 TAP OUTSIDE UNFOCUS: Unfocus fields when tapping outside (works globally)
+    this.externalTapOutsideHandler, // 🎯 EXTERNAL HANDLER: Developer can handle tap outside from screen level
     this.showTimer = true,
     this.timerDuration = 60,
     this.primaryColor = const Color(0xFF018CC3),
@@ -172,7 +191,8 @@ class OtpVerificationWidget extends StatefulWidget {
     this.verifyButtonWidget,
     this.resendWidget,
     this.timerWidget,
-    this.validationMessage,
+    this.validationMessage, // 🎨 CUSTOM VALIDATION MESSAGE: Beautiful Arabic/English validation widget
+    this.textDirection, // 🌍 TEXT DIRECTION: null=auto-detect, TextDirection.rtl=Arabic, TextDirection.ltr=English
   });
 
   // Required parameters
@@ -249,11 +269,53 @@ class OtpVerificationWidget extends StatefulWidget {
   /// Whether to auto-focus the first OTP field
   final bool autoFocus;
 
-  /// Whether to enable automatic validation
+  /// 🎯 AUTO-VALIDATION: Shows validation message when OTP is incomplete
+  ///
+  /// When true:
+  /// ✅ Shows "Please enter all digits" when user clicks Verify with incomplete OTP
+  /// ✅ Turns field borders RED when validation is triggered
+  /// ✅ Clears validation message when user starts typing
+  /// ✅ Reappears when validation is triggered again
   final bool enableAutoValidation;
 
   /// Whether to enable paste functionality
   final bool enablePaste;
+
+  /// 🎯 TAP OUTSIDE UNFOCUS: Unfocus fields and close keyboard when tapping outside OTP fields
+  ///
+  /// When true:
+  /// ✅ Tapping outside OTP fields unfocuses all fields
+  /// ✅ Tapping anywhere on the entire screen (app bar, empty space, other UI) unfocuses fields
+  /// ✅ Keyboard automatically closes when tapping outside
+  /// ✅ Works globally across the entire screen, not just within the OTP widget
+  /// ✅ Automatically handled by the package - no manual implementation needed
+  /// ✅ Improves UX by allowing users to dismiss keyboard easily
+  /// ✅ Works with both touch and mouse interactions
+  final bool unfocusOnTapOutside;
+
+  /// 🎯 EXTERNAL TAP OUTSIDE HANDLER: Allow developer to handle tap outside unfocus from screen level
+  ///
+  /// When provided:
+  /// ✅ Developer handles tap outside unfocus from their screen/widget level
+  /// ✅ Takes PRIORITY over package's built-in unfocusOnTapOutside handling
+  /// ✅ Package wraps with GestureDetector but calls your external handler
+  /// ✅ Package provides unfocusAllFields() method for external use
+  /// ✅ If both unfocusOnTapOutside=true AND externalHandler provided, externalHandler wins
+  ///
+  /// Note: For TRUE global screen-level handling, implement GestureDetector at screen level:
+  /// ```dart
+  /// GestureDetector(
+  ///   onTap: () => otpKey.currentState?.unfocusAllFields(),
+  ///   child: Scaffold(
+  ///     body: OtpVerificationWidget(
+  ///       externalTapOutsideHandler: () {
+  ///         otpKey.currentState?.unfocusAllFields();
+  ///       },
+  ///     ),
+  ///   ),
+  /// )
+  /// ```
+  final VoidCallback? externalTapOutsideHandler;
 
   /// Whether to show the resend timer
   final bool showTimer;
@@ -447,6 +509,16 @@ class OtpVerificationWidget extends StatefulWidget {
 
   /// Custom validation message widget
   final Widget? validationMessage;
+
+  /// 🌍 TEXT DIRECTION: Controls RTL/LTR layout
+  ///
+  /// Options:
+  /// - null: Auto-detect from app locale (Arabic=RTL, English=LTR)
+  /// - TextDirection.rtl: Force RTL (Arabic, Hebrew, Persian)
+  /// - TextDirection.ltr: Force LTR (English, French, Spanish)
+  ///
+  /// Auto-detects these RTL languages: Arabic, Hebrew, Persian, Urdu, Kurdish
+  final TextDirection? textDirection;
 
   @override
   State<OtpVerificationWidget> createState() => OtpVerificationWidgetState();
@@ -679,7 +751,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
         _stateManager.errorText = null;
 
         // Show validation message for incomplete OTP
-        _stateManager.validationText = 'Please enter all digits';
+        _stateManager.setValidationText(_getDefaultValidationMessage());
         setState(() {
           _stateManager.autoValidateMode = AutovalidateMode.always;
         });
@@ -689,7 +761,7 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
       }
 
       // If OTP is complete, clear validation text and validate the form
-      _stateManager.validationText = null;
+      _stateManager.setValidationText(null);
       // Notify validation state cleared
       widget.onValidationStateChanged?.call(false);
 
@@ -745,6 +817,20 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   bool get canResend => _remainingTime == 0;
 
   /// Handles verification result automatically (success or error)
+  /// 🎯 HANDLE VERIFICATION RESULT: Show success or error after verification
+  ///
+  /// ✅ Show success (clears all errors/validation):
+  /// ```dart
+  /// otpKey.currentState?.handleVerificationResult(true);
+  /// ```
+  ///
+  /// ✅ Show error:
+  /// ```dart
+  /// otpKey.currentState?.handleVerificationResult(
+  ///   false,
+  ///   errorMessage: 'Invalid OTP. Please try again.',
+  /// );
+  /// ```
   void handleVerificationResult(bool isSuccess, {String? errorMessage}) {
     if (isSuccess) {
       // Clear all error states on success
@@ -765,6 +851,30 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
   }
 
   /// Handles backend integration states (for Cubit/Bloc integration)
+  /// 🎯 HANDLE BACKEND STATE: Control validation, errors, and loading states
+  ///
+  /// This is the MAIN method to control the OTP widget from your backend:
+  ///
+  /// ✅ Show validation message:
+  /// ```dart
+  /// otpKey.currentState?.handleBackendState(
+  ///   isValidating: true,
+  ///   validationMessage: 'Please enter all digits',
+  /// );
+  /// ```
+  ///
+  /// ✅ Show error message:
+  /// ```dart
+  /// otpKey.currentState?.handleBackendState(
+  ///   hasError: true,
+  ///   errorMessage: 'Invalid OTP. Please try again.',
+  /// );
+  /// ```
+  ///
+  /// ✅ Show loading state:
+  /// ```dart
+  /// otpKey.currentState?.handleBackendState(isLoading: true);
+  /// ```
   void handleBackendState({
     bool? isLoading,
     bool? hasError,
@@ -793,11 +903,11 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
 
     if (isValidating != null) {
       if (isValidating) {
-        _stateManager.validationText =
-            validationMessage ?? 'Please enter all digits';
+        _stateManager.setValidationText(
+            validationMessage ?? _getDefaultValidationMessage());
         widget.onValidationStateChanged?.call(true);
       } else {
-        _stateManager.validationText = null;
+        _stateManager.setValidationText(null);
         widget.onValidationStateChanged?.call(false);
       }
     }
@@ -892,166 +1002,221 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
     setState(() {});
   }
 
+  /// Gets the default validation message
+  String _getDefaultValidationMessage() {
+    // Default validation message - can be customized by users via validationMessage widget
+    return 'Please enter all digits';
+  }
+
+  /// Detects text direction from app's locale
+  TextDirection _detectTextDirection(BuildContext context) {
+    final locale = Localizations.localeOf(context);
+    final languageCode = locale.languageCode.toLowerCase();
+
+    // RTL languages
+    final rtlLanguages = [
+      'ar',
+      'he',
+      'fa',
+      'ur',
+      'ku',
+      'dv',
+      'ps',
+      'sd',
+      'ug',
+      'yi'
+    ];
+
+    return rtlLanguages.contains(languageCode)
+        ? TextDirection.rtl
+        : TextDirection.ltr;
+  }
+
+  /// Unfocuses all OTP fields and closes the keyboard
+  void _unfocusAllFields() {
+    // Unfocus all focus nodes to close keyboard
+    bool anyFieldWasFocused = false;
+    for (final focusNode in _stateManager.focusNodes) {
+      if (focusNode.hasFocus) {
+        focusNode.unfocus();
+        anyFieldWasFocused = true;
+      }
+    }
+
+    if (anyFieldWasFocused) {
+      // Update field states to reflect unfocused state
+      _stateManager.refreshAllFieldStates();
+    }
+  }
+
+  /// Public method to unfocus all OTP fields (for external access)
+  void unfocusAllFields() {
+    _unfocusAllFields();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Determine text direction
+    final effectiveTextDirection =
+        widget.textDirection ?? _detectTextDirection(context);
+
     // Create animation config from widget parameters
     final animationConfig = const OtpAnimationConfig();
 
-    return AnimatedBuilder(
-      animation: _animationController,
-      builder: (context, child) {
-        return FadeTransition(
-          opacity: _fadeAnimation,
-          child: ScaleTransition(
-            scale: _scaleAnimation,
-            child: Padding(
-              padding: EdgeInsets.all(widget.spacing),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Title and subtitle
-                  OtpHeader(
-                    title: widget.title,
-                    subtitle: widget.subtitle,
-                    primaryColor: widget.primaryColor,
-                    secondaryColor: widget.secondaryColor,
-                    spacing: widget.spacing,
-                    titleWidget: widget.titleWidget,
-                    subtitleWidget: widget.subtitleWidget,
-                    titleStyle: widget.titleStyle,
-                    subtitleStyle: widget.subtitleStyle,
-                    contactInfo: widget.contactInfo,
-                    maskingType: widget.maskingType,
-                    semanticLabel: widget.semanticLabel,
-                  ),
-
-                  SizedBox(height: widget.spacing * 3),
-
-                  // OTP Input Fields
-                  Form(
-                    key: _stateManager.formKey,
-                    autovalidateMode: _stateManager.autoValidateMode,
-                    child: OtpFieldsRow(
-                      controllers: _stateManager.controllers,
-                      focusNodes: _stateManager.focusNodes,
-                      fieldStates: _stateManager.fieldStates,
-                      fieldHasError: _stateManager.fieldHasError,
-                      onDigitChanged: _stateManager.onDigitChanged,
-                      config: _styleManager.fieldConfig,
-                      getFieldColors: _styleManager.getFieldColors,
-                      inputFormatters: OtpFormatter.getInputFormatters(
-                        widget.otpInputType,
-                        customFormatters: widget.inputFormatters,
-                      ),
-                      keyboardType: OtpFormatter.getKeyboardType(
-                        widget.otpInputType,
-                        customKeyboardType: widget.customKeyboardType,
-                      ),
-                      validator: OtpValidator.createValidator(
-                        inputType: widget.otpInputType,
-                        fieldCount: widget.fieldCount,
-                        validationRegex: widget.validationRegex,
-                        customValidator: widget.customValidator,
-                      ),
-                      layoutType: widget.layoutType,
-                      fieldCount: widget.fieldCount,
-                      fieldSpacing: widget.fieldSpacing,
-                      cursorAlignment: widget.cursorAlignment,
-                      obscureText: widget.obscureText,
-                      obscuringCharacter: widget.obscuringCharacter,
-                      enableInteractiveSelection:
-                          widget.enableInteractiveSelection,
-                      textCapitalization: widget.textCapitalization,
-                      hasInternalError: _stateManager.internalErrorState,
-                      animationConfig: animationConfig,
+    // Build the main OTP widget content
+    Widget otpContent = Directionality(
+      textDirection: effectiveTextDirection,
+      child: AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) {
+          return FadeTransition(
+            opacity: _fadeAnimation,
+            child: ScaleTransition(
+              scale: _scaleAnimation,
+              child: Padding(
+                padding: EdgeInsets.all(widget.spacing),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Title and subtitle
+                    OtpHeader(
+                      title: widget.title,
+                      subtitle: widget.subtitle,
+                      primaryColor: widget.primaryColor,
+                      secondaryColor: widget.secondaryColor,
+                      spacing: widget.spacing,
+                      titleWidget: widget.titleWidget,
+                      subtitleWidget: widget.subtitleWidget,
+                      titleStyle: widget.titleStyle,
+                      subtitleStyle: widget.subtitleStyle,
+                      contactInfo: widget.contactInfo,
+                      maskingType: widget.maskingType,
+                      semanticLabel: widget.semanticLabel,
                     ),
-                  ),
 
-                  SizedBox(height: widget.spacing),
+                    SizedBox(height: widget.spacing * 3),
 
-                  // Validation message (shown when auto-validation is enabled and OTP is incomplete)
-                  OtpValidationDisplay(
-                    validationText: _stateManager.validationText,
-                    validationMessageWidget: widget.validationMessage ??
-                        (widget.enableAutoValidation &&
-                                _stateManager.validationText != null
-                            ? Container(
-                                padding: const EdgeInsets.all(8.0),
-                                decoration: BoxDecoration(
-                                  color: Colors.orange.shade50,
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  border:
-                                      Border.all(color: Colors.orange.shade200),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.warning_outlined,
-                                      color: Colors.orange.shade600,
-                                      size: 16.0,
-                                    ),
-                                    const SizedBox(width: 8.0),
-                                    Text(
-                                      _stateManager.validationText ??
-                                          'Please enter all digits',
-                                      style: TextStyle(
-                                        color: Colors.orange.shade700,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : null),
-                  ),
+                    // OTP Input Fields
+                    Form(
+                      key: _stateManager.formKey,
+                      autovalidateMode: _stateManager.autoValidateMode,
+                      child: OtpFieldsRow(
+                        controllers: _stateManager.controllers,
+                        focusNodes: _stateManager.focusNodes,
+                        fieldStates: _stateManager.fieldStates,
+                        fieldHasError: _stateManager.fieldHasError,
+                        onDigitChanged: (text, index) =>
+                            _stateManager.onDigitChanged(text, index),
+                        config: _styleManager.fieldConfig,
+                        getFieldColors: _styleManager.getFieldColors,
+                        inputFormatters: OtpFormatter.getInputFormatters(
+                          widget.otpInputType,
+                          customFormatters: widget.inputFormatters,
+                        ),
+                        keyboardType: OtpFormatter.getKeyboardType(
+                          widget.otpInputType,
+                          customKeyboardType: widget.customKeyboardType,
+                        ),
+                        validator: OtpValidator.createValidator(
+                          inputType: widget.otpInputType,
+                          fieldCount: widget.fieldCount,
+                          validationRegex: widget.validationRegex,
+                          customValidator: widget.customValidator,
+                        ),
+                        layoutType: widget.layoutType,
+                        fieldCount: widget.fieldCount,
+                        fieldSpacing: widget.fieldSpacing,
+                        cursorAlignment: widget.cursorAlignment,
+                        obscureText: widget.obscureText,
+                        obscuringCharacter: widget.obscuringCharacter,
+                        enableInteractiveSelection:
+                            widget.enableInteractiveSelection,
+                        textCapitalization: widget.textCapitalization,
+                        hasInternalError: _stateManager.internalErrorState,
+                        animationConfig: animationConfig,
+                      ),
+                    ),
 
-                  // Error message (shown when there's an actual error)
-                  OtpErrorDisplay(
-                    errorText: _stateManager.errorText,
-                    errorWidget: widget.errorWidget,
-                    errorStyle: widget.errorStyle,
-                    errorColor: widget.errorBorderColor ?? Colors.red,
-                    topSpacing: widget.spacing * 0.5,
-                  ),
+                    SizedBox(height: widget.spacing),
 
-                  SizedBox(height: widget.spacing * 2),
+                    // Validation message (shown when auto-validation is enabled and OTP is incomplete)
+                    OtpValidationDisplay(
+                      validationText: _stateManager.validationText,
+                      validationMessageWidget:
+                          _stateManager.validationText != null
+                              ? widget.validationMessage
+                              : null,
+                    ),
 
-                  // Verify button
-                  OtpFooter(
-                    onVerifyPressed: _onVerifyPressed,
-                    onResendPressed: _onResendPressed,
-                    isLoading: _isLoading,
-                    remainingTime: _remainingTime,
-                    primaryColor: widget.primaryColor,
-                    secondaryColor: widget.secondaryColor,
-                    spacing: widget.spacing,
-                    buttonText: widget.buttonText,
-                    resendText: widget.resendText,
-                    timerPrefix: widget.timerPrefix,
-                    verifyButtonWidget: widget.verifyButtonWidget,
-                    resendWidget: widget.resendWidget,
-                    timerWidget: widget.timerWidget,
-                    buttonStyle: widget.buttonStyle,
-                    resendStyle: widget.resendStyle,
-                    timerStyle: widget.timerStyle,
-                    showTimer: widget.showTimer,
-                    buttonBackgroundColor: widget.buttonBackgroundColor,
-                    buttonTextColor: widget.buttonTextColor,
-                    buttonBorderRadius: widget.buttonBorderRadius,
-                    buttonHeight: widget.buttonHeight,
-                    buttonWidth: widget.buttonWidth,
-                    buttonElevation: widget.buttonElevation,
-                    loadingIndicatorColor: widget.loadingIndicatorColor,
-                    loadingIndicatorSize: widget.loadingIndicatorSize,
-                  ),
-                ],
+                    // Error message (shown when there's an actual error)
+                    OtpErrorDisplay(
+                      errorText: _stateManager.errorText,
+                      errorWidget: widget.errorWidget,
+                      errorStyle: widget.errorStyle,
+                      errorColor: widget.errorBorderColor ?? Colors.red,
+                      topSpacing: widget.spacing * 0.5,
+                    ),
+
+                    SizedBox(height: widget.spacing * 2),
+
+                    // Verify button
+                    OtpFooter(
+                      onVerifyPressed: _onVerifyPressed,
+                      onResendPressed: _onResendPressed,
+                      isLoading: _isLoading,
+                      remainingTime: _remainingTime,
+                      primaryColor: widget.primaryColor,
+                      secondaryColor: widget.secondaryColor,
+                      spacing: widget.spacing,
+                      buttonText: widget.buttonText,
+                      resendText: widget.resendText,
+                      timerPrefix: widget.timerPrefix,
+                      verifyButtonWidget: widget.verifyButtonWidget,
+                      resendWidget: widget.resendWidget,
+                      timerWidget: widget.timerWidget,
+                      buttonStyle: widget.buttonStyle,
+                      resendStyle: widget.resendStyle,
+                      timerStyle: widget.timerStyle,
+                      showTimer: widget.showTimer,
+                      buttonBackgroundColor: widget.buttonBackgroundColor,
+                      buttonTextColor: widget.buttonTextColor,
+                      buttonBorderRadius: widget.buttonBorderRadius,
+                      buttonHeight: widget.buttonHeight,
+                      buttonWidth: widget.buttonWidth,
+                      buttonElevation: widget.buttonElevation,
+                      loadingIndicatorColor: widget.loadingIndicatorColor,
+                      loadingIndicatorSize: widget.loadingIndicatorSize,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
+
+    // Handle tap outside unfocus with priority system
+    if (widget.externalTapOutsideHandler != null) {
+      // External handler takes priority - package wraps with GestureDetector but calls external handler
+      return GestureDetector(
+        onTap: () {
+          widget.externalTapOutsideHandler!();
+        },
+        behavior: HitTestBehavior.translucent,
+        child: otpContent,
+      );
+    } else if (widget.unfocusOnTapOutside) {
+      // Package handles tap outside unfocus automatically
+      return GestureDetector(
+        onTap: () {
+          _unfocusAllFields();
+        },
+        behavior: HitTestBehavior.translucent,
+        child: otpContent,
+      );
+    }
+
+    return otpContent;
   }
 }
