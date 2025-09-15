@@ -5,7 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.1.0] - 2025-01-13
+## [2.1.1] - 2025-09-15
+
+### 🐛 Bug Fixes
+
+#### 🔧 Documentation & README Updates
+- **Enhanced Package Logo**: Increased logo size from 200px to 300px in README for better visibility
+- **Improved README Header**: Added subtitle "Flutter OTP Kit - Professional OTP Verification Package" below logo
+- **Better Visual Presentation**: Enhanced package branding and visual appeal in documentation
+
+#### 📚 Minor Documentation Improvements
+- **README Enhancement**: Improved logo presentation and package description
+- **Visual Consistency**: Better alignment and spacing in README header section
+- **Professional Appearance**: Enhanced overall package presentation on pub.dev
+
+## [2.1.0] - 2025-09-15
 
 ### 🌍 RTL/LTR Support & Directionality
 

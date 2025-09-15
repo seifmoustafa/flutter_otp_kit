@@ -1,7 +1,9 @@
 # Flutter OTP Kit
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/flutter_otp_kit_logo.png" width="200" alt="Flutter OTP Kit Logo">
+  <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/flutter_otp_kit_logo.png" width="300" alt="Flutter OTP Kit Logo">
+  <br>
+  <strong>Flutter OTP Kit - Professional OTP Verification Package</strong>
 </div>
 
 [![pub package](https://img.shields.io/pub/v/flutter_otp_kit.svg)](https://pub.dev/packages/flutter_otp_kit)
@@ -133,7 +135,7 @@ A comprehensive, production-ready Flutter package for OTP (One-Time Password) ve
 
 ```yaml
 dependencies:
-  flutter_otp_kit: ^2.1.0
+  flutter_otp_kit: ^2.1.1
 ```
 
 ## 🚀 Usage
