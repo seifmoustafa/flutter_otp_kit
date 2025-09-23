@@ -1,10 +1,16 @@
 # Flutter OTP Kit
 
+<div align="center">
+  <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/screenshots/flutter_otp_kit_logo.png" width="300" alt="Flutter OTP Kit Logo">
+  <br>
+  <strong>Flutter OTP Kit - Professional OTP Verification Package</strong>
+</div>
+
 [![pub package](https://img.shields.io/pub/v/flutter_otp_kit.svg)](https://pub.dev/packages/flutter_otp_kit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)](https://flutter.dev)
 
-A comprehensive Flutter package for OTP (One-Time Password) verification with complete customization, advanced animations, cursor styles, and composable components.
+A comprehensive, production-ready Flutter package for OTP (One-Time Password) verification with complete customization, advanced animations, cursor styles, composable components, RTL/LTR support, responsive design, robust error handling, and intelligent focus management. Built with a modern widget-based architecture, this package offers unparalleled flexibility, maintainability, and performance.
 
 ## ✨ Features
 
@@ -20,6 +26,8 @@ A comprehensive Flutter package for OTP (One-Time Password) verification with co
 - **Instant Error Clearing**: Validation errors clear immediately when user starts typing for better UX
 - **Backend Integration Ready**: Perfect for Cubit/Bloc patterns with automatic state management
 - **Real-time State Callbacks**: Custom widgets get notified of all state changes instantly
+- **RTL/LTR Support**: Complete directionality support with automatic detection for Arabic, Hebrew, Persian, Urdu, and other RTL languages
+- **Tap Outside Unfocus**: Global tap outside unfocus functionality with external handler priority
 
 ### 🎨 Design & Customization
 - **Perfect Visual Hierarchy**: Strict visual hierarchy: Error > Focused > Completed > Filled > Empty
@@ -693,6 +701,9 @@ final animationManager = EnhancedAnimationManager(
 - **Instant Error Clearing**: Validation errors clear immediately when user starts typing for better UX
 - **Backend Integration Ready**: Perfect for Cubit/Bloc patterns with automatic state management
 - **Real-time State Callbacks**: Custom widgets get notified of all state changes instantly
+- **Isolated Validation States**: Complete separation between validation and error states
+- **Persistent Validation Borders**: Validation borders reappear correctly on subsequent validation triggers
+- **Real-time Focus Synchronization**: Cursor position always matches focused field border with zero delay
 
 ### 🎨 Design & Customization
 - **Perfect Visual Hierarchy**: Strict visual hierarchy: Error > Focused > Completed > Filled > Empty
@@ -721,6 +732,11 @@ final animationManager = EnhancedAnimationManager(
 - **Haptic Feedback**: Optional haptic feedback for better user experience
 - **Interactive Selection**: Configurable text selection behavior
 - **Contact Masking**: Automatic phone/email masking for privacy
+- **RTL/LTR Support**: Complete right-to-left and left-to-right language support
+- **Auto Direction Detection**: Automatic text direction detection based on app locale
+- **Manual Direction Override**: Option to manually specify text direction
+- **Tap Outside Unfocus**: Global tap outside functionality to unfocus fields
+- **Intelligent Focus Management**: Real-time focus state synchronization with visual feedback
 
 ### 🔧 Advanced Features
 - **Custom Validators**: Complete validation control with custom logic
@@ -745,7 +761,11 @@ final animationManager = EnhancedAnimationManager(
 
 ```yaml
 dependencies:
+<<<<<<< HEAD
   flutter_otp_kit: ^3.0.0
+=======
+  flutter_otp_kit: ^2.1.1
+>>>>>>> main
 ```
 
 ## 🚀 Usage
@@ -969,6 +989,7 @@ OtpVerificationWidget(
   resendText: 'Resend Code',
   timerPrefix: 'in',
   enableAutoValidation: true, // Enable validation to prevent verify with missing fields
+  unfocusOnTapOutside: true, // Enable tap outside to unfocus fields
   onVerify: (otp) {
     // Handle OTP verification
     print('Verifying OTP: $otp');
@@ -977,6 +998,72 @@ OtpVerificationWidget(
     // Handle resend OTP
     print('Resending OTP');
   },
+)
+```
+
+### RTL/LTR Support
+
+```dart
+// Automatic direction detection based on app locale
+OtpVerificationWidget(
+  title: 'تحقق من رقم الهاتف', // Arabic title
+  subtitle: 'أدخل الرمز المرسل إلى {contactInfo}', // Arabic subtitle
+  contactInfo: '+966501234567',
+  maskingType: MaskingType.phone,
+  buttonText: 'تحقق', // Arabic button text
+  resendText: 'إعادة إرسال الرمز', // Arabic resend text
+  timerPrefix: 'بعد', // Arabic timer prefix
+  // textDirection: TextDirection.rtl, // Optional: Force RTL
+  onVerify: (otp) {
+    // Handle OTP verification
+    print('Verifying OTP: $otp');
+  },
+  onResend: () {
+    // Handle resend OTP
+    print('Resending OTP');
+  },
+)
+
+// Manual direction override
+OtpVerificationWidget(
+  title: 'Verify Phone Number',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: '+1 (555) 123-4567',
+  textDirection: TextDirection.ltr, // Force LTR
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => handleResend(),
+)
+```
+
+### Tap Outside Unfocus
+
+```dart
+// Package handles tap outside automatically
+OtpVerificationWidget(
+  title: 'Verify Phone Number',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: '+1 (555) 123-4567',
+  unfocusOnTapOutside: true, // Enable global tap outside unfocus
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => handleResend(),
+)
+
+// External handler with priority
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+
+OtpVerificationWidget(
+  key: otpKey,
+  title: 'Verify Phone Number',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: '+1 (555) 123-4567',
+  unfocusOnTapOutside: true, // Package would handle it, but external handler takes priority
+  externalTapOutsideHandler: () {
+    // Your custom tap outside logic
+    otpKey.currentState?.unfocusAllFields();
+    // Additional custom logic here
+  },
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => handleResend(),
 )
 ```
 
@@ -1067,6 +1154,197 @@ OtpVerificationWidget(
 - ✅ **Instant error clearing**: Validation errors disappear immediately when typing
 - ✅ **Programmatic control**: Set/clear error states programmatically
 - ✅ **Smart error handling**: Errors clear automatically on user interaction
+
+### 🎯 External Validation Control (Complete Package Control)
+
+**YES!** You can completely handle validation outside the package with `enableAutoValidation = false` (default) and everything will work perfectly! Here's exactly how:
+
+#### **Method 1: Using `handleBackendState()` (Recommended)**
+
+```dart
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+
+OtpVerificationWidget(
+  key: otpKey,
+  enableAutoValidation: false, // 🎯 DISABLE auto-validation
+  onVerify: (otp) {
+    // Your custom validation logic
+    if (otp.length < 4) {
+      // 🎯 SHOW VALIDATION: Package handles borders + message
+      otpKey.currentState?.handleBackendState(
+        isValidating: true,
+        validationMessage: 'Please enter all 4 digits',
+      );
+      return; // Don't proceed with verification
+    }
+    
+    // Your verification logic
+    if (otp == '1234') {
+      // ✅ SUCCESS: Package handles success state
+      otpKey.currentState?.handleVerificationResult(true);
+    } else {
+      // ❌ ERROR: Package handles error state
+      otpKey.currentState?.handleVerificationResult(
+        false,
+        errorMessage: 'Invalid OTP. Please try again.',
+      );
+    }
+  },
+  onResend: () => resendOtp(),
+)
+```
+
+#### **Method 2: Direct State Management**
+
+```dart
+final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+
+OtpVerificationWidget(
+  key: otpKey,
+  enableAutoValidation: false, // 🎯 DISABLE auto-validation
+  onVerify: (otp) {
+    // Custom validation logic
+    if (otp.length < 4) {
+      // 🎯 SHOW VALIDATION: Set validation state directly
+      otpKey.currentState?.setValidationText('Please enter all 4 digits');
+      return;
+    }
+    
+    // Your verification logic
+    if (otp == '1234') {
+      // ✅ SUCCESS: Clear all states
+      otpKey.currentState?.clearErrorState();
+      otpKey.currentState?.clearValidationText();
+    } else {
+      // ❌ ERROR: Set error state
+      otpKey.currentState?.setErrorState(true);
+      otpKey.currentState?.setErrorText('Invalid OTP. Please try again.');
+    }
+  },
+  onResend: () => resendOtp(),
+)
+```
+
+#### **Method 3: Cubit/Bloc Integration**
+
+```dart
+// In your Cubit/Bloc
+class OtpCubit extends Cubit<OtpState> {
+  final GlobalKey<OtpVerificationWidgetState> otpKey = GlobalKey();
+  
+  void verifyOtp(String otp) {
+    // Custom validation logic
+    if (otp.length < 4) {
+      // 🎯 SHOW VALIDATION: Package handles UI
+      otpKey.currentState?.handleBackendState(
+        isValidating: true,
+        validationMessage: 'Please enter all 4 digits',
+      );
+      return;
+    }
+    
+    emit(LoadingState());
+    
+    // Update package loading state
+    otpKey.currentState?.handleBackendState(isLoading: true);
+    
+    try {
+      final result = await api.verifyOtp(otp);
+      emit(SuccessState());
+      
+      // ✅ SUCCESS: Package handles success state
+      otpKey.currentState?.handleBackendState(
+        isLoading: false,
+        hasError: false,
+      );
+    } catch (e) {
+      emit(ErrorState(e.message));
+      
+      // ❌ ERROR: Package handles error state
+      otpKey.currentState?.handleBackendState(
+        isLoading: false,
+        hasError: true,
+        errorMessage: e.message,
+      );
+    }
+  }
+}
+```
+
+#### **Method 4: Custom Validation Widget**
+
+```dart
+OtpVerificationWidget(
+  enableAutoValidation: false, // 🎯 DISABLE auto-validation
+  validationMessage: Container( // 🎨 CUSTOM VALIDATION WIDGET
+    padding: const EdgeInsets.all(12.0),
+    decoration: BoxDecoration(
+      color: Colors.orange.shade50,
+      borderRadius: BorderRadius.circular(12.0),
+      border: Border.all(color: Colors.orange.shade300, width: 1.5),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.warning_amber_rounded, color: Colors.orange.shade700, size: 18.0),
+        const SizedBox(width: 12.0),
+        Text(
+          'Please enter all digits',
+          style: TextStyle(
+            color: Colors.orange.shade800,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    ),
+  ),
+  onVerify: (otp) {
+    // Your custom validation logic
+    if (otp.length < 4) {
+      // 🎯 SHOW VALIDATION: Package shows your custom widget
+      otpKey.currentState?.handleBackendState(
+        isValidating: true,
+        validationMessage: 'Please enter all 4 digits',
+      );
+      return;
+    }
+    
+    // Your verification logic...
+  },
+  onResend: () => resendOtp(),
+)
+```
+
+#### **🎯 Key Benefits of External Validation Control:**
+
+- ✅ **Complete Control**: You handle all validation logic outside the package
+- ✅ **Perfect Borders**: Package automatically handles red borders for validation/error states
+- ✅ **Custom Messages**: Use your own validation messages and widgets
+- ✅ **State Management**: Perfect integration with Cubit/Bloc patterns
+- ✅ **Flexible Logic**: Implement any validation rules you need
+- ✅ **Consistent UX**: Package handles all visual states (borders, colors, animations)
+- ✅ **Real-time Updates**: Validation states update instantly when you call the methods
+
+#### **🔧 Available External Control Methods:**
+
+| Method | Purpose | Usage |
+|--------|---------|-------|
+| `handleBackendState()` | **Main method** - handles all states | `otpKey.currentState?.handleBackendState(isValidating: true, validationMessage: 'Custom message')` |
+| `setValidationText()` | Set validation message directly | `otpKey.currentState?.setValidationText('Custom validation')` |
+| `clearValidationText()` | Clear validation message | `otpKey.currentState?.clearValidationText()` |
+| `setErrorState()` | Set error state | `otpKey.currentState?.setErrorState(true)` |
+| `setErrorText()` | Set error message | `otpKey.currentState?.setErrorText('Custom error')` |
+| `clearErrorState()` | Clear error state | `otpKey.currentState?.clearErrorState()` |
+| `handleVerificationResult()` | Handle verification results | `otpKey.currentState?.handleVerificationResult(true/false, errorMessage: 'Error')` |
+
+#### **🎨 Visual States Handled Automatically:**
+
+- **🔴 Red Borders**: Automatically applied for validation and error states
+- **🎨 Background Colors**: Error/validation background colors applied automatically
+- **📝 Text Colors**: Error/validation text colors applied automatically
+- **✨ Animations**: Smooth transitions between states
+- **🔄 State Transitions**: Proper state hierarchy (Error > Focused > Completed > Filled > Empty)
 
 ### Customization Example
 
@@ -2006,6 +2284,9 @@ otpKey.currentState?.resetFields(
 | `onErrorStateChangedCallback` | `ValueChanged<bool>?` | `null` | Callback when error state changes |
 | `onValidationStateChanged` | `ValueChanged<bool>?` | `null` | Callback when validation state changes |
 | `onCompletionStateChanged` | `ValueChanged<bool>?` | `null` | Callback when completion state changes |
+| `textDirection` | `TextDirection?` | `null` | Text direction (RTL/LTR) - auto-detected if null |
+| `unfocusOnTapOutside` | `bool` | `false` | Enable tap outside to unfocus fields globally |
+| `externalTapOutsideHandler` | `VoidCallback?` | `null` | External handler for tap outside (takes priority) |
 
 ## 📝 License
 

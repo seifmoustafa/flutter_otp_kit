@@ -107,11 +107,12 @@ class OtpStyleManager {
       );
     }
 
-    // 4. Filled state - Green border, no fill (field has value but not all complete)
+    // 4. Filled state - Green border, with fill color if provided (field has value but not all complete)
     if (fieldState == OtpFieldState.filled) {
       return FieldColors(
         borderColor: successColor,
-        backgroundColor: backgroundColor, // No fill
+        backgroundColor: filledFieldBackgroundColor ??
+            backgroundColor, // Use fill color if provided
         textColor: Colors.green.shade700,
       );
     }

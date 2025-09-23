@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.0.0] - 2025-09-15
 
-### 🚀 **MAJOR RELEASE: Advanced Cursor Styles & Animation System**
+### 🚀 **ULTIMATE MAJOR RELEASE: Advanced Cursor Styles, Animation System, RTL/LTR Support & Complete Customization**
 
 #### 🎨 **Revolutionary Cursor Styles System**
 - **Multiple Cursor Styles**: Complete cursor customization with 4 distinct styles
@@ -37,6 +37,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Custom Animation Curves**: Support for all Flutter animation curves
 - **Animation Presets**: Predefined animation configurations for common use cases
 - **Performance Optimized**: Smooth animations without performance impact
+
+#### 🌍 **RTL/LTR Support & Directionality** ⭐ **NEW FROM MAIN**
+- **Complete Directionality Support**: Package automatically detects text direction based on app locale
+- **Manual Direction Override**: Option to manually specify `textDirection` (RTL/LTR)
+- **RTL Language Support**: Full support for Arabic, Hebrew, Persian, Urdu, and other RTL languages
+- **Seamless Integration**: RTL functionality works identically to LTR with proper text flow
+- **Locale-Based Detection**: Supports 10+ RTL languages with automatic detection
+- **RTL Visual Design**: Proper text flow, field arrangement, button positioning, and icon alignment
+- **Arabic Validation Messages**: Beautiful Arabic validation messages with proper styling
+
+#### 👆 **Tap Outside Unfocus & Focus Management** ⭐ **NEW FROM MAIN**
+- **Global Tap Outside Functionality**: Package handles tap outside unfocus automatically
+- **Global Coverage**: Tap anywhere on screen to unfocus fields (not just within widget)
+- **External Handler Priority**: External handlers take priority over built-in functionality
+- **Configurable Behavior**: `unfocusOnTapOutside` parameter to enable/disable
+- **External Handler Support**: `externalTapOutsideHandler` for custom tap outside logic
+- **Real-time Focus Synchronization**: Zero delay transitions with cursor-border sync
+- **Immediate Visual Feedback**: Focus borders appear instantly when fields are focused
+
+#### ✅ **Enhanced Validation System** ⭐ **NEW FROM MAIN**
+- **External Validation Control**: Complete external validation control methods for custom handling
+- **Validation State Isolation**: Complete isolation between validation and error states
+- **Independent State Management**: Validation and error states managed independently
+- **Persistent Validation Borders**: Validation borders reappear correctly on subsequent triggers
+- **Smart State Clearing**: Validation states clear appropriately on user input
+- **Mutual Exclusivity**: Validation and error states are mutually exclusive
+- **Enhanced Validation Logic**: Real-time border updates with proper state hierarchy
 
 #### 🔧 **Enhanced Widget Architecture**
 - **FlexibleOtpField**: Individual OTP input field with complete customization
@@ -146,6 +173,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Shake Animation**: Fixed shake animation not returning to original position and causing overlapping
 - **Error Widget Override**: Fixed error widget not overriding error string, preventing duplicate error messages
 - **Visual State Handling**: Fixed all visual states (normal, error, completion) not being handled generically and customizably
+- **Focus State Management**: Fixed focus mismatch and eliminated delays in focus transitions ⭐ **NEW FROM MAIN**
+- **Validation State Fixes**: Fixed border persistence and state isolation ⭐ **NEW FROM MAIN**
+- **Tap Outside Fixes**: Fixed global coverage and external handler priority ⭐ **NEW FROM MAIN**
 
 #### 🎨 **Visual Enhancements**
 - **Enhanced Bottom Cursor**: Better size (16px × 3px), positioning (6px from bottom), and visual enhancement with shadow
@@ -153,10 +183,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Smooth Animations**: All animations use `Curves.easeInOut` for professional transitions
 - **Visual Hierarchy**: Strict visual hierarchy implementation across all states
 - **Responsive Design**: Fixed pixel overflow issues with proper text wrapping and flexible layouts
+- **Package Logo**: Official package logo (flutter_otp_kit_logo.png) ⭐ **NEW FROM MAIN**
 
-### 🎯 **Migration Guide from 2.0.0 to 3.0.0**
+#### 🎯 **Migration Guide from 2.0.0 to 3.0.0**
 
-#### **New Required Parameters**
+##### **New Required Parameters**
 ```dart
 // Old way (2.0.0)
 FlexibleOtpField(
@@ -183,7 +214,7 @@ FlexibleOtpField(
 )
 ```
 
-#### **New Animation Parameters**
+##### **New Animation Parameters**
 ```dart
 // New animation parameters
 FlexibleOtpField(
@@ -198,7 +229,7 @@ FlexibleOtpField(
 )
 ```
 
-#### **New Decoration Parameters**
+##### **New Decoration Parameters**
 ```dart
 // New decoration parameters for complete control
 FlexibleOtpField(
@@ -226,6 +257,117 @@ FlexibleOtpField(
   onCompleted: (value) => print('Completed: $value'),
 )
 ```
+
+##### **New RTL/LTR Support** ⭐ **NEW FROM MAIN**
+```dart
+// RTL/LTR support
+FlexibleOtpField(
+  length: 4,
+  textDirection: TextDirection.rtl, // New parameter for RTL support
+  unfocusOnTapOutside: true, // New parameter for tap outside unfocus
+  externalTapOutsideHandler: () => print('Custom tap outside'), // New parameter
+  onChanged: (value) => print('OTP: $value'),
+  onCompleted: (value) => print('Completed: $value'),
+)
+```
+
+## [2.1.1] - 2025-09-15
+
+### 🐛 Bug Fixes
+
+#### 📚 Documentation & README Updates
+- **Enhanced Package Logo**: Increased logo size from 200px to 300px in README for better visibility
+- **Improved README Header**: Added subtitle "Flutter OTP Kit - Professional OTP Verification Package" below logo
+- **Better Visual Presentation**: Enhanced package branding and visual appeal in documentation
+
+#### 🔧 Minor Documentation Improvements
+- **README Enhancement**: Improved logo presentation and package description
+- **Visual Consistency**: Better alignment and spacing in README header section
+- **Professional Appearance**: Enhanced overall package presentation on pub.dev
+
+## [2.1.0] - 2025-09-15
+
+### 🌍 RTL/LTR Support & Directionality
+
+#### 🔄 Complete Directionality Support
+- **Automatic Direction Detection**: Package automatically detects text direction based on app locale
+- **Manual Direction Override**: Option to manually specify `textDirection` (RTL/LTR)
+- **RTL Language Support**: Full support for Arabic, Hebrew, Persian, Urdu, and other RTL languages
+- **Seamless Integration**: RTL functionality works identically to LTR with proper text flow
+- **Locale-Based Detection**: Supports 10+ RTL languages with automatic detection
+
+#### 🎨 RTL Visual Design
+- **Proper Text Flow**: Text flows correctly from right-to-left in RTL mode
+- **Field Arrangement**: OTP fields arrange properly in RTL layout
+- **Button Positioning**: Verify and resend buttons position correctly for RTL
+- **Icon Alignment**: All icons and visual elements align properly in RTL
+- **Arabic Validation Messages**: Beautiful Arabic validation messages with proper styling
+
+### 👆 Tap Outside Unfocus & Focus Management
+
+#### 🌐 Global Tap Outside Functionality
+- **Built-in Tap Outside**: Package handles tap outside unfocus automatically
+- **Global Coverage**: Tap anywhere on screen to unfocus fields (not just within widget)
+- **External Handler Priority**: External handlers take priority over built-in functionality
+- **Configurable Behavior**: `unfocusOnTapOutside` parameter to enable/disable
+- **External Handler Support**: `externalTapOutsideHandler` for custom tap outside logic
+
+#### ⚡ Real-time Focus Synchronization
+- **Zero Delay Transitions**: Focus state updates with zero delay
+- **Cursor-Border Sync**: Cursor position always matches focused field border
+- **Immediate Visual Feedback**: Focus borders appear instantly when fields are focused
+- **Smooth Transitions**: Smooth focus transitions between fields
+- **Accurate Focus State**: Focus state accurately reflects actual cursor position
+
+### ✅ Validation State Isolation & Improvements
+
+#### 🔒 Complete State Isolation
+- **Validation vs Error Separation**: Complete isolation between validation and error states
+- **Independent State Management**: Validation and error states managed independently
+- **Persistent Validation Borders**: Validation borders reappear correctly on subsequent triggers
+- **Smart State Clearing**: Validation states clear appropriately on user input
+- **Mutual Exclusivity**: Validation and error states are mutually exclusive
+
+#### 🔧 Enhanced Validation Logic
+- **Real-time Border Updates**: Validation borders update in real-time
+- **Proper State Hierarchy**: Correct visual hierarchy: Error > Focused > Completed > Filled > Empty
+- **Instant Error Clearing**: Validation errors clear immediately when user types
+- **State Refresh**: Proper state refresh when validation is triggered
+- **Focus Listener Setup**: Enhanced focus listeners for immediate state updates
+
+### 🐛 Critical Bug Fixes
+
+#### 🎯 Focus State Management
+- **Fixed Focus Mismatch**: Cursor position now always matches focused field border
+- **Eliminated Delays**: Removed delays in focus transitions
+- **Immediate Updates**: Focus state updates immediately when fields change
+- **Proper Listener Setup**: Enhanced focus listener setup for real-time updates
+
+#### 🔒 Validation State Fixes
+- **Fixed Border Persistence**: Validation borders now persist and reappear correctly
+- **State Isolation**: Complete isolation between validation and error states
+- **Proper Clearing**: Validation states clear appropriately on user interaction
+- **Real-time Updates**: All state updates happen in real-time
+
+#### 🌐 Tap Outside Fixes
+- **Global Coverage**: Tap outside now works globally across the entire screen
+- **External Handler Priority**: External handlers properly take priority over built-in functionality
+- **Layout Exception Fix**: Fixed RenderBox layout exceptions in tap outside implementation
+- **Gesture Detection**: Proper gesture detection with `HitTestBehavior.translucent`
+
+### 🧹 Code Quality & Maintenance
+
+#### 🧽 Cleanup & Optimization
+- **Removed Debug Statements**: Removed all `print()` and `log()` statements from package
+- **Code Cleanup**: Cleaned up unused variables and methods
+- **Performance Optimization**: Optimized focus listener setup and state updates
+- **Memory Management**: Improved memory management in state updates
+
+#### 📚 Documentation Updates
+- **Enhanced README**: Updated README with comprehensive examples and API reference
+- **RTL Examples**: Added examples for RTL/LTR usage
+- **Focus Management**: Documented tap outside and focus management features
+- **Validation Examples**: Added examples for external validation control
 
 ## [2.0.0] - 2025-01-13
 
