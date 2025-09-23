@@ -7,6 +7,7 @@ import 'comprehensive_demo.dart';
 import 'cursor_styles_demo.dart';
 import 'visual_states_demo.dart';
 import 'shake_animation_demo.dart';
+import 'templates_demo.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -34,6 +35,22 @@ class _HomeScreenState extends State<HomeScreen> {
             // Header Section
             _buildHeader(),
             const SizedBox(height: 32),
+
+            // Templates Section
+            DemoSection(
+              title: 'Ready-to-Use Templates',
+              description: 'Pick a template and customize with your content',
+              children: [
+                FeatureCard(
+                  title: 'OTP Templates',
+                  description: '5 beautiful templates: Modern, Minimal, Corporate, Playful, Elegant',
+                  icon: Icons.style,
+                  onTap: () => _navigateToScreen('templates'),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 24),
 
             // Quick Start Section
             DemoSection(
@@ -224,6 +241,9 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
       case 'shake':
         screen = const ShakeAnimationDemo();
+        break;
+      case 'templates':
+        screen = const TemplatesDemo();
         break;
     }
 

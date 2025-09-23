@@ -108,6 +108,32 @@ OtpBuilder()
   )
 ```
 
+### Ready-to-Use Templates
+
+```dart
+// Pick a template and customize with your content
+OtpTemplateWidget(
+  template: OtpTemplate.modern,
+  title: 'Verify Your Account',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: '+1 (555) 123-4567',
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => resendCode(),
+)
+
+// Using builder pattern for templates
+OtpTemplateBuilder(OtpTemplate.minimal)
+  .title('Custom Title')
+  .subtitle('Custom subtitle with {contactInfo}')
+  .contactInfo('+1 (555) 123-4567')
+  .primaryColor(Colors.purple)
+  .otpLength(6)
+  .build(
+    onVerify: (otp) => handleVerification(otp),
+    onResend: () => resendCode(),
+  )
+```
+
 ## ✨ Features
 
 ### 🎯 Core Functionality
@@ -125,6 +151,14 @@ OtpBuilder()
 - **RTL/LTR Support**: Complete directionality support with automatic detection for Arabic, Hebrew, Persian, Urdu, and other RTL languages
 - **Tap Outside Unfocus**: Global tap outside unfocus functionality with external handler priority
 
+### 🎨 Ready-to-Use Templates
+- **5 Beautiful Templates**: Modern, Minimal, Corporate, Playful, Elegant
+- **Easy Customization**: Pick a template and pass your content
+- **Template Builder**: Fluent API for template customization
+- **Custom Decorations**: Each template has unique styling and effects
+- **Custom Cursors**: Templates include specialized cursor designs
+- **Animation Presets**: Pre-configured animations for each template style
+
 ### 🎨 Design & Customization
 - **Perfect Visual Hierarchy**: Strict visual hierarchy: Error > Focused > Completed > Filled > Empty
 - **Generic Color System**: All colors (including error colors) are completely customizable
@@ -137,14 +171,6 @@ OtpBuilder()
 - **Progressive Highlighting**: Visual feedback showing user progress through OTP entry
 - **Theme Integration**: Material Design 3, light, dark themes with automatic adaptation
 - **Responsive Design**: Fixed pixel overflow issues with proper text wrapping and flexible layouts
-
-### 🎨 Cursor Styles & Customization
-- **Multiple Cursor Styles**: Vertical, Bottom (underlined), Custom, and None
-- **Custom Cursor Builder**: Complete control over cursor appearance with custom widgets
-- **Interactive Cursor Examples**: Live preview with different cursor styles based on color selection
-- **Enhanced Bottom Cursor**: Improved styling with better positioning and visual enhancement
-- **Cursor Animation**: Smooth cursor transitions and animations
-- **Color-based Cursor Examples**: Different cursor styles for each color selection
 
 ### 🎬 Advanced Animations
 - **Shake Animation**: Customizable shake animation with smooth return to original position
@@ -188,6 +214,96 @@ OtpBuilder()
 - **Configuration System**: Comprehensive configuration options
 - **Utility Functions**: Reusable utility functions for common tasks
 - **Public API**: Clean and well-documented public API
+
+## 🎨 Ready-to-Use Templates
+
+Flutter OTP Kit comes with 5 beautiful, ready-to-use templates that you can pick and customize with your content:
+
+### Available Templates
+
+1. **Modern Template** (`OtpTemplate.modern`)
+   - Modern design with gradients, shadows, and smooth animations
+   - Custom circular cursor with shadow effects
+   - Perfect for contemporary applications
+
+2. **Minimal Template** (`OtpTemplate.minimal`)
+   - Clean and minimal design with focus on simplicity
+   - Bottom cursor (underlined style)
+   - Ideal for minimal designs and text-focused interfaces
+
+3. **Corporate Template** (`OtpTemplate.corporate`)
+   - Professional design suitable for business applications
+   - Vertical cursor with structured layout
+   - Perfect for enterprise and professional apps
+
+4. **Playful Template** (`OtpTemplate.playful`)
+   - Fun and colorful design with rounded corners and animations
+   - Custom gradient cursor with bounce animations
+   - Great for consumer apps and playful interfaces
+
+5. **Elegant Template** (`OtpTemplate.elegant`)
+   - Sophisticated design with premium styling and effects
+   - Custom square cursor with subtle shadows
+   - Perfect for luxury and premium applications
+
+### Template Usage
+
+```dart
+// Simple template usage
+OtpTemplateWidget(
+  template: OtpTemplate.modern,
+  title: 'Verify Your Account',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: '+1 (555) 123-4567',
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => resendCode(),
+)
+
+// Customized template
+OtpTemplateWidget(
+  template: OtpTemplate.corporate,
+  title: 'Security Verification',
+  subtitle: 'Enter the security code to continue',
+  buttonText: 'Verify & Continue',
+  resendText: 'Request New Code',
+  primaryColor: Colors.red,
+  otpLength: 6,
+  fieldSpacing: 16.0,
+  enableHapticFeedback: true,
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => resendCode(),
+)
+
+// Using builder pattern
+OtpTemplateBuilder(OtpTemplate.playful)
+  .title('Let\'s Verify! 🎉')
+  .subtitle('Enter the fun code we sent you')
+  .contactInfo('+1 (555) 123-4567')
+  .primaryColor(Colors.pink)
+  .otpLength(4)
+  .enableAnimations(true)
+  .build(
+    onVerify: (otp) => handleVerification(otp),
+    onResend: () => resendCode(),
+  )
+```
+
+### Template Customization
+
+Each template can be customized with:
+
+- **Content**: Title, subtitle, button text, resend text, timer prefix
+- **Colors**: Primary, secondary, background colors
+- **Layout**: OTP length, field spacing
+- **Behavior**: Timer duration, auto validation, paste, haptic feedback
+- **Animations**: Enable/disable animations, animation type
+- **Styling**: Cursor style, predefined style
+
+### Default vs Custom
+
+- **Default**: If you just pass the required parameters (`onVerify`, `onResend`), the template uses its default styling
+- **Custom**: Override any template property to customize it to your needs
+- **Hybrid**: Mix template defaults with your customizations
 
 ## 🎨 Cursor Styles
 

@@ -39,6 +39,10 @@ export 'src/state/reactive_otp_state.dart';
 // Styling
 export 'src/styling/otp_predefined_style.dart';
 
+// Templates
+export 'src/templates/otp_template_config.dart';
+export 'src/templates/otp_template_widget.dart';
+
 // Autofill
 export 'src/autofill/platform_sms_autofill.dart';
 
