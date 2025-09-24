@@ -215,38 +215,76 @@ OtpTemplateBuilder(OtpTemplate.minimal)
 - **Utility Functions**: Reusable utility functions for common tasks
 - **Public API**: Clean and well-documented public API
 
-## 🎨 Ready-to-Use Templates
+## 📦 Installation
 
-Flutter OTP Kit comes with 5 beautiful, ready-to-use templates that you can pick and customize with your content:
+```yaml
+dependencies:
+  flutter_otp_kit: ^2.1.1
+```
 
-### Available Templates
+## 🚀 Usage
 
-1. **Modern Template** (`OtpTemplate.modern`)
-   - Modern design with gradients, shadows, and smooth animations
-   - Custom circular cursor with shadow effects
-   - Perfect for contemporary applications
+### Basic Usage
 
-2. **Minimal Template** (`OtpTemplate.minimal`)
-   - Clean and minimal design with focus on simplicity
-   - Bottom cursor (underlined style)
-   - Ideal for minimal designs and text-focused interfaces
+```dart
+import 'package:flutter_otp_kit/flutter_otp_kit.dart';
 
-3. **Corporate Template** (`OtpTemplate.corporate`)
-   - Professional design suitable for business applications
-   - Vertical cursor with structured layout
-   - Perfect for enterprise and professional apps
+OtpVerificationWidget(
+  title: 'Verify Phone Number',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: '+1 (555) 123-4567',
+  maskingType: MaskingType.phone,
+  buttonText: 'Verify',
+  resendText: 'Resend Code',
+  timerPrefix: 'in',
+  enableAutoValidation: true, // Enable validation to prevent verify with missing fields
+  unfocusOnTapOutside: true, // Enable tap outside to unfocus fields
+  onVerify: (otp) {
+    // Handle OTP verification
+    print('Verifying OTP: $otp');
+  },
+  onResend: () {
+    // Handle resend OTP
+    print('Resending OTP');
+  },
+)
+```
 
-4. **Playful Template** (`OtpTemplate.playful`)
-   - Fun and colorful design with rounded corners and animations
-   - Custom gradient cursor with bounce animations
-   - Great for consumer apps and playful interfaces
+### RTL/LTR Support
 
-5. **Elegant Template** (`OtpTemplate.elegant`)
-   - Sophisticated design with premium styling and effects
-   - Custom square cursor with subtle shadows
-   - Perfect for luxury and premium applications
+```dart
+// Automatic direction detection based on app locale
+OtpVerificationWidget(
+  title: 'تحقق من رقم الهاتف', // Arabic title
+  subtitle: 'أدخل الرمز المرسل إلى {contactInfo}', // Arabic subtitle
+  contactInfo: '+966501234567',
+  maskingType: MaskingType.phone,
+  buttonText: 'تحقق', // Arabic button text
+  resendText: 'إعادة إرسال الرمز', // Arabic resend text
+  timerPrefix: 'بعد', // Arabic timer prefix
+  // textDirection: TextDirection.rtl, // Optional: Force RTL
+  onVerify: (otp) {
+    // Handle OTP verification
+    print('Verifying OTP: $otp');
+  },
+  onResend: () {
+    // Handle resend OTP
+    print('Resending OTP');
+  },
+)
 
-### Template Usage
+// Manual direction override
+OtpVerificationWidget(
+  title: 'Verify Phone Number',
+  subtitle: 'Enter the code sent to {contactInfo}',
+  contactInfo: '+1 (555) 123-4567',
+  textDirection: TextDirection.ltr, // Force LTR
+  onVerify: (otp) => handleVerification(otp),
+  onResend: () => handleResend(),
+)
+```
+
+### Tap Outside Unfocus
 
 ```dart
 // Simple template usage
