@@ -10,6 +10,7 @@ import 'widgets/otp_header.dart';
 import 'config/otp_error_config.dart';
 import 'config/otp_field_config.dart';
 import 'config/otp_animation_config.dart';
+import 'otp_field_shape.dart';
 import 'masking_type.dart';
 import 'otp_input_type.dart';
 import 'otp_layout_type.dart';
@@ -42,6 +43,7 @@ import 'utils/otp_validator.dart';
 /// - validationMessage: Custom widget (beautiful Arabic/English messages)
 /// - errorBorderColor: Colors.red (red borders for validation/errors)
 /// - textDirection: TextDirection.rtl (for Arabic apps)
+/// - fieldConfig: Complete field configuration for advanced styling
 ///
 /// ## Features:
 /// - **Customizable appearance**: Colors, dimensions, spacing all configurable
@@ -55,30 +57,53 @@ import 'utils/otp_validator.dart';
 /// - **Animations**: Smooth animations for better UX
 /// - **Accessibility ready**: Proper focus handling and keyboard navigation
 ///
-/// ## Usage Example:
+/// ## Usage Examples:
+///
+/// ### Basic Usage:
 /// ```dart
-/// // Phone OTP with automatic masking
 /// OtpVerificationWidget(
 ///   title: 'Verify Phone Number',
 ///   subtitle: 'Enter the code sent to {contactInfo}',
 ///   contactInfo: '01012345678',
 ///   maskingType: MaskingType.phone,
-///   buttonText: 'Verify',
-///   resendText: 'Resend Code',
-///   timerPrefix: 'after',
 ///   onVerify: (otp) => handleOtpVerification(otp),
 ///   onResend: () => resendOtpCode(),
 /// )
+/// ```
 ///
-/// // Email OTP with automatic masking
+/// ### Advanced Custom Field Configuration:
+/// ```dart
 /// OtpVerificationWidget(
-///   title: 'Verify Email',
-///   subtitle: 'Enter the code sent to {contactInfo}',
-///   contactInfo: 'user@example.com',
-///   maskingType: MaskingType.email,
-///   buttonText: 'Verify',
-///   resendText: 'Resend Code',
-///   timerPrefix: 'after',
+///   title: 'Custom Styled OTP',
+///   subtitle: 'Enter the verification code',
+///   fieldConfig: OtpFieldConfig(
+///     // Field dimensions
+///     fieldWidth: 60,
+///     fieldHeight: 70,
+///     borderRadius: 12,
+///     borderWidth: 3,
+///
+///     // Field shape and styling
+///     fieldShape: OtpFieldShape.custom,
+///     fieldShapeConfig: OtpFieldShapeConfig(
+///       borderStyle: OtpBorderStyle.dashed,
+///       dashPattern: [8, 4],
+///     ),
+///
+///     // Colors
+///     primaryColor: Colors.purple,
+///     backgroundColor: Colors.purple.shade50,
+///
+///     // Effects
+///     enableShadow: true,
+///     shadowColor: Colors.purple.withOpacity(0.3),
+///     focusEffect: FocusEffect.glow,
+///     completedEffect: CompletedEffect.fillAndBorder,
+///
+///     // Typography
+///     fieldFontSize: 28,
+///     fieldFontWeight: FontWeight.bold,
+///   ),
 ///   onVerify: (otp) => handleOtpVerification(otp),
 ///   onResend: () => resendOtpCode(),
 /// )
@@ -114,6 +139,12 @@ class OtpVerificationWidget extends StatefulWidget {
     this.fieldCount = 4,
     this.fieldSpacing = 10.0,
     this.spacing = 16.0,
+    this.fieldWidth = 55.125,
+    this.fieldHeight = 60.731,
+    this.borderRadius = 17.752,
+    this.borderWidth = 1.869,
+    this.fieldShape = OtpFieldShape.roundedRectangle,
+    this.fieldConfig,
     this.otpInputType = OtpInputType.numeric,
     this.layoutType = OtpLayoutType.fixed,
     this.cursorAlignment = TextAlign.center,
@@ -244,6 +275,49 @@ class OtpVerificationWidget extends StatefulWidget {
 
   /// General spacing for the widget
   final double spacing;
+
+  /// Width of each OTP field
+  final double fieldWidth;
+
+  /// Height of each OTP field
+  final double fieldHeight;
+
+  /// Border radius for OTP fields
+  final double borderRadius;
+
+  /// Border width for OTP fields
+  final double borderWidth;
+
+  /// Shape of OTP fields (rectangle, roundedRectangle, circle, stadium, underlined, outlined, custom)
+  final OtpFieldShape fieldShape;
+
+  /// Complete field configuration (overrides individual field parameters if provided)
+  ///
+  /// Use this parameter to have complete control over field styling:
+  /// ```dart
+  /// OtpVerificationWidget(
+  ///   fieldConfig: OtpFieldConfig(
+  ///     fieldWidth: 50,
+  ///     fieldHeight: 60,
+  ///     borderRadius: 8,
+  ///     borderWidth: 2,
+  ///     fieldShape: OtpFieldShape.custom,
+  ///     fieldShapeConfig: OtpFieldShapeConfig(
+  ///       borderStyle: OtpBorderStyle.dashed,
+  ///       dashPattern: [5, 3],
+  ///     ),
+  ///     primaryColor: Colors.blue,
+  ///     backgroundColor: Colors.grey.shade100,
+  ///     enableShadow: true,
+  ///     shadowColor: Colors.blue.withOpacity(0.3),
+  ///     focusEffect: FocusEffect.glow,
+  ///     completedEffect: CompletedEffect.fillAndBorder,
+  ///   ),
+  ///   onVerify: (otp) => handleVerification(otp),
+  ///   onResend: () => resendCode(),
+  /// )
+  /// ```
+  final OtpFieldConfig? fieldConfig;
 
   /// Type of OTP input (numeric, alphabetic, alphanumeric, custom)
   final OtpInputType otpInputType;
@@ -555,16 +629,25 @@ class OtpVerificationWidgetState extends State<OtpVerificationWidget>
       errorStyle: widget.errorStyle,
     );
 
-    final fieldConfig = OtpFieldConfig(
-      fieldWidth: 55.125,
-      fieldHeight: 60.731,
-      borderRadius: 17.752,
-      borderWidth: 1.869,
-      primaryColor: widget.primaryColor,
-      secondaryColor: widget.secondaryColor,
-      backgroundColor: widget.backgroundColor,
-      cursorColor: widget.primaryColor,
-    );
+    // Create field configuration - use custom fieldConfig if provided, otherwise create from individual parameters
+    final fieldConfig = widget.fieldConfig ??
+        OtpFieldConfig(
+          fieldWidth: widget.fieldWidth,
+          fieldHeight: widget.fieldHeight,
+          borderRadius: widget.borderRadius,
+          borderWidth: widget.borderWidth,
+          fieldShape: widget.fieldShape == OtpFieldShape.underlined
+              ? OtpFieldShape.custom
+              : widget.fieldShape,
+          fieldShapeConfig: widget.fieldShape == OtpFieldShape.underlined
+              ? const OtpFieldShapeConfig(
+                  borderStyle: OtpBorderStyle.bottomOnly)
+              : null,
+          primaryColor: widget.primaryColor,
+          secondaryColor: widget.secondaryColor,
+          backgroundColor: widget.backgroundColor,
+          cursorColor: widget.primaryColor,
+        );
 
     // Initialize the state manager
     _stateManager = OtpStateManager(

@@ -1,6 +1,6 @@
 name: flutter_otp_kit
 description: A comprehensive Flutter package for OTP (One-Time Password) verification with customizable styling, localization support, and robust functionality.
-version: 2.1.1
+version: 2.2.0
 homepage: https://github.com/seifmoustafa/flutter_otp_kit
 repository: https://github.com/seifmoustafa/flutter_otp_kit
 issue_tracker: https://github.com/seifmoustafa/flutter_otp_kit/issues
@@ -15,6 +15,14 @@ topics:
 environment:
   sdk: '>=3.0.0 <4.0.0'
   flutter: ">=3.10.0"
+
+platforms:
+  android:
+  ios:
+  web:
+  windows:
+  macos:
+  linux:
 
 dependencies:
   flutter:

@@ -225,6 +225,29 @@ class _OtpDemoScreenState extends State<OtpDemoScreen> {
                         });
                       },
                     ),
+                    RadioListTile<String>(
+                      title: const Text('Underlined Fields'),
+                      subtitle: const Text('Bottom border only field design'),
+                      value: 'underlined',
+                      groupValue: _selectedExample,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedExample = value!;
+                        });
+                      },
+                    ),
+                    RadioListTile<String>(
+                      title: const Text('Custom Field Config'),
+                      subtitle:
+                          const Text('Complete control over field styling'),
+                      value: 'custom',
+                      groupValue: _selectedExample,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedExample = value!;
+                        });
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -549,6 +572,10 @@ class _OtpDemoScreenState extends State<OtpDemoScreen> {
         return _buildTapOutsideExample();
       case 'external':
         return _buildExternalHandlerExample();
+      case 'underlined':
+        return _buildUnderlinedExample();
+      case 'custom':
+        return _buildCustomFieldConfigExample();
       default:
         return _buildBasicExample();
     }
@@ -1116,6 +1143,124 @@ class _OtpDemoScreenState extends State<OtpDemoScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildUnderlinedExample() {
+    return OtpVerificationWidget(
+      key: _basicOtpKey,
+      title: 'Underlined Fields',
+      subtitle: 'Bottom border only field design',
+      contactInfo: '+1 (555) 123-4567',
+      maskingType: MaskingType.phone,
+      fieldShape: OtpFieldShape.circle,
+      fieldWidth: 45,
+      fieldHeight: 50,
+      borderRadius: 0, // No border radius for underlined fields
+      borderWidth: 2.0,
+      primaryColor: Colors.black,
+      backgroundColor: Colors.transparent,
+      enableAutoValidation: true,
+      unfocusOnTapOutside: true,
+      onVerify: (otp) {
+        if (otp == '1234') {
+          _basicOtpKey.currentState?.handleVerificationResult(true);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('OTP verified successfully!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else {
+          _basicOtpKey.currentState?.handleVerificationResult(
+            false,
+            errorMessage: 'Invalid OTP. Please try again.',
+          );
+        }
+      },
+      onResend: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('OTP resent successfully!'),
+            backgroundColor: Colors.blue,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCustomFieldConfigExample() {
+    return OtpVerificationWidget(
+      key: _basicOtpKey,
+      title: 'Custom Field Configuration',
+      subtitle: 'Complete control over field styling',
+      contactInfo: '+1 (555) 123-4567',
+      maskingType: MaskingType.phone,
+      fieldConfig: const OtpFieldConfig(
+        // Field dimensions
+        fieldWidth: 60,
+        fieldHeight: 70,
+        borderRadius: 15,
+        borderWidth: 3,
+
+        // Field shape and styling
+        fieldShape: OtpFieldShape.custom,
+        fieldShapeConfig: OtpFieldShapeConfig(
+          borderStyle: OtpBorderStyle.dashed,
+          dashPattern: [8, 4],
+        ),
+
+        // Colors
+        primaryColor: Color(0xFF9C27B0), // Purple
+        backgroundColor: Color(0xFFF3E5F5), // Light purple
+
+        // Effects
+        enableShadow: true,
+        shadowColor: Color(0xFF9C27B0),
+        shadowBlurRadius: 8,
+        shadowSpreadRadius: 2,
+        focusEffect: FocusEffect.glow,
+        completedEffect: CompletedEffect.fillAndBorder,
+
+        // Typography
+        fieldFontSize: 28,
+        fieldFontWeight: FontWeight.bold,
+        letterSpacing: 1.0,
+
+        // Cursor
+        cursorColor: Color(0xFF9C27B0),
+        cursorWidth: 2.0,
+
+        // Focus effects
+        focusGlowRadius: 4.0,
+        focusGlowIntensity: 0.8,
+      ),
+      enableAutoValidation: true,
+      unfocusOnTapOutside: true,
+      onVerify: (otp) {
+        if (otp == '1234') {
+          _basicOtpKey.currentState?.handleVerificationResult(true);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('OTP verified successfully!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else {
+          _basicOtpKey.currentState?.handleVerificationResult(
+            false,
+            errorMessage: 'Invalid OTP. Please try again.',
+          );
+        }
+      },
+      onResend: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('OTP resent successfully!'),
+            backgroundColor: Colors.blue,
+          ),
+        );
+      },
     );
   }
 
