@@ -26,6 +26,20 @@ class OtpAnimationConfig {
     this.errorFieldAnimationType = ErrorFieldAnimationType.shake,
     this.errorShakeAmplitude = 4.0,
     this.errorShakeFrequency = 10.0,
+
+    // Cursor animation configuration
+    this.enableCursorAnimation = true,
+    this.cursorBlinkDuration = const Duration(milliseconds: 1000),
+    this.cursorColor = const Color(0xFF2196F3),
+    this.cursorWidth = 2.0,
+
+    // Smooth state transitions
+    this.stateTransitionDuration = const Duration(milliseconds: 200),
+    this.stateTransitionCurve = Curves.easeInOut,
+
+    // Decoration animations
+    this.enableDecorationAnimation = true,
+    this.decorationAnimationDuration = const Duration(milliseconds: 250),
   });
 
   /// Whether to enable animations
@@ -70,6 +84,30 @@ class OtpAnimationConfig {
   /// Frequency factor for shake oscillation
   final double errorShakeFrequency;
 
+  /// Whether to enable cursor animation
+  final bool enableCursorAnimation;
+
+  /// Duration for cursor blink animation
+  final Duration cursorBlinkDuration;
+
+  /// Color of the cursor
+  final Color cursorColor;
+
+  /// Width of the cursor
+  final double cursorWidth;
+
+  /// Duration for smooth state transitions
+  final Duration stateTransitionDuration;
+
+  /// Curve for state transitions
+  final Curve stateTransitionCurve;
+
+  /// Whether to enable decoration animations
+  final bool enableDecorationAnimation;
+
+  /// Duration for decoration animations
+  final Duration decorationAnimationDuration;
+
   /// Creates a copy of this object with the given fields replaced with the new values
   OtpAnimationConfig copyWith({
     bool? enableAnimation,
@@ -86,6 +124,14 @@ class OtpAnimationConfig {
     ErrorFieldAnimationType? errorFieldAnimationType,
     double? errorShakeAmplitude,
     double? errorShakeFrequency,
+    bool? enableCursorAnimation,
+    Duration? cursorBlinkDuration,
+    Color? cursorColor,
+    double? cursorWidth,
+    Duration? stateTransitionDuration,
+    Curve? stateTransitionCurve,
+    bool? enableDecorationAnimation,
+    Duration? decorationAnimationDuration,
   }) {
     return OtpAnimationConfig(
       enableAnimation: enableAnimation ?? this.enableAnimation,
@@ -109,6 +155,18 @@ class OtpAnimationConfig {
           errorFieldAnimationType ?? this.errorFieldAnimationType,
       errorShakeAmplitude: errorShakeAmplitude ?? this.errorShakeAmplitude,
       errorShakeFrequency: errorShakeFrequency ?? this.errorShakeFrequency,
+      enableCursorAnimation:
+          enableCursorAnimation ?? this.enableCursorAnimation,
+      cursorBlinkDuration: cursorBlinkDuration ?? this.cursorBlinkDuration,
+      cursorColor: cursorColor ?? this.cursorColor,
+      cursorWidth: cursorWidth ?? this.cursorWidth,
+      stateTransitionDuration:
+          stateTransitionDuration ?? this.stateTransitionDuration,
+      stateTransitionCurve: stateTransitionCurve ?? this.stateTransitionCurve,
+      enableDecorationAnimation:
+          enableDecorationAnimation ?? this.enableDecorationAnimation,
+      decorationAnimationDuration:
+          decorationAnimationDuration ?? this.decorationAnimationDuration,
     );
   }
 }

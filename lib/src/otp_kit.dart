@@ -7,6 +7,13 @@ import 'package:flutter/services.dart';
 import 'config/otp_field_config.dart';
 import 'config/otp_error_config.dart';
 import 'config/otp_animation_config.dart';
+import 'config/otp_sms_config.dart';
+import 'config/otp_performance_config.dart';
+import 'config/otp_security_config.dart';
+import 'services/otp_sms_service.dart';
+import 'services/otp_performance_monitor.dart';
+import 'services/otp_biometric_service.dart';
+import 'services/otp_platform_service.dart';
 import 'masking_type.dart';
 import 'otp_input_type.dart';
 import 'state/otp_field_state.dart';
@@ -130,6 +137,15 @@ class OtpKit extends StatefulWidget {
     // Error configuration
     this.errorConfig = const OtpErrorConfig(),
 
+    // SMS configuration
+    this.smsConfig = const OtpSmsConfig(),
+
+    // Performance configuration
+    this.performanceConfig = const OtpPerformanceConfig(),
+
+    // Security configuration
+    this.securityConfig = const OtpSecurityConfig(),
+
     // Layout and spacing
     this.spacing = 24.0,
     this.padding = const EdgeInsets.all(16.0),
@@ -220,6 +236,15 @@ class OtpKit extends StatefulWidget {
   // Error configuration
   final OtpErrorConfig errorConfig;
 
+  // SMS configuration
+  final OtpSmsConfig smsConfig;
+
+  // Performance configuration
+  final OtpPerformanceConfig performanceConfig;
+
+  // Security configuration
+  final OtpSecurityConfig securityConfig;
+
   // Layout and spacing
   final double spacing;
   final EdgeInsets padding;
@@ -293,12 +318,33 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
     _initializeAnimations();
     _setupTimer();
     _setupFocusListeners();
+    _initializeServices();
 
     if (widget.autoFocus && _focusNodes.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _focusNodes[0].requestFocus();
       });
     }
+  }
+
+  void _initializeServices() async {
+    // Initialize SMS service
+    if (widget.smsConfig.enableSmsAutofill) {
+      await OtpSmsService.instance.initialize(widget.smsConfig);
+    }
+
+    // Initialize performance monitoring
+    if (widget.performanceConfig.enablePerformanceMonitoring) {
+      OtpPerformanceMonitor.instance.initialize(widget.performanceConfig);
+    }
+
+    // Initialize biometric service
+    if (widget.securityConfig.enableBiometricIntegration) {
+      await OtpBiometricService.instance.initialize();
+    }
+
+    // Initialize platform service
+    await OtpPlatformService.instance.initialize();
   }
 
   void _initializeControllers() {

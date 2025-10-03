@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_kit/flutter_otp_kit.dart';
-import 'package:flutter_otp_kit/src/config/otp_field_config.dart';
-import 'package:flutter_otp_kit/src/config/otp_animation_config.dart';
-import 'package:flutter_otp_kit/src/config/otp_error_config.dart';
 
 void main() {
   runApp(const OtpKitExampleApp());
@@ -38,7 +35,7 @@ class _OtpKitExamplesPageState extends State<OtpKitExamplesPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 6, vsync: this);
+    _tabController = TabController(length: 7, vsync: this);
   }
 
   @override
@@ -62,6 +59,7 @@ class _OtpKitExamplesPageState extends State<OtpKitExamplesPage>
             Tab(text: 'Underlined'),
             Tab(text: 'Animated'),
             Tab(text: 'Custom'),
+            Tab(text: 'Advanced'),
           ],
         ),
       ),
@@ -74,6 +72,7 @@ class _OtpKitExamplesPageState extends State<OtpKitExamplesPage>
           UnderlinedExample(),
           AnimatedExample(),
           CustomExample(),
+          AdvancedExample(),
         ],
       ),
     );
@@ -500,6 +499,189 @@ class CustomExample extends StatelessWidget {
                       backgroundColor: Colors.purple,
                     ),
                   );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AdvancedExample extends StatelessWidget {
+  const AdvancedExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              const Text(
+                'Advanced Features',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 32),
+              OtpKit(
+                title: 'Enterprise OTP',
+                subtitle:
+                    'All features enabled - Code sent to {contactInfo} (try 1234)',
+                fieldCount: 4,
+                fieldSpacing: 12,
+                fieldConfig: OtpFieldConfig(
+                  fieldWidth: 60,
+                  fieldHeight: 60,
+                  borderRadius: 15,
+                  borderWidth: 2,
+                  fieldShape: OtpFieldShape.roundedRectangle,
+                  enableShadow: true,
+                  shadowColor: Colors.indigo.withOpacity(0.3),
+                  shadowBlurRadius: 8,
+                  primaryColor: Colors.indigo,
+                  backgroundColor: Colors.indigo.shade50,
+                  fieldFontSize: 24,
+                  fieldFontWeight: FontWeight.w600,
+                ),
+                animationConfig: OtpAnimationConfig(
+                  enableAnimation: true,
+                  animationDuration: Duration(milliseconds: 400),
+                  animationCurve: Curves.easeOutCubic,
+                  enableFieldStateAnimation: true,
+                  fieldTransitionDuration: Duration(milliseconds: 200),
+                  fieldFillAnimationType: FieldFillAnimationType.scale,
+                  fieldFillSlideOffset: Offset(8, 0),
+                  fieldFillRotationRadians: 0.12,
+                  errorFieldAnimationType: ErrorFieldAnimationType.pulse,
+                  errorShakeAmplitude: 6.0,
+                  errorShakeFrequency: 12.0,
+                  enableCursorAnimation: true,
+                  cursorBlinkDuration: Duration(milliseconds: 800),
+                  cursorColor: Colors.indigo,
+                  cursorWidth: 2.5,
+                  enableDecorationAnimation: true,
+                  decorationAnimationDuration: Duration(milliseconds: 300),
+                ),
+                smsConfig: OtpSmsConfig(
+                  enableSmsAutofill: true,
+                  enableSmartAuth: true,
+                  enableSmsRetrieverAPI: true,
+                  enableSmsUserConsentAPI: true,
+                  enableSmsValidation: true,
+                  smsValidationRegex: r'\b\d{6}\b',
+                  enableSmsErrorHandling: true,
+                ),
+                performanceConfig: OtpPerformanceConfig(
+                  enableLazyLoading: true,
+                  maxVisibleFields: 8,
+                  enableMemoryOptimization: true,
+                  animationCleanupDelay: Duration(seconds: 3),
+                  enableAnimationPooling: true,
+                  maxAnimationPoolSize: 12,
+                  enableFieldRecycling: true,
+                  enableBackgroundCleanup: true,
+                  cleanupInterval: Duration(minutes: 2),
+                  enablePerformanceMonitoring: true,
+                  enableMemoryLeakDetection: true,
+                  enableAnimationOptimization: true,
+                  enableWidgetOptimization: true,
+                ),
+                securityConfig: OtpSecurityConfig(
+                  enableRateLimiting: true,
+                  maxAttemptsPerMinute: 3,
+                  maxAttemptsPerHour: 15,
+                  lockoutDuration: Duration(minutes: 10),
+                  enableBiometricIntegration: true,
+                  biometricTimeout: Duration(seconds: 20),
+                  enableAdvancedValidation: true,
+                  validationChecksum: false,
+                  validationPattern: r'^\d{6}$',
+                  enableEncryption: false,
+                  enableAuditLogging: true,
+                  enableSecurityMonitoring: true,
+                  enableAntiTampering: false,
+                  enableSessionManagement: true,
+                  sessionTimeout: Duration(minutes: 5),
+                ),
+                errorConfig: OtpErrorConfig(
+                  maxErrorRetries: 3,
+                  enableFieldLockout: true,
+                  fieldLockoutDuration: Duration(seconds: 30),
+                  clearFieldsOnError: true,
+                  errorShakeDuration: Duration(milliseconds: 500),
+                  errorShakeCount: 3,
+                  errorTextMaxLines: 2,
+                  showErrorIcon: true,
+                  errorIcon: Icons.error_outline,
+                  autoClearErrorOnInput: true,
+                ),
+                primaryColor: Colors.indigo,
+                successColor: Colors.green,
+                backgroundColor: Colors.white,
+                secondaryColor: Colors.grey,
+                errorColor: Colors.red,
+                contactInfo: 'admin@enterprise.com',
+                maskingType: MaskingType.email,
+                showTimer: true,
+                timerDuration: 120,
+                enablePaste: true,
+                autoFocus: true,
+                enableAutoValidation: true,
+                obscureText: false,
+                enableInteractiveSelection: true,
+                unfocusOnTapOutside: true,
+                enableScreenReaderSupport: true,
+                onVerify: (otp) async {
+                  if (otp == '1234') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content:
+                            Text('✅ Enterprise Success! OTP $otp verified'),
+                        backgroundColor: Colors.green,
+                        duration: Duration(seconds: 3),
+                      ),
+                    );
+                    return true; // Success
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                            '❌ Enterprise Error! OTP $otp invalid. Try 1234'),
+                        backgroundColor: Colors.red,
+                        duration: Duration(seconds: 3),
+                      ),
+                    );
+                    return false; // Failure
+                  }
+                },
+                onResend: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('🔄 Enterprise code resent!'),
+                      backgroundColor: Colors.blue,
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                },
+                onChanged: (otp) {
+                  print('OTP changed: $otp');
+                },
+                onCompleted: (otp) {
+                  print('OTP completed: $otp');
+                },
+                onTimerChanged: (remaining) {
+                  print('Timer: $remaining seconds remaining');
+                },
+                onErrorStateChanged: (hasError) {
+                  print('Error state: $hasError');
+                },
+                onValidationStateChanged: (isValid) {
+                  print('Validation state: $isValid');
+                },
+                onCompletionStateChanged: (isCompleted) {
+                  print('Completion state: $isCompleted');
                 },
               ),
             ],

@@ -115,8 +115,7 @@ class OtpField extends StatefulWidget {
   State<OtpField> createState() => _OtpFieldState();
 }
 
-class _OtpFieldState extends State<OtpField>
-    with SingleTickerProviderStateMixin {
+class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<Color?> _borderColorAnimation;
   late Animation<Color?> _backgroundColorAnimation;
@@ -132,6 +131,11 @@ class _OtpFieldState extends State<OtpField>
   late Animation<double> _fillScaleAnimation;
   late Animation<double> _fillRotationAnimation;
   late Animation<Offset> _fillSlideAnimation;
+
+  // Advanced cursor animation
+  late AnimationController _cursorController;
+  late Animation<double> _cursorBlinkAnimation;
+  late Animation<double> _cursorScaleAnimation;
 
   @override
   void initState() {
@@ -154,6 +158,7 @@ class _OtpFieldState extends State<OtpField>
     _prevTextColor = widget.fieldColors.textColor;
 
     _setupAnimations();
+    _setupCursorAnimations();
 
     // If using external controller, listen to its changes
     if (widget.animationController != null) {
@@ -275,12 +280,63 @@ class _OtpFieldState extends State<OtpField>
     }
   }
 
+  void _setupCursorAnimations() {
+    if (!widget.animationConfig.enableCursorAnimation) return;
+
+    _cursorController = AnimationController(
+      vsync: this,
+      duration: widget.animationConfig.cursorBlinkDuration,
+    );
+
+    // Cursor blink animation
+    _cursorBlinkAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.0,
+    ).animate(CurvedAnimation(
+      parent: _cursorController,
+      curve: Curves.easeInOut,
+    ));
+
+    // Cursor scale animation for focus
+    _cursorScaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.2,
+    ).animate(CurvedAnimation(
+      parent: _cursorController,
+      curve: Curves.elasticOut,
+    ));
+
+    // Start blinking when focused
+    if (widget.focusNode.hasFocus) {
+      _cursorController.repeat(reverse: true);
+    }
+
+    // Listen to focus changes
+    widget.focusNode.addListener(_onFocusChanged);
+  }
+
+  void _onFocusChanged() {
+    if (widget.focusNode.hasFocus) {
+      _cursorController.repeat(reverse: true);
+    } else {
+      _cursorController.stop();
+      _cursorController.reset();
+    }
+  }
+
   @override
   void dispose() {
     // Only dispose if we created the animation controller ourselves
     if (widget.animationController == null) {
       _animationController.dispose();
     }
+
+    // Dispose cursor controller
+    if (widget.animationConfig.enableCursorAnimation) {
+      _cursorController.dispose();
+      widget.focusNode.removeListener(_onFocusChanged);
+    }
+
     _keyboardListenerFocusNode.dispose();
     super.dispose();
   }

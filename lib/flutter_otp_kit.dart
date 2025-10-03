@@ -27,6 +27,10 @@ export 'src/widgets/otp_error_display.dart';
 export 'src/config/otp_error_config.dart';
 export 'src/config/otp_field_config.dart';
 export 'src/config/otp_config.dart';
+export 'src/config/otp_animation_config.dart';
+export 'src/config/otp_sms_config.dart';
+export 'src/config/otp_performance_config.dart';
+export 'src/config/otp_security_config.dart';
 
 // State management
 export 'src/state/otp_field_state.dart';
@@ -34,6 +38,12 @@ export 'src/state/otp_field_state.dart';
 // Styling
 export 'src/styling/field_colors.dart';
 export 'src/styling/otp_style_manager.dart';
+
+// Services
+export 'src/services/otp_sms_service.dart';
+export 'src/services/otp_performance_monitor.dart';
+export 'src/services/otp_biometric_service.dart';
+export 'src/services/otp_platform_service.dart';
 
 // Utilities
 export 'src/utils/otp_formatter.dart';
