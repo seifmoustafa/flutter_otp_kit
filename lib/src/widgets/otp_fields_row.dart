@@ -32,6 +32,7 @@ class OtpFieldsRow extends StatefulWidget {
     this.textCapitalization = TextCapitalization.none,
     this.hasInternalError = false,
     this.animationConfig = const OtpAnimationConfig(),
+    this.fieldAnimationControllers,
   }) : super(key: key);
 
   /// Text controllers for the fields
@@ -93,6 +94,9 @@ class OtpFieldsRow extends StatefulWidget {
 
   /// Animation configuration for the fields
   final OtpAnimationConfig animationConfig;
+
+  /// Animation controllers for individual fields
+  final List<AnimationController>? fieldAnimationControllers;
 
   @override
   State<OtpFieldsRow> createState() => _OtpFieldsRowState();
@@ -170,6 +174,12 @@ class _OtpFieldsRowState extends State<OtpFieldsRow> {
                     animationCurve: widget.animationConfig.fieldTransitionCurve,
                     transitionHighlightColor:
                         widget.animationConfig.transitionHighlightColor,
+                    animationConfig: widget.animationConfig,
+                    animationController:
+                        widget.fieldAnimationControllers != null &&
+                                index < widget.fieldAnimationControllers!.length
+                            ? widget.fieldAnimationControllers![index]
+                            : null,
                   ),
                 );
               },

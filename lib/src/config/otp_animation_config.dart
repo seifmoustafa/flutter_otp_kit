@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 /// Configuration for OTP animations
+/// Configuration for OTP animations
+///
+/// Controls global widget animation and per-field animations for both
+/// normal state transitions (fill/completed) and error states.
 class OtpAnimationConfig {
   /// Creates a new animation configuration
   const OtpAnimationConfig({
@@ -12,6 +16,16 @@ class OtpAnimationConfig {
     this.fieldTransitionDuration = const Duration(milliseconds: 150),
     this.fieldTransitionCurve = Curves.easeInOut,
     this.transitionHighlightColor,
+
+    // Field fill/completion animation
+    this.fieldFillAnimationType = FieldFillAnimationType.scale,
+    this.fieldFillSlideOffset = const Offset(6, 0),
+    this.fieldFillRotationRadians = 0.10,
+
+    // Error field animation
+    this.errorFieldAnimationType = ErrorFieldAnimationType.shake,
+    this.errorShakeAmplitude = 4.0,
+    this.errorShakeFrequency = 10.0,
   });
 
   /// Whether to enable animations
@@ -38,6 +52,24 @@ class OtpAnimationConfig {
   /// Color for transition highlight
   final Color? transitionHighlightColor;
 
+  /// Field fill/completed animation type
+  final FieldFillAnimationType fieldFillAnimationType;
+
+  /// Offset used for slide animations (direction and magnitude)
+  final Offset fieldFillSlideOffset;
+
+  /// Rotation (in radians) used for rotation animations
+  final double fieldFillRotationRadians;
+
+  /// Error animation type for fields
+  final ErrorFieldAnimationType errorFieldAnimationType;
+
+  /// Amplitude (logical pixels) for shake animation on error
+  final double errorShakeAmplitude;
+
+  /// Frequency factor for shake oscillation
+  final double errorShakeFrequency;
+
   /// Creates a copy of this object with the given fields replaced with the new values
   OtpAnimationConfig copyWith({
     bool? enableAnimation,
@@ -48,6 +80,12 @@ class OtpAnimationConfig {
     Duration? fieldTransitionDuration,
     Curve? fieldTransitionCurve,
     Color? transitionHighlightColor,
+    FieldFillAnimationType? fieldFillAnimationType,
+    Offset? fieldFillSlideOffset,
+    double? fieldFillRotationRadians,
+    ErrorFieldAnimationType? errorFieldAnimationType,
+    double? errorShakeAmplitude,
+    double? errorShakeFrequency,
   }) {
     return OtpAnimationConfig(
       enableAnimation: enableAnimation ?? this.enableAnimation,
@@ -62,6 +100,75 @@ class OtpAnimationConfig {
       fieldTransitionCurve: fieldTransitionCurve ?? this.fieldTransitionCurve,
       transitionHighlightColor:
           transitionHighlightColor ?? this.transitionHighlightColor,
+      fieldFillAnimationType:
+          fieldFillAnimationType ?? this.fieldFillAnimationType,
+      fieldFillSlideOffset: fieldFillSlideOffset ?? this.fieldFillSlideOffset,
+      fieldFillRotationRadians:
+          fieldFillRotationRadians ?? this.fieldFillRotationRadians,
+      errorFieldAnimationType:
+          errorFieldAnimationType ?? this.errorFieldAnimationType,
+      errorShakeAmplitude: errorShakeAmplitude ?? this.errorShakeAmplitude,
+      errorShakeFrequency: errorShakeFrequency ?? this.errorShakeFrequency,
     );
   }
+}
+
+/// Animation types applied when a field transitions to filled/completed
+enum FieldFillAnimationType {
+  /// No transform animation
+  none,
+
+  /// Scale slightly then settle
+  scale,
+
+  /// Rotate slightly then settle
+  rotate,
+
+  /// Slide from left towards place
+  slideLeft,
+
+  /// Slide from right towards place
+  slideRight,
+
+  /// Slide from top towards place
+  slideUp,
+
+  /// Slide from bottom towards place
+  slideDown,
+}
+
+/// Animation types applied when a field enters error state
+enum ErrorFieldAnimationType {
+  /// No transform animation
+  none,
+
+  /// Horizontal shake - aggressive side-to-side movement
+  shake,
+
+  /// Scale down dramatically then bounce back
+  scale,
+
+  /// Aggressive rotation wobble
+  rotate,
+
+  /// Vertical bounce - up and down movement
+  bounce,
+
+  /// Pulse effect - scale in and out rapidly
+  pulse,
+
+  /// Wiggle - combination of rotation and translation
+  wiggle,
+
+  /// Slide down and back up
+  slideDown,
+
+  /// Slide up and back down
+  slideUp,
+
+  /// Slide left and back
+  slideLeft,
+
+  /// Slide right and back
+  slideRight,
 }

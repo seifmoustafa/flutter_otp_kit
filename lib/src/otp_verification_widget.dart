@@ -113,6 +113,8 @@ import 'utils/otp_validator.dart';
 /// All text parameters are required to ensure proper localization.
 /// Use your app's localization system to provide text.
 /// This prevents hardcoded strings and ensures multi-language support.
+@Deprecated(
+    'Use OtpKit instead. This widget will be removed in a future release.')
 class OtpVerificationWidget extends StatefulWidget {
   /// Creates a new OTP verification widget with customizable styling and behavior.
   ///

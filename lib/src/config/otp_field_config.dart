@@ -470,10 +470,7 @@ class OtpFieldConfig {
           fieldHeight: 50,
           borderRadius: 0,
           borderWidth: 2.0,
-          fieldShape: OtpFieldShape.custom,
-          fieldShapeConfig: OtpFieldShapeConfig(
-            borderStyle: OtpBorderStyle.bottomOnly,
-          ),
+          fieldShape: OtpFieldShape.underlined,
           primaryColor: Color(0xFF000000),
           backgroundColor: Colors.transparent,
           enableShadow: false,

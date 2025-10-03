@@ -4,6 +4,7 @@ library flutter_otp_kit;
 
 // Main widget
 export 'src/otp_verification_widget.dart';
+export 'src/otp_kit.dart';
 
 // Enums
 export 'src/masking_type.dart';
