@@ -1,5 +1,5 @@
 name: flutter_otp_kit
-description: The ultimate Flutter OTP verification package - completely superior to Pinput and Smart Auth with Smart Auth integration, biometric support, performance monitoring, and enterprise features.
+description: A comprehensive Flutter OTP verification package with SMS autofill, biometric support, performance monitoring, and extensive customization options.
 version: 3.0.0
 homepage: https://github.com/seifmoustafa/flutter_otp_kit
 repository: https://github.com/seifmoustafa/flutter_otp_kit

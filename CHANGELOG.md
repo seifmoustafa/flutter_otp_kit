@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.0.0] - 2025-10-05
 
-### 🚀 MAJOR RELEASE: Complete Superiority Over Competitors
+### 🚀 MAJOR RELEASE: Complete Rewrite with Modern Architecture
 
 #### 🎯 New Main Widget: OtpKit
 - **Brand New Widget**: Completely rewritten `OtpKit` widget from scratch
@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **iOS Native SMS**: iOS native SMS autofill integration
 - **Advanced Validation**: Regex-based SMS validation with custom patterns
 - **Error Handling**: Comprehensive SMS error handling and timeout management
-- **Smart Auth Compatible**: Full compatibility with Smart Auth package features
+- **Cross-Platform SMS**: Full SMS autofill support across platforms
 
 #### ⚡ Performance Monitoring System
 - **Real-time Metrics**: `OtpPerformanceMonitor` for live performance tracking
