@@ -96,6 +96,7 @@ class OtpKit extends StatefulWidget {
     this.fieldCount = 4,
     this.fieldSpacing = 12.0,
     this.fieldConfig,
+    this.cursorStyle,
 
     // Input behavior
     this.inputType = OtpInputType.numeric,
@@ -133,6 +134,16 @@ class OtpKit extends StatefulWidget {
 
     // Animation configuration
     this.animationConfig = const OtpAnimationConfig(),
+    // Main-level animation overrides (take precedence over field config)
+    this.enableFieldStateAnimationOverride,
+    this.fieldFillAnimationTypeOverride,
+    this.fieldFillSlideOffsetOverride,
+    this.fieldFillRotationRadiansOverride,
+    this.errorFieldAnimationTypeOverride,
+    this.errorShakeAmplitudeOverride,
+    this.errorShakeFrequencyOverride,
+    this.cursorEnableAnimationOverride,
+    this.cursorBlinkDurationOverride,
 
     // Error configuration
     this.errorConfig = const OtpErrorConfig(),
@@ -196,6 +207,9 @@ class OtpKit extends StatefulWidget {
   final double fieldSpacing;
   final OtpFieldConfig? fieldConfig;
 
+  /// Optional global cursor style override; when provided, overrides fieldConfig.cursorStyle
+  final CursorStyle? cursorStyle;
+
   // Input behavior
   final OtpInputType inputType;
   final bool enablePaste;
@@ -232,6 +246,17 @@ class OtpKit extends StatefulWidget {
 
   // Animation configuration
   final OtpAnimationConfig animationConfig;
+
+  // Animation overrides (nullable). When provided, these override animationConfig values
+  final bool? enableFieldStateAnimationOverride;
+  final FieldFillAnimationType? fieldFillAnimationTypeOverride;
+  final Offset? fieldFillSlideOffsetOverride;
+  final double? fieldFillRotationRadiansOverride;
+  final ErrorFieldAnimationType? errorFieldAnimationTypeOverride;
+  final double? errorShakeAmplitudeOverride;
+  final double? errorShakeFrequencyOverride;
+  final bool? cursorEnableAnimationOverride;
+  final Duration? cursorBlinkDurationOverride;
 
   // Error configuration
   final OtpErrorConfig errorConfig;
@@ -900,13 +925,39 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
   Widget _buildOtpFields() {
     final config = widget.fieldConfig ?? OtpFieldConfig();
 
+    final effectiveConfig = widget.cursorStyle != null
+        ? config.copyWith(cursorStyle: widget.cursorStyle)
+        : config;
+
+    // Build effective animation config applying main-level overrides
+    final effectiveAnimationConfig = widget.animationConfig.copyWith(
+      enableFieldStateAnimation: widget.enableFieldStateAnimationOverride ??
+          widget.animationConfig.enableFieldStateAnimation,
+      fieldFillAnimationType: widget.fieldFillAnimationTypeOverride ??
+          widget.animationConfig.fieldFillAnimationType,
+      fieldFillSlideOffset: widget.fieldFillSlideOffsetOverride ??
+          widget.animationConfig.fieldFillSlideOffset,
+      fieldFillRotationRadians: widget.fieldFillRotationRadiansOverride ??
+          widget.animationConfig.fieldFillRotationRadians,
+      errorFieldAnimationType: widget.errorFieldAnimationTypeOverride ??
+          widget.animationConfig.errorFieldAnimationType,
+      errorShakeAmplitude: widget.errorShakeAmplitudeOverride ??
+          widget.animationConfig.errorShakeAmplitude,
+      errorShakeFrequency: widget.errorShakeFrequencyOverride ??
+          widget.animationConfig.errorShakeFrequency,
+      enableCursorAnimation: widget.cursorEnableAnimationOverride ??
+          widget.animationConfig.enableCursorAnimation,
+      cursorBlinkDuration: widget.cursorBlinkDurationOverride ??
+          widget.animationConfig.cursorBlinkDuration,
+    );
+
     return OtpFieldsRow(
       controllers: _controllers,
       focusNodes: _focusNodes,
       fieldStates: _fieldStates,
       fieldHasError: _fieldErrors,
       onDigitChanged: (value, index) => _onFieldChanged(value, index),
-      config: config,
+      config: effectiveConfig,
       getFieldColors: (index, state, hasError) {
         return _getFieldColors(state, hasError);
       },
@@ -930,7 +981,7 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
       enableInteractiveSelection: widget.enableInteractiveSelection,
       textCapitalization: widget.textCapitalization,
       hasInternalError: _hasError,
-      animationConfig: widget.animationConfig,
+      animationConfig: effectiveAnimationConfig,
       fieldAnimationControllers: _fieldAnimationControllers,
     );
   }
@@ -942,7 +993,7 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
 
     if (hasError) {
       borderColor = widget.errorColor;
-      backgroundColor = widget.errorColor.withOpacity(0.1);
+      backgroundColor = widget.errorColor.withValues(alpha: 0.1);
       textColor = widget.errorColor;
     } else if (state == OtpFieldState.focused) {
       borderColor = widget.primaryColor;
@@ -950,7 +1001,7 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
       textColor = Colors.black87;
     } else if (state == OtpFieldState.completed) {
       borderColor = widget.successColor;
-      backgroundColor = widget.successColor.withOpacity(0.1);
+      backgroundColor = widget.successColor.withValues(alpha: 0.1);
       textColor = widget.successColor;
     } else if (state == OtpFieldState.filled) {
       borderColor = widget.successColor;

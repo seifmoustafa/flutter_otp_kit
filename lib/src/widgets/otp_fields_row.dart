@@ -33,6 +33,7 @@ class OtpFieldsRow extends StatefulWidget {
     this.hasInternalError = false,
     this.animationConfig = const OtpAnimationConfig(),
     this.fieldAnimationControllers,
+    this.cursorStyleOverride,
   }) : super(key: key);
 
   /// Text controllers for the fields
@@ -97,6 +98,9 @@ class OtpFieldsRow extends StatefulWidget {
 
   /// Animation controllers for individual fields
   final List<AnimationController>? fieldAnimationControllers;
+
+  /// Optional global cursor style override (from OtpKit)
+  final CursorStyle? cursorStyleOverride;
 
   @override
   State<OtpFieldsRow> createState() => _OtpFieldsRowState();

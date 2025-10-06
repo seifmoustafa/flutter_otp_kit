@@ -31,6 +31,7 @@ class OtpFieldConfig {
     this.cursorColor,
     this.cursorHeight,
     this.cursorWidth = 1.0,
+    this.cursorStyle = CursorStyle.system,
     this.enableBlink = true,
     this.blinkDuration = const Duration(milliseconds: 500),
 
@@ -140,6 +141,9 @@ class OtpFieldConfig {
 
   /// Width of the cursor
   final double cursorWidth;
+
+  /// Visual style of the cursor/caret
+  final CursorStyle cursorStyle;
 
   /// Whether to enable cursor blinking
   final bool enableBlink;
@@ -275,6 +279,7 @@ class OtpFieldConfig {
     Color? cursorColor,
     double? cursorHeight,
     double? cursorWidth,
+    CursorStyle? cursorStyle,
     bool? enableBlink,
     Duration? blinkDuration,
 
@@ -350,6 +355,7 @@ class OtpFieldConfig {
       cursorColor: cursorColor ?? this.cursorColor,
       cursorHeight: cursorHeight ?? this.cursorHeight,
       cursorWidth: cursorWidth ?? this.cursorWidth,
+      cursorStyle: cursorStyle ?? this.cursorStyle,
       enableBlink: enableBlink ?? this.enableBlink,
       blinkDuration: blinkDuration ?? this.blinkDuration,
 
@@ -543,6 +549,57 @@ enum HapticFeedbackType {
 
   /// Selection click
   selection,
+}
+
+/// Cursor/caret visual styles
+enum CursorStyle {
+  /// No cursor at all
+  none,
+
+  /// Use Flutter's default system caret (TextFormField draws it)
+  system,
+
+  /// A simple vertical bar (custom drawn)
+  bar,
+
+  /// A block/rectangle behind the character position
+  block,
+
+  /// A thin underline at the baseline
+  underline,
+
+  /// An outlined rounded rectangle
+  outline,
+
+  /// Two thin vertical bars side by side
+  doubleBar,
+
+  /// Dashed underline made of short segments
+  dashedUnderline,
+
+  /// Bar with small caps at both ends
+  beamCap,
+
+  /// Bar with a center notch
+  beamNotch,
+
+  /// Small triangular wedge pointer
+  wedge,
+
+  /// Small circular ring insertion point
+  ring,
+
+  /// Single line across the middle
+  strikethrough,
+
+  /// Double underline lines
+  doubleUnderline,
+
+  /// Vertical gradient beam
+  gradientBar,
+
+  /// Bar with outer glow
+  glowBar,
 }
 
 /// Preset configurations for OTP fields

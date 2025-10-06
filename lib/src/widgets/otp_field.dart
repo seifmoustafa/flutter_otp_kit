@@ -324,6 +324,190 @@ class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
     }
   }
 
+  Alignment _textAlignToAlignment(TextAlign align) {
+    switch (align) {
+      case TextAlign.left:
+      case TextAlign.start:
+        return Alignment.centerLeft;
+      case TextAlign.right:
+      case TextAlign.end:
+        return Alignment.centerRight;
+      case TextAlign.center:
+        return Alignment.center;
+      case TextAlign.justify:
+        return Alignment.center;
+    }
+  }
+
+  Widget _buildCustomCursor(double fieldHeight, double fieldWidth) {
+    final color = widget.config.cursorColor ?? widget.config.primaryColor;
+    final width = widget.config.cursorWidth;
+    final height = widget.config.cursorHeight ?? (fieldHeight - 12);
+
+    switch (widget.config.cursorStyle) {
+      case CursorStyle.none:
+        return const SizedBox.shrink();
+      case CursorStyle.system:
+        return const SizedBox.shrink();
+      case CursorStyle.bar:
+        return Container(width: width, height: height, color: color);
+      case CursorStyle.block:
+        return Container(
+          width: math.max(width * 6, 12),
+          height: height,
+          decoration: BoxDecoration(
+              color: color.withAlpha(60),
+              border: Border.all(color: color, width: 1),
+              borderRadius: BorderRadius.circular(3)),
+        );
+      case CursorStyle.underline:
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Container(
+              width: math.max(fieldWidth * 0.6, 20),
+              height: 2,
+              color: color,
+            ),
+          ),
+        );
+      case CursorStyle.outline:
+        return Container(
+          width: math.max(fieldWidth * 0.7, 24),
+          height: height,
+          decoration: BoxDecoration(
+            border: Border.all(color: color, width: 1.5),
+            borderRadius: BorderRadius.circular(4),
+          ),
+        );
+      case CursorStyle.doubleBar:
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(width: width, height: height, color: color),
+            SizedBox(width: width * 0.8),
+            Container(width: width, height: height, color: color),
+          ],
+        );
+      case CursorStyle.dashedUnderline:
+        final totalWidth = math.max(fieldWidth * 0.6, 20);
+        final dashWidth = 6.0;
+        final dashSpace = 4.0;
+        final dashCount =
+            ((totalWidth + dashSpace) / (dashWidth + dashSpace)).floor();
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(
+                  dashCount,
+                  (i) => Container(
+                        width: dashWidth,
+                        height: 2,
+                        color: color,
+                        margin: EdgeInsets.only(
+                            right: i == dashCount - 1 ? 0 : dashSpace),
+                      )),
+            ),
+          ),
+        );
+      case CursorStyle.beamCap:
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(width: width, height: height, color: color),
+            Positioned(
+                top: 0,
+                child: Container(width: width * 2, height: 2, color: color)),
+            Positioned(
+                bottom: 0,
+                child: Container(width: width * 2, height: 2, color: color)),
+          ],
+        );
+      case CursorStyle.beamNotch:
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(width: width, height: height, color: color),
+            Container(
+                width: width * 1.6,
+                height: 2,
+                color: widget.fieldColors.backgroundColor),
+          ],
+        );
+      case CursorStyle.wedge:
+        return CustomPaint(
+            size: Size(width * 3, height),
+            painter: _TriangleCaretPainter(color));
+      case CursorStyle.ring:
+        final double diameter = math.max(6, math.min(fieldHeight * 0.25, 14));
+        return Container(
+          width: diameter,
+          height: diameter,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: color, width: 2),
+          ),
+        );
+      case CursorStyle.strikethrough:
+        return Align(
+          alignment: Alignment.center,
+          child: Container(
+              width: math.max(fieldWidth * 0.6, 20), height: 2, color: color),
+        );
+      case CursorStyle.doubleUnderline:
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                    width: math.max(fieldWidth * 0.6, 20),
+                    height: 2,
+                    color: color),
+                const SizedBox(height: 3),
+                Container(
+                    width: math.max(fieldWidth * 0.6, 20),
+                    height: 2,
+                    color: color),
+              ],
+            ),
+          ),
+        );
+      case CursorStyle.gradientBar:
+        return Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [color.withAlpha(200), color.withAlpha(80)],
+            ),
+          ),
+        );
+      case CursorStyle.glowBar:
+        return Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            color: color,
+            boxShadow: [
+              BoxShadow(
+                  color: color.withAlpha(120), blurRadius: 8, spreadRadius: 1)
+            ],
+          ),
+        );
+    }
+  }
+
+// moved to top-level at end of file
+
   @override
   void dispose() {
     // Only dispose if we created the animation controller ourselves
@@ -410,84 +594,147 @@ class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
           );
         }
 
-        // Compose transforms: slide -> rotate -> scale
-        Widget transformed = SlideTransition(
-          position: _fillSlideAnimation,
-          child: Transform.rotate(
-            angle: _fillRotationAnimation.value,
-            child: Transform.scale(
-              scale: _fillScaleAnimation.value,
-              child: Container(
-                width: width,
-                height: height,
-                decoration: decoration,
-                child: KeyboardListener(
-                  focusNode: _keyboardListenerFocusNode,
-                  onKeyEvent: (KeyEvent event) {
-                    // Detect backspace on empty field
-                    if (widget.controller.text.isEmpty &&
-                        event is KeyDownEvent &&
-                        event.logicalKey == LogicalKeyboardKey.backspace) {
-                      widget.onChanged('');
-                    }
-                  },
-                  child: Semantics(
-                    label: widget.index != null && widget.fieldCount != null
-                        ? 'OTP field ${widget.index! + 1} of ${widget.fieldCount}'
-                        : 'OTP field',
-                    textField: true,
-                    child: TextFormField(
-                      controller: widget.controller,
-                      focusNode: widget.focusNode,
-                      textAlign: widget.cursorAlignment,
-                      keyboardType: widget.keyboardType,
-                      textCapitalization: widget.textCapitalization,
-                      inputFormatters: widget.inputFormatters,
-                      obscureText: widget.obscureText,
-                      obscuringCharacter: widget.obscuringCharacter,
-                      enableInteractiveSelection:
-                          widget.enableInteractiveSelection,
-                      cursorColor: widget.config.cursorColor ??
-                          widget.config.primaryColor,
-                      cursorHeight: widget.config.cursorHeight ?? (height - 12),
-                      cursorWidth: widget.config.cursorWidth,
-                      style: widget.config.fieldStyle ??
-                          TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: _textColorAnimation.value ??
-                                widget.fieldColors.textColor,
-                            height: 1.0,
-                          ),
-                      decoration: InputDecoration(
-                        counterText: '',
-                        border: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: (height - 22) / 2,
-                          horizontal: 0,
+        // Base field content (no transforms)
+        Widget baseContent = Container(
+          width: width,
+          height: height,
+          decoration: decoration,
+          child: KeyboardListener(
+            focusNode: _keyboardListenerFocusNode,
+            onKeyEvent: (KeyEvent event) {
+              // Detect backspace on empty field
+              if (widget.controller.text.isEmpty &&
+                  event is KeyDownEvent &&
+                  event.logicalKey == LogicalKeyboardKey.backspace) {
+                widget.onChanged('');
+              }
+            },
+            child: Semantics(
+              label: widget.index != null && widget.fieldCount != null
+                  ? 'OTP field ${widget.index! + 1} of ${widget.fieldCount}'
+                  : 'OTP field',
+              textField: true,
+              child: Stack(
+                children: [
+                  TextFormField(
+                    controller: widget.controller,
+                    focusNode: widget.focusNode,
+                    textAlign: widget.cursorAlignment,
+                    keyboardType: widget.keyboardType,
+                    textCapitalization: widget.textCapitalization,
+                    inputFormatters: widget.inputFormatters,
+                    obscureText: widget.obscureText,
+                    obscuringCharacter: widget.obscuringCharacter,
+                    enableInteractiveSelection:
+                        widget.enableInteractiveSelection,
+                    showCursor: widget.config.cursorStyle == CursorStyle.system,
+                    cursorColor:
+                        widget.config.cursorColor ?? widget.config.primaryColor,
+                    cursorHeight: widget.config.cursorHeight ?? (height - 12),
+                    cursorWidth: widget.config.cursorWidth,
+                    style: widget.config.fieldStyle ??
+                        TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: _textColorAnimation.value ??
+                              widget.fieldColors.textColor,
+                          height: 1.0,
                         ),
-                        isDense: true,
-                        hintText: widget.config.showPlaceholder
-                            ? widget.config.placeholderCharacter
-                            : null,
-                        hintStyle: widget.config.placeholderStyle ??
-                            TextStyle(
-                              color: widget.config.placeholderColor ??
-                                  widget.fieldColors.borderColor.withAlpha(128),
-                              fontSize: widget.config.fieldFontSize,
-                            ),
+                    decoration: InputDecoration(
+                      counterText: '',
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: (height - 22) / 2,
+                        horizontal: 0,
                       ),
-                      validator: widget.validator,
-                      onChanged: widget.onChanged,
+                      isDense: true,
+                      hintText: widget.config.showPlaceholder
+                          ? widget.config.placeholderCharacter
+                          : null,
+                      hintStyle: widget.config.placeholderStyle ??
+                          TextStyle(
+                            color: widget.config.placeholderColor ??
+                                widget.fieldColors.borderColor.withAlpha(128),
+                            fontSize: widget.config.fieldFontSize,
+                          ),
                     ),
+                    validator: widget.validator,
+                    onChanged: widget.onChanged,
                   ),
-                ),
+                  // Base custom cursor (non-animated) only when animation is disabled
+                  if (widget.focusNode.hasFocus &&
+                      widget.config.cursorStyle != CursorStyle.system &&
+                      !widget.animationConfig.enableCursorAnimation)
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: Align(
+                          alignment:
+                              _textAlignToAlignment(widget.cursorAlignment),
+                          child: _buildCustomCursor(height, width),
+                        ),
+                      ),
+                    ),
+
+                  // Animated overlay for custom cursor when enabled
+                  if (widget.animationConfig.enableCursorAnimation &&
+                      widget.focusNode.hasFocus &&
+                      widget.config.cursorStyle != CursorStyle.system)
+                    AnimatedBuilder(
+                      animation: _cursorController,
+                      builder: (context, _) {
+                        return Align(
+                          alignment:
+                              _textAlignToAlignment(widget.cursorAlignment),
+                          child: FadeTransition(
+                            opacity: _cursorBlinkAnimation,
+                            child: ScaleTransition(
+                              scale: _cursorScaleAnimation,
+                              child: _buildCustomCursor(height, width),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                ],
               ),
             ),
           ),
         );
+
+        // Apply exactly ONE fill animation (style) when filled/completed
+        final isFilled = widget.fieldState == OtpFieldState.filled ||
+            widget.fieldState == OtpFieldState.completed;
+        Widget transformed = baseContent;
+        if (isFilled) {
+          switch (widget.animationConfig.fieldFillAnimationType) {
+            case FieldFillAnimationType.scale:
+              transformed = Transform.scale(
+                scale: _fillScaleAnimation.value,
+                child: baseContent,
+              );
+              break;
+            case FieldFillAnimationType.rotate:
+              transformed = Transform.rotate(
+                angle: _fillRotationAnimation.value,
+                child: baseContent,
+              );
+              break;
+            case FieldFillAnimationType.slideLeft:
+            case FieldFillAnimationType.slideRight:
+            case FieldFillAnimationType.slideUp:
+            case FieldFillAnimationType.slideDown:
+              transformed = SlideTransition(
+                position: _fillSlideAnimation,
+                child: baseContent,
+              );
+              break;
+            case FieldFillAnimationType.none:
+              transformed = baseContent;
+              break;
+          }
+        }
 
         // Apply error animations based on type - different from fill animations
         if ((widget.fieldState == OtpFieldState.error || widget.hasError) &&
@@ -598,4 +845,25 @@ class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
       },
     );
   }
+}
+
+class _TriangleCaretPainter extends CustomPainter {
+  _TriangleCaretPainter(this.color);
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+    final path = Path()
+      ..moveTo(0, size.height / 2)
+      ..lineTo(size.width, 0)
+      ..lineTo(size.width, size.height)
+      ..close();
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

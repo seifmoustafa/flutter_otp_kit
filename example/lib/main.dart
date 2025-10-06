@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_kit/flutter_otp_kit.dart';
 
@@ -35,7 +37,7 @@ class _OtpKitExamplesPageState extends State<OtpKitExamplesPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 7, vsync: this);
+    _tabController = TabController(length: 8, vsync: this);
   }
 
   @override
@@ -60,6 +62,7 @@ class _OtpKitExamplesPageState extends State<OtpKitExamplesPage>
             Tab(text: 'Animated'),
             Tab(text: 'Custom'),
             Tab(text: 'Advanced'),
+            Tab(text: 'Cursors'),
           ],
         ),
       ),
@@ -73,6 +76,7 @@ class _OtpKitExamplesPageState extends State<OtpKitExamplesPage>
           AnimatedExample(),
           CustomExample(),
           AdvancedExample(),
+          CursorsExample(),
         ],
       ),
     );
@@ -101,6 +105,14 @@ class BasicExample extends StatelessWidget {
                 fieldCount: 4,
                 contactInfo: '+1 (555) 123-4567',
                 maskingType: MaskingType.phone,
+                // Demonstrate main-level animation overrides (take precedence over field config)
+                enableFieldStateAnimationOverride: true,
+                fieldFillAnimationTypeOverride: FieldFillAnimationType.rotate,
+                fieldFillRotationRadiansOverride: 0.15,
+                errorFieldAnimationTypeOverride: ErrorFieldAnimationType.bounce,
+                errorShakeAmplitudeOverride: 6.0,
+                cursorEnableAnimationOverride: true,
+                cursorBlinkDurationOverride: const Duration(milliseconds: 700),
                 onVerify: (otp) async {
                   if (otp == '1234') {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -338,7 +350,7 @@ class AnimatedExample extends StatelessWidget {
                 subtitle:
                     'Watch the magic happen - Code sent to {contactInfo} (try 1234)',
                 fieldCount: 4,
-                fieldConfig: OtpFieldConfig(
+                fieldConfig: const OtpFieldConfig(
                   fieldWidth: 60,
                   fieldHeight: 60,
                   borderRadius: 15,
@@ -426,7 +438,7 @@ class CustomExample extends StatelessWidget {
                   borderWidth: 3,
                   fieldShape: OtpFieldShape.custom,
                   enableShadow: true,
-                  shadowColor: Colors.purple.withOpacity(0.3),
+                  shadowColor: Colors.purple.withValues(alpha: 0.3),
                   shadowBlurRadius: 12,
                   shadowSpreadRadius: 2,
                   primaryColor: Colors.purple,
@@ -538,14 +550,14 @@ class AdvancedExample extends StatelessWidget {
                   borderWidth: 2,
                   fieldShape: OtpFieldShape.roundedRectangle,
                   enableShadow: true,
-                  shadowColor: Colors.indigo.withOpacity(0.3),
+                  shadowColor: Colors.indigo.withValues(alpha: 0.3),
                   shadowBlurRadius: 8,
                   primaryColor: Colors.indigo,
                   backgroundColor: Colors.indigo.shade50,
                   fieldFontSize: 24,
                   fieldFontWeight: FontWeight.w600,
                 ),
-                animationConfig: OtpAnimationConfig(
+                animationConfig: const OtpAnimationConfig(
                   enableAnimation: true,
                   animationDuration: Duration(milliseconds: 400),
                   animationCurve: Curves.easeOutCubic,
@@ -564,7 +576,7 @@ class AdvancedExample extends StatelessWidget {
                   enableDecorationAnimation: true,
                   decorationAnimationDuration: Duration(milliseconds: 300),
                 ),
-                smsConfig: OtpSmsConfig(
+                smsConfig: const OtpSmsConfig(
                   enableSmsAutofill: true,
                   enableSmartAuth: true,
                   enableSmsRetrieverAPI: true,
@@ -573,7 +585,7 @@ class AdvancedExample extends StatelessWidget {
                   smsValidationRegex: r'\b\d{6}\b',
                   enableSmsErrorHandling: true,
                 ),
-                performanceConfig: OtpPerformanceConfig(
+                performanceConfig: const OtpPerformanceConfig(
                   enableLazyLoading: true,
                   maxVisibleFields: 8,
                   enableMemoryOptimization: true,
@@ -588,7 +600,7 @@ class AdvancedExample extends StatelessWidget {
                   enableAnimationOptimization: true,
                   enableWidgetOptimization: true,
                 ),
-                securityConfig: OtpSecurityConfig(
+                securityConfig: const OtpSecurityConfig(
                   enableRateLimiting: true,
                   maxAttemptsPerMinute: 3,
                   maxAttemptsPerHour: 15,
@@ -605,7 +617,7 @@ class AdvancedExample extends StatelessWidget {
                   enableSessionManagement: true,
                   sessionTimeout: Duration(minutes: 5),
                 ),
-                errorConfig: OtpErrorConfig(
+                errorConfig: const OtpErrorConfig(
                   maxErrorRetries: 3,
                   enableFieldLockout: true,
                   fieldLockoutDuration: Duration(seconds: 30),
@@ -640,7 +652,7 @@ class AdvancedExample extends StatelessWidget {
                         content:
                             Text('✅ Enterprise Success! OTP $otp verified'),
                         backgroundColor: Colors.green,
-                        duration: Duration(seconds: 3),
+                        duration: const Duration(seconds: 3),
                       ),
                     );
                     return true; // Success
@@ -650,7 +662,7 @@ class AdvancedExample extends StatelessWidget {
                         content: Text(
                             '❌ Enterprise Error! OTP $otp invalid. Try 1234'),
                         backgroundColor: Colors.red,
-                        duration: Duration(seconds: 3),
+                        duration: const Duration(seconds: 3),
                       ),
                     );
                     return false; // Failure
@@ -658,7 +670,7 @@ class AdvancedExample extends StatelessWidget {
                 },
                 onResend: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
+                    const SnackBar(
                       content: Text('🔄 Enterprise code resent!'),
                       backgroundColor: Colors.blue,
                       duration: Duration(seconds: 2),
@@ -666,23 +678,322 @@ class AdvancedExample extends StatelessWidget {
                   );
                 },
                 onChanged: (otp) {
-                  print('OTP changed: $otp');
+                  log('OTP changed: $otp');
                 },
                 onCompleted: (otp) {
-                  print('OTP completed: $otp');
+                  log('OTP completed: $otp');
                 },
                 onTimerChanged: (remaining) {
-                  print('Timer: $remaining seconds remaining');
+                  log('Timer: $remaining seconds remaining');
                 },
                 onErrorStateChanged: (hasError) {
-                  print('Error state: $hasError');
+                  log('Error state: $hasError');
                 },
                 onValidationStateChanged: (isValid) {
-                  print('Validation state: $isValid');
+                  log('Validation state: $isValid');
                 },
                 onCompletionStateChanged: (isCompleted) {
-                  print('Completion state: $isCompleted');
+                  log('Completion state: $isCompleted');
                 },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CursorsExample extends StatelessWidget {
+  const CursorsExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'Cursor Styles',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              const Text('System (default)'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'System Cursor',
+                subtitle: 'Default platform caret',
+                fieldCount: 4,
+                fieldConfig: const OtpFieldConfig(
+                  cursorStyle: CursorStyle.system,
+                ),
+                contactInfo: '+1 555 101 2020',
+                onVerify: (_) async => true,
+                onResend: () {},
+              ),
+              const SizedBox(height: 24),
+              const Text('Bar cursor'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'Bar Cursor',
+                subtitle: 'Custom vertical bar with animation',
+                fieldCount: 4,
+                fieldConfig: const OtpFieldConfig(
+                  cursorStyle: CursorStyle.bar,
+                  cursorWidth: 2,
+                ),
+                animationConfig: const OtpAnimationConfig(
+                  enableCursorAnimation: true,
+                  cursorBlinkDuration: Duration(milliseconds: 750),
+                ),
+                primaryColor: Colors.blue,
+                onVerify: (_) async => true,
+                onResend: () {},
+              ),
+              const SizedBox(height: 24),
+              const Text('Block cursor'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'Block Cursor',
+                subtitle: 'Filled block with border',
+                fieldCount: 4,
+                fieldConfig: const OtpFieldConfig(
+                  cursorStyle: CursorStyle.block,
+                ),
+                animationConfig: const OtpAnimationConfig(
+                  enableCursorAnimation: true,
+                ),
+                primaryColor: Colors.deepPurple,
+                onVerify: (_) async => true,
+                onResend: () {},
+              ),
+              const SizedBox(height: 24),
+              const Text('Underline cursor'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'Underline Cursor',
+                subtitle: 'Thin underline at baseline',
+                fieldCount: 4,
+                fieldConfig: const OtpFieldConfig(
+                  cursorStyle: CursorStyle.underline,
+                ),
+                animationConfig: const OtpAnimationConfig(
+                  enableCursorAnimation: true,
+                ),
+                primaryColor: Colors.teal,
+                onVerify: (_) async => true,
+                onResend: () {},
+              ),
+              const SizedBox(height: 24),
+              const Text('Outline cursor'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'Outline Cursor',
+                subtitle: 'Rounded rectangle outline',
+                fieldCount: 4,
+                fieldConfig: const OtpFieldConfig(
+                  cursorStyle: CursorStyle.outline,
+                ),
+                animationConfig: const OtpAnimationConfig(
+                  enableCursorAnimation: true,
+                ),
+                primaryColor: Colors.orange,
+                onVerify: (_) async => true,
+                onResend: () {},
+              ),
+              const SizedBox(height: 24),
+              const Text('Double bar cursor'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'Double Bar Cursor',
+                subtitle: 'Two bars side by side',
+                fieldCount: 4,
+                fieldConfig: const OtpFieldConfig(
+                  cursorStyle: CursorStyle.doubleBar,
+                  cursorWidth: 2,
+                ),
+                animationConfig: const OtpAnimationConfig(
+                  enableCursorAnimation: true,
+                  cursorBlinkDuration: Duration(milliseconds: 650),
+                ),
+                primaryColor: Colors.cyan,
+                onVerify: (_) async => true,
+                onResend: () {},
+              ),
+              const SizedBox(height: 24),
+              const Text('Dashed underline cursor'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'Dashed Underline Cursor',
+                subtitle: 'Decorative dashed baseline',
+                fieldCount: 4,
+                fieldConfig: const OtpFieldConfig(
+                  cursorStyle: CursorStyle.dashedUnderline,
+                ),
+                animationConfig: const OtpAnimationConfig(
+                  enableCursorAnimation: true,
+                ),
+                primaryColor: Colors.brown,
+                onVerify: (_) async => true,
+                onResend: () {},
+              ),
+              const SizedBox(height: 24),
+              const Text('No cursor (focus visible by border only)'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'No Cursor',
+                subtitle: 'Hides caret entirely',
+                fieldCount: 4,
+                fieldConfig: const OtpFieldConfig(
+                  cursorStyle: CursorStyle.none,
+                ),
+                animationConfig: const OtpAnimationConfig(
+                  enableCursorAnimation: false,
+                ),
+                primaryColor: Colors.grey,
+                onVerify: (_) async => true,
+                onResend: () {},
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                  'Global override from OtpKit (overrides field config)'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'Global Override',
+                subtitle: 'OtpKit.cursorStyle wins over fieldConfig',
+                fieldCount: 4,
+                // Intentionally set a different style at field level
+                // fieldConfig: const OtpFieldConfig(cursorStyle: CursorStyle.bar),
+                cursorStyle: CursorStyle.outline,
+                animationConfig: const OtpAnimationConfig(
+                  enableCursorAnimation: true,
+                ),
+                primaryColor: Colors.black,
+                onVerify: (_) async => true,
+                onResend: () {},
+              ),
+              const SizedBox(height: 24),
+              const Text('Beam Cap'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'Beam Cap',
+                subtitle: 'Vertical beam with top/bottom caps',
+                fieldCount: 4,
+                fieldConfig:
+                    const OtpFieldConfig(cursorStyle: CursorStyle.beamCap),
+                animationConfig:
+                    const OtpAnimationConfig(enableCursorAnimation: true),
+                primaryColor: Colors.deepOrange,
+                onVerify: (_) async => true,
+                onResend: () {},
+              ),
+              const SizedBox(height: 24),
+              const Text('Beam Notch'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'Beam Notch',
+                subtitle: 'Vertical beam with a center notch',
+                fieldCount: 4,
+                fieldConfig:
+                    const OtpFieldConfig(cursorStyle: CursorStyle.beamNotch),
+                animationConfig:
+                    const OtpAnimationConfig(enableCursorAnimation: true),
+                primaryColor: Colors.green,
+                onVerify: (_) async => true,
+                onResend: () {},
+              ),
+              const SizedBox(height: 24),
+              const Text('Wedge'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'Wedge',
+                subtitle: 'Small triangular insertion pointer',
+                fieldCount: 4,
+                fieldConfig:
+                    const OtpFieldConfig(cursorStyle: CursorStyle.wedge),
+                animationConfig:
+                    const OtpAnimationConfig(enableCursorAnimation: true),
+                primaryColor: Colors.redAccent,
+                onVerify: (_) async => true,
+                onResend: () {},
+              ),
+              const SizedBox(height: 24),
+              const Text('Ring'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'Ring',
+                subtitle: 'Circular ring insertion point',
+                fieldCount: 4,
+                fieldConfig:
+                    const OtpFieldConfig(cursorStyle: CursorStyle.ring),
+                animationConfig:
+                    const OtpAnimationConfig(enableCursorAnimation: true),
+                primaryColor: Colors.indigo,
+                onVerify: (_) async => true,
+                onResend: () {},
+              ),
+              const SizedBox(height: 24),
+              const Text('Strikethrough'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'Strikethrough',
+                subtitle: 'Line through the middle',
+                fieldCount: 4,
+                fieldConfig: const OtpFieldConfig(
+                    cursorStyle: CursorStyle.strikethrough),
+                animationConfig:
+                    const OtpAnimationConfig(enableCursorAnimation: true),
+                primaryColor: Colors.blueGrey,
+                onVerify: (_) async => true,
+                onResend: () {},
+              ),
+              const SizedBox(height: 24),
+              const Text('Double Underline'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'Double Underline',
+                subtitle: 'Two lines under baseline',
+                fieldCount: 4,
+                fieldConfig: const OtpFieldConfig(
+                    cursorStyle: CursorStyle.doubleUnderline),
+                animationConfig:
+                    const OtpAnimationConfig(enableCursorAnimation: true),
+                primaryColor: Colors.teal,
+                onVerify: (_) async => true,
+                onResend: () {},
+              ),
+              const SizedBox(height: 24),
+              const Text('Gradient Bar'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'Gradient Bar',
+                subtitle: 'Vertical gradient caret',
+                fieldCount: 4,
+                fieldConfig: const OtpFieldConfig(
+                    cursorStyle: CursorStyle.gradientBar, cursorWidth: 3),
+                animationConfig:
+                    const OtpAnimationConfig(enableCursorAnimation: true),
+                primaryColor: Colors.pink,
+                onVerify: (_) async => true,
+                onResend: () {},
+              ),
+              const SizedBox(height: 24),
+              const Text('Glow Bar'),
+              const SizedBox(height: 8),
+              OtpKit(
+                title: 'Glow Bar',
+                subtitle: 'Beam with soft glow',
+                fieldCount: 4,
+                fieldConfig: const OtpFieldConfig(
+                    cursorStyle: CursorStyle.glowBar, cursorWidth: 2),
+                animationConfig:
+                    const OtpAnimationConfig(enableCursorAnimation: true),
+                primaryColor: Colors.amber,
+                onVerify: (_) async => true,
+                onResend: () {},
               ),
             ],
           ),

@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.0.0] - 2025-10-05
+## [3.0.0] - 2025-10-06
 
 ### 🚀 MAJOR RELEASE: Complete Rewrite with Modern Architecture
 
@@ -42,13 +42,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Security Timeouts**: Configurable biometric authentication timeouts
 - **Fallback Options**: Graceful fallback when biometrics unavailable
 
-#### 🎬 Advanced Animation System
-- **Cursor Animations**: Blink, scale, and custom cursor animations
+#### 🎬 Advanced Animation & Cursor System
+- **Cursor System (New!)**: Pluggable caret styles with animation
+  - Styles: `system`, `none`, `bar`, `block`, `underline`, `outline`, `doubleBar`, `dashedUnderline`, `beamCap`, `beamNotch`, `wedge`, `ring`, `strikethrough`, `doubleUnderline`, `gradientBar`, `glowBar`
+  - Centered alignment and refined placement for underline variants
+  - Visibility fixes for small fields (dynamic min sizes where needed)
+- **Cursor Animations**: Blink/opacity and focus-scale; only one cursor rendered at a time
 - **Smooth State Transitions**: Configurable curves and durations
 - **Decoration Animations**: Seamless visual transitions
 - **10+ Error Animations**: Shake, scale, rotate, bounce, pulse, wiggle, slide variations
 - **7+ Fill Animations**: Scale, rotate, slide (4 directions) for field completion
 - **Animation Configuration**: Complete control over all animation parameters
+ - **Main-level Animation Overrides**: `OtpKit` now exposes top-level animation overrides for fill, error, and cursor that take precedence over `OtpFieldConfig`
+ - **One Style Per Case**: Exactly one animation style applies per case (fill OR error), simplifying predictability and customization
 
 #### 🌍 Platform-Specific Features
 - **iOS Optimizations**: Face ID, Touch ID, iOS-specific animations, VoiceOver
@@ -74,7 +80,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Platform Guides**: Platform-specific implementation guides
 
 #### 🎨 Enhanced Examples
-- **7 Example Tabs**: Basic, Modern, Rounded, Underlined, Animated, Custom, Advanced
+- **8 Example Tabs**: Basic, Modern, Rounded, Underlined, Animated, Custom, Advanced, Cursors
+- **Cursors Tab**: Demonstrates every caret style, including global override and "no cursor"
 - **Enterprise Example**: Complete enterprise-level configuration showcase
 - **All Features Demonstrated**: Every new feature showcased with examples
 - **Contact Info Masking**: Phone and email masking examples

@@ -2,6 +2,19 @@
 
 > A comprehensive and feature-rich OTP verification package for Flutter
 
+<p align="center">
+  <a href="https://buymeacoffee.com/seifmoustafa" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=☕&slug=seifmoustafa&button_colour=FFDD00&font_colour=000000&font_family=Inter&outline_colour=000000&coffee_colour=000000" alt="Buy Me A Coffee" height="48" />
+  </a>
+  <br/>
+  <a href="https://github.com/seifmoustafa" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/GitHub-seifmoustafa-181717?logo=github&logoColor=white" alt="GitHub Profile" />
+  </a>
+  <a href="https://www.linkedin.com/in/seif-moustafa-60115f/" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/LinkedIn-Seif%20Moustafa-0A66C2?logo=linkedin&logoColor=white" alt="LinkedIn" />
+  </a>
+</p>
+
 ## 📋 Table of Contents
 1. [Overview](#overview)
 2. [Why Choose Flutter OTP Kit](#why-choose-flutter-otp-kit)
@@ -14,6 +27,7 @@
 9. [Examples](#examples)
 10. [Migration Guide](#migration-guide)
 11. [Troubleshooting](#troubleshooting)
+12. [API Reference](#api-reference)
 
 ## 🎯 Overview
 
@@ -57,12 +71,16 @@
 - **Responsive Design**: Adaptive layouts for all screen sizes
 - **Theme Support**: Light/Dark mode, custom themes
 
-### 🎬 Animation System
+### 🎬 Animation & Cursor System (New in 3.0.0)
 - **Main Widget Animations**: Fade, Scale, Slide entrance
 - **Field Fill Animations**: Scale, Rotate, Slide (4 directions)
 - **Error Animations**: Shake, Scale, Rotate, Bounce, Pulse, Wiggle, Slide
-- **Cursor Animations**: Blink, Scale, Custom timing
+- **Cursor Styles (New)**: `system`, `none`, `bar`, `block`, `underline`, `outline`, `doubleBar`, `dashedUnderline`, `beamCap`, `beamNotch`, `wedge`, `ring`, `strikethrough`, `doubleUnderline`, `gradientBar`, `glowBar`
+- **Placement & Centering**: Underline variants are bottom-centered and tuned for consistent height; ring has dynamic min size for visibility
+- **Cursor Animations**: Blink, Scale, custom timing; exactly one cursor renders at a time
 - **Smooth Transitions**: Configurable curves and durations
+ - **New in 3.0.0**: Main-level animation overrides from `OtpKit` that take precedence over `OtpFieldConfig`
+ - **New in 3.0.0**: "One style per case" — exactly one fill animation and one error animation apply at a time
 
 ### 📱 Platform Features
 - **iOS**: Face ID, Touch ID, native SMS autofill
@@ -179,6 +197,15 @@ OtpKit(
     enableCursorAnimation: true,
     cursorBlinkDuration: Duration(milliseconds: 1000),
   ),
+
+  // Main-level animation overrides (override field-level config)
+  enableFieldStateAnimationOverride: true,
+  fieldFillAnimationTypeOverride: FieldFillAnimationType.rotate,
+  fieldFillRotationRadiansOverride: 0.15,
+  errorFieldAnimationTypeOverride: ErrorFieldAnimationType.bounce,
+  errorShakeAmplitudeOverride: 6.0,
+  cursorEnableAnimationOverride: true,
+  cursorBlinkDurationOverride: Duration(milliseconds: 700),
   
   // SMS autofill
   smsConfig: OtpSmsConfig(
@@ -248,6 +275,13 @@ OtpAnimationConfig(
   // Decoration animations
   enableDecorationAnimation: true,
   decorationAnimationDuration: Duration(milliseconds: 250),
+)
+
+// OtpKit-level overrides (optional)
+OtpKit(
+  // ...
+  fieldFillAnimationTypeOverride: FieldFillAnimationType.slideRight,
+  errorFieldAnimationTypeOverride: ErrorFieldAnimationType.wiggle,
 )
 ```
 
@@ -501,6 +535,36 @@ OtpKit(
 ```
 
 ### Example 3: Enterprise Security
+### Example 4: Cursor Styles
+
+```dart
+// Global override
+OtpKit(
+  title: 'Cursor Styles',
+  cursorStyle: CursorStyle.outline, // overrides per-field style
+  animationConfig: const OtpAnimationConfig(enableCursorAnimation: true),
+  onVerify: (otp) async => true,
+  onResend: () {},
+)
+
+// Per-field styles
+OtpKit(
+  title: 'Dashed Underline',
+  fieldConfig: const OtpFieldConfig(cursorStyle: CursorStyle.dashedUnderline),
+  animationConfig: const OtpAnimationConfig(enableCursorAnimation: true),
+  onVerify: (otp) async => true,
+  onResend: () {},
+)
+
+OtpKit(
+  title: 'No Cursor',
+  fieldConfig: const OtpFieldConfig(cursorStyle: CursorStyle.none),
+  animationConfig: const OtpAnimationConfig(enableCursorAnimation: false),
+  onVerify: (otp) async => true,
+  onResend: () {},
+)
+```
+
 
 ```dart
 OtpKit(
@@ -605,10 +669,198 @@ Contributions are welcome! Please read our contributing guidelines.
 
 ## 📞 Support
 
-- 📧 Email: support@flutterotpkit.com
-- 💬 Discord: [Join our community](https://discord.gg/flutterotpkit)
-- 📖 Documentation: [Full documentation](https://docs.flutterotpkit.com)
-- 🐛 Issues: [GitHub Issues](https://github.com/flutterotpkit/issues)
+- 📖 Documentation: [GitHub README](https://pub.dev/packages/flutter_otp_kit)
+- 🐛 Issues: [GitHub Issues](https://github.com/seifmoustafa/flutter_otp_kit/issues)
+- 🧑‍💻 GitHub: [seifmoustafa](https://github.com/seifmoustafa)
+- 🔗 LinkedIn: [Seif Moustafa](https://www.linkedin.com/in/seif-moustafa-60115f/)
+- ☕ Buy me a coffee: [buymeacoffee.com/seifmoustafa](https://buymeacoffee.com/seifmoustafa)
+
+----------------
+
+## API Reference
+
+### OtpKit parameters
+
+| Name | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| onVerify | Future<bool> Function(String) | Yes | - | Verify OTP callback. Return true for success. |
+| onResend | VoidCallback | Yes | - | Trigger resend action. |
+| title | String? | No | null | Title text. |
+| subtitle | String? | No | null | Subtitle text; supports `{contactInfo}` placeholder. |
+| buttonText | String | No | 'Verify' | Verify button label. |
+| resendText | String | No | 'Resend Code' | Resend button label. |
+| timerPrefix | String | No | 'Resend in' | Text before timer. |
+| contactInfo | String? | No | null | Contact info to show and mask. |
+| maskingType | MaskingType | No | MaskingType.none | Masking strategy for contact info. |
+| fieldCount | int | No | 4 | Number of OTP fields. |
+| fieldSpacing | double | No | 12.0 | Spacing between fields. |
+| fieldConfig | OtpFieldConfig? | No | null | Per-field styling and behavior. |
+| cursorStyle | CursorStyle? | No | null | Global caret style override; wins over `fieldConfig.cursorStyle`. |
+| inputType | OtpInputType | No | OtpInputType.numeric | Input keyboard/input rules. |
+| enablePaste | bool | No | true | Allow pasting OTP. |
+| autoFocus | bool | No | true | Auto-focus first field. |
+| enableAutoValidation | bool | No | false | Validate on verify and optionally during typing. |
+| obscureText | bool | No | false | Hide input. |
+| obscuringCharacter | String | No | '•' | Character used when obscuring. |
+| enableInteractiveSelection | bool | No | true | Allow text selection. |
+| textCapitalization | TextCapitalization | No | none | Capitalization policy. |
+| unfocusOnTapOutside | bool | No | true | Unfocus fields when tapping outside. |
+| customKeyboardType | TextInputType? | No | null | Custom keyboard type. |
+| inputFormatters | List<TextInputFormatter>? | No | null | Custom input formatters. |
+| validationRegex | RegExp? | No | null | Regex validation instead of customValidator. |
+| customValidator | String? Function(String)? | No | null | Custom validator, return error text or null. |
+| showTimer | bool | No | true | Show resend timer. |
+| timerDuration | int | No | 60 | Resend timer seconds. |
+| primaryColor | Color | No | 0xFF2196F3 | Primary accent color. |
+| secondaryColor | Color | No | 0xFF757575 | Secondary color. |
+| backgroundColor | Color | No | Colors.white | Background color. |
+| errorColor | Color | No | 0xFFE53E3E | Error color. |
+| successColor | Color | No | 0xFF38A169 | Success color. |
+| titleStyle/subtitleStyle/buttonStyle/resendStyle/timerStyle/errorStyle | TextStyle? | No | null | Typography overrides. |
+| animationConfig | OtpAnimationConfig | No | const OtpAnimationConfig() | Animation configuration. |
+| enableFieldStateAnimationOverride, fieldFillAnimationTypeOverride, fieldFillSlideOffsetOverride, fieldFillRotationRadiansOverride, errorFieldAnimationTypeOverride, errorShakeAmplitudeOverride, errorShakeFrequencyOverride, cursorEnableAnimationOverride, cursorBlinkDurationOverride | various | No | null | Main-level overrides for animations and cursor animation. |
+| errorConfig | OtpErrorConfig | No | const OtpErrorConfig() | Error handling configuration. |
+| smsConfig | OtpSmsConfig | No | const OtpSmsConfig() | SMS autofill configuration. |
+| performanceConfig | OtpPerformanceConfig | No | const OtpPerformanceConfig() | Performance settings. |
+| securityConfig | OtpSecurityConfig | No | const OtpSecurityConfig() | Security and biometrics. |
+| spacing | double | No | 24.0 | Vertical spacing between sections. |
+| padding | EdgeInsets | No | EdgeInsets.all(16) | Outer padding. |
+| textDirection | TextDirection? | No | null | Force RTL/LTR. |
+| onChanged/onCompleted/onTimerChanged/onErrorStateChanged/onValidationStateChanged/onCompletionStateChanged | callbacks | No | null | State callbacks. |
+| titleWidget/subtitleWidget/buttonWidget/resendWidget/timerWidget/errorWidget | Widget? | No | null | Custom widget slots. |
+| semanticLabel/Hint/Value | String? | No | null | Accessibility labels. |
+| enableScreenReaderSupport | bool | No | true | Adds semantics and labels. |
+
+### OtpFieldConfig parameters
+
+| Name | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| fieldWidth | double | No | 55.125 | Field width. |
+| fieldHeight | double | No | 60.731 | Field height. |
+| borderRadius | double | No | 17.752 | Corner radius. |
+| borderWidth | double | No | 1.869 | Border width. |
+| minResponsiveWidth | double | No | 40.0 | Min responsive width. |
+| maxFieldHeight | double | No | 80.0 | Max field height. |
+| aspectRatio | double? | No | null | Optional width:height ratio. |
+| primaryColor/secondaryColor/backgroundColor | Color | No | see code | Colors. |
+| placeholderColor | Color? | No | null | Placeholder color. |
+| fieldStyle | TextStyle? | No | null | Text style. |
+| fieldFontSize | double | No | 24.0 | Font size. |
+| fieldFontWeight | FontWeight | No | bold | Font weight. |
+| letterSpacing | double | No | 0.5 | Letter spacing. |
+| lineHeight | double | No | 1.0 | Text height. |
+| cursorColor | Color? | No | null | Caret color (custom styles). |
+| cursorHeight | double? | No | null | Caret height override. |
+| cursorWidth | double | No | 1.0 | Caret width for bar-like styles. |
+| cursorStyle | CursorStyle | No | system | Caret visual style. |
+| enableBlink/blinkDuration | bool/Duration | No | true/500ms | Legacy blink hints. |
+| enableShadow/shadowColor/shadowBlurRadius/shadowSpreadRadius/shadowOffset | various | No | defaults | Outer shadow. |
+| enableInnerShadow/innerShadowColor/innerShadowBlurRadius/innerShadowSpreadRadius/innerShadowOffset | various | No | defaults | Inner shadow. |
+| fieldShape | OtpFieldShape | No | roundedRectangle | Field shape. |
+| fieldShapeConfig | OtpFieldShapeConfig? | No | null | Custom shape builder. |
+| enableGradient/gradientConfig | bool/OtpGradientConfig? | No | false/null | Background gradient. |
+| enableCustomDecoration/customDecoration | bool/BoxDecoration? | No | false/null | Use custom decoration. |
+| focusEffect/focusScaleFactor/focusHighlightColor/focusGlowRadius/focusGlowIntensity | various | No | defaults | Focus visuals. |
+| completedEffect/completedFieldOpacity/completedFieldGlowRadius/completedFieldIntensity/completedFieldTransition | various | No | defaults | Completed visuals. |
+| showPlaceholder/placeholderCharacter/placeholderStyle | various | No | false/'-'/null | Placeholder configuration. |
+| enableHapticFeedback/hapticFeedbackType | bool/HapticFeedbackType | No | false/light | Interaction haptics. |
+
+### OtpAnimationConfig parameters
+
+| Name | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| enableAnimation | bool | No | true | Enable animations. |
+| animationDuration | Duration | No | 300ms | Main animation duration. |
+| animationCurve | Curve | No | easeInOut | Main animation curve. |
+| enableFieldStateAnimation | bool | No | true | Animate field state changes. |
+| enableFieldToFieldAnimation | bool | No | true | Animate movement between fields. |
+| fieldTransitionDuration | Duration | No | 150ms | Per-field transition duration. |
+| fieldTransitionCurve | Curve | No | easeInOut | Per-field transition curve. |
+| transitionHighlightColor | Color? | No | null | Highlight color during transitions. |
+| fieldFillAnimationType | FieldFillAnimationType | No | scale | Fill/completion effect. |
+| fieldFillSlideOffset | Offset | No | (6,0) | Slide distance. |
+| fieldFillRotationRadians | double | No | 0.10 | Rotation for rotate effect. |
+| errorFieldAnimationType | ErrorFieldAnimationType | No | shake | Error transform type. |
+| errorShakeAmplitude | double | No | 4.0 | Shake amplitude. |
+| errorShakeFrequency | double | No | 10.0 | Shake frequency factor. |
+| enableCursorAnimation | bool | No | true | Animate custom cursor. |
+| cursorBlinkDuration | Duration | No | 1000ms | Blink period. |
+| cursorColor | Color | No | 0xFF2196F3 | Default cursor color. |
+| cursorWidth | double | No | 2.0 | Default bar width. |
+| stateTransitionDuration | Duration | No | 200ms | Color/decoration transition. |
+| stateTransitionCurve | Curve | No | easeInOut | Transition curve. |
+| enableDecorationAnimation | bool | No | true | Animate decoration changes. |
+| decorationAnimationDuration | Duration | No | 250ms | Decoration change duration. |
+
+### OtpErrorConfig parameters
+
+| Name | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| hasError | bool | No | false | Force error state. |
+| errorStateDuration | Duration | No | 3s | Auto-clear delay when timed. |
+| errorStatePriority | ErrorStatePriority | No | highest | Priority vs other states. |
+| errorStateBehavior | ErrorStateBehavior | No | autoClear | Persistent/timed/auto. |
+| autoClearErrorOnInput/Resend/Complete | bool | No | false/true/true | Auto-clear triggers. |
+| autoClearOnFocusChange | bool | No | false | Clear on focus change. |
+| requireMinInputToAutoClear/minInputToAutoClear | bool/int | No | false/1 | Gate auto-clear until N inputs. |
+| errorBorderColor/errorBackgroundColor/errorTextColor/errorGlowColor/errorBorderWidth | various | No | null | Styling overrides. |
+| errorShakeEffect/errorShakeDuration/errorShakeCount | bool/Duration/int | No | false/500ms/3 | Error shake visual. |
+| errorText/errorStyle/errorIcon/showErrorIcon/errorAlignment/errorTextMaxLines | various | No | null/true/bottom/2 | Error message visuals. |
+| errorAnimationDuration/errorAnimationType | Duration/ErrorAnimationType | No | 300ms/fadeIn | Message animation. |
+| enableHapticFeedbackOnError/errorHapticFeedbackType | bool/ErrorHapticFeedbackType | No | false/heavy | Haptic feedback. |
+| maxErrorRetries/enableAutoFieldClear/clearFieldsOnError/enableFieldLockout/fieldLockoutDuration | various | No | defaults | Recovery behavior. |
+
+### OtpSmsConfig parameters
+
+| Name | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| enableSmsAutofill | bool | No | true | Enable SMS autofill features. |
+| enableSmartAuth | bool | No | false | Integrate with Smart Auth. |
+| appSignature | String? | No | null | Android app signature for Retriever API. |
+| useUserConsentAPI | bool | No | false | Use generic User Consent API. |
+| smsTimeout | Duration | No | 30s | Generic SMS operation timeout. |
+| enableSmsRetrieverAPI | bool | No | false | Use Android SMS Retriever API. |
+| smsRetrieverTimeout | Duration | No | 60s | Retriever API timeout. |
+| enableSmsUserConsentAPI | bool | No | false | Use Android User Consent API. |
+| smsUserConsentTimeout | Duration | No | 30s | User Consent API timeout. |
+| enableSmsValidation | bool | No | true | Validate SMS format. |
+| smsValidationRegex | String | No | \\b\\d{4,8}\\b | Regex for extracting codes. |
+| enableSmsLogging | bool | No | false | Debug logging for SMS flow. |
+| enableSmsErrorHandling | bool | No | true | Built-in handling for SMS failures/timeouts. |
+
+### OtpPerformanceConfig parameters
+
+| Name | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| enableLazyLoading | bool | No | true | Render only visible fields. |
+| maxVisibleFields | int | No | 8 | Max visible fields before lazy load. |
+| enableMemoryOptimization | bool | No | true | Reduce memory footprint. |
+| animationCleanupDelay | Duration | No | 5s | Dispose idle animations after delay. |
+| enableAnimationPooling | bool | No | true | Reuse animation controllers. |
+| maxAnimationPoolSize | int | No | 10 | Controller pool size. |
+| enableFieldRecycling | bool | No | true | Reuse field widgets. |
+| enableBackgroundCleanup | bool | No | true | Periodic cleanup job. |
+| cleanupInterval | Duration | No | 1m | Background cleanup cadence. |
+| enablePerformanceMonitoring | bool | No | false | Emit performance metrics. |
+| enableMemoryLeakDetection | bool | No | false | Detect leaks heuristically. |
+| enableAnimationOptimization/enableWidgetOptimization | bool | No | true | Toggle micro-optimizations. |
+
+### OtpSecurityConfig parameters
+
+| Name | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| enableRateLimiting | bool | No | true | Throttle attempts. |
+| maxAttemptsPerMinute/maxAttemptsPerHour | int | No | 5/20 | Attempt limits. |
+| lockoutDuration | Duration | No | 15m | Lockout duration after limits. |
+| enableBiometricIntegration | bool | No | false | Enable biometric auth helpers. |
+| biometricTimeout | Duration | No | 30s | Biometric operation timeout. |
+| enableAdvancedValidation | bool | No | false | Extra validation checks. |
+| validationChecksum | bool | No | false | Enable checksum validation. |
+| validationPattern | String | No | ^\\d{4,8}$ | Regex validation pattern. |
+| enableEncryption/encryptionKey | bool/String? | No | false/null | Basic encryption toggle/key. |
+| enableAuditLogging/enableSecurityMonitoring | bool | No | false | Audit/security logs. |
+| enableAntiTampering | bool | No | false | Enable anti-tampering checks. |
+| enableSessionManagement/sessionTimeout | bool/Duration | No | false/10m | Session mgmt. |
 
 ---
 
