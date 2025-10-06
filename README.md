@@ -55,7 +55,7 @@
 12. [API Reference](#api-reference)
 
 
-## 🎯 Overview
+## Overview
 
 **Flutter OTP Kit v3.0.0** is a comprehensive OTP (One-Time Password) verification package for Flutter. This version introduces a completely rewritten architecture with modern patterns and extensive customization options.
 
@@ -77,7 +77,7 @@
 - ✅ **Enterprise Ready** - Rate limiting, security monitoring, audit logging
 - ✅ **Zero Breaking Changes** - Existing code continues to work perfectly
 
-## 🎯 Why Choose Flutter OTP Kit?
+## Why Choose Flutter OTP Kit?
 
 ### 🌟 **Comprehensive Solution**
 
@@ -99,7 +99,7 @@
 - **Gradual Adoption**: Add features incrementally
 - **Modern Patterns**: Built with latest Flutter best practices
 
-## 🌟 Features
+## Features
 
 ### 🎨 Visual Customization
 
@@ -135,7 +135,7 @@
 - **Memory Optimization**: Lazy loading, cleanup
 - **Audit Logging**: Security event tracking
 
-## 📦 Installation
+## Installation
 
 Add to your `pubspec.yaml`:
 
@@ -165,7 +165,7 @@ OtpKit(
 // Migration from other solutions
 // Replace your existing OTP input with OtpKit as shown above.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Basic Usage
 
@@ -254,7 +254,7 @@ OtpKit(
 )
 ```
 
-## ⚙️ Advanced Configuration
+## Advanced Configuration
 ## 🧭 Best Practices
 - Prefer `OtpKit` as the single source of truth for behavior and animations
 - Use `OtpAnimationConfig` for defaults; override selectively at `OtpKit` level
@@ -454,7 +454,7 @@ OtpSecurityConfig(
 )
 ```
 
-## 🔧 Services
+## Services
 
 ### SMS Service
 
@@ -541,7 +541,7 @@ final hasFaceId = await OtpPlatformService.instance.isFaceIdAvailable();
 final hasFingerprint = await OtpPlatformService.instance.isFingerprintAvailable();
 ```
 
-## 📱 Platform Support
+## Platform Support
 
 ### iOS Features
 
@@ -573,7 +573,7 @@ final hasFingerprint = await OtpPlatformService.instance.isFingerprintAvailable(
 - ✅ Accessibility features
 - ✅ Performance optimizations
 
-## 📚 Examples
+## Examples
 
 ### Example 1: Basic OTP Verification
 
@@ -661,7 +661,7 @@ OtpKit(
 )
 ```
 
-## 🔄 Migration Guide
+## Migration Guide
 
 ### From Previous Versions
 
@@ -698,7 +698,7 @@ OtpKit(
 )
 ```
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 

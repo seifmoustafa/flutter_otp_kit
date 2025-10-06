@@ -145,10 +145,10 @@ class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
     if (widget.animationController != null) {
       _animationController = widget.animationController!;
     } else {
-      _animationController = AnimationController(
-        vsync: this,
-        duration: widget.animationDuration,
-      );
+    _animationController = AnimationController(
+      vsync: this,
+      duration: widget.animationDuration,
+    );
     }
 
     _keyboardListenerFocusNode = FocusNode();
@@ -512,7 +512,7 @@ class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
   void dispose() {
     // Only dispose if we created the animation controller ourselves
     if (widget.animationController == null) {
-      _animationController.dispose();
+    _animationController.dispose();
     }
 
     // Dispose cursor controller
@@ -617,51 +617,51 @@ class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
               child: Stack(
                 children: [
                   TextFormField(
-                    controller: widget.controller,
-                    focusNode: widget.focusNode,
-                    textAlign: widget.cursorAlignment,
-                    keyboardType: widget.keyboardType,
-                    textCapitalization: widget.textCapitalization,
-                    inputFormatters: widget.inputFormatters,
-                    obscureText: widget.obscureText,
-                    obscuringCharacter: widget.obscuringCharacter,
+                controller: widget.controller,
+                focusNode: widget.focusNode,
+                textAlign: widget.cursorAlignment,
+                keyboardType: widget.keyboardType,
+                textCapitalization: widget.textCapitalization,
+                inputFormatters: widget.inputFormatters,
+                obscureText: widget.obscureText,
+                obscuringCharacter: widget.obscuringCharacter,
                     enableInteractiveSelection:
                         widget.enableInteractiveSelection,
                     showCursor: widget.config.cursorStyle == CursorStyle.system,
-                    cursorColor:
-                        widget.config.cursorColor ?? widget.config.primaryColor,
-                    cursorHeight: widget.config.cursorHeight ?? (height - 12),
-                    cursorWidth: widget.config.cursorWidth,
-                    style: widget.config.fieldStyle ??
-                        TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: _textColorAnimation.value ??
-                              widget.fieldColors.textColor,
+                cursorColor:
+                    widget.config.cursorColor ?? widget.config.primaryColor,
+                cursorHeight: widget.config.cursorHeight ?? (height - 12),
+                cursorWidth: widget.config.cursorWidth,
+                style: widget.config.fieldStyle ??
+                    TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: _textColorAnimation.value ??
+                          widget.fieldColors.textColor,
                           height: 1.0,
-                        ),
-                    decoration: InputDecoration(
-                      counterText: '',
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: (height - 22) / 2,
-                        horizontal: 0,
-                      ),
-                      isDense: true,
-                      hintText: widget.config.showPlaceholder
-                          ? widget.config.placeholderCharacter
-                          : null,
-                      hintStyle: widget.config.placeholderStyle ??
-                          TextStyle(
-                            color: widget.config.placeholderColor ??
-                                widget.fieldColors.borderColor.withAlpha(128),
-                            fontSize: widget.config.fieldFontSize,
-                          ),
                     ),
-                    validator: widget.validator,
-                    onChanged: widget.onChanged,
+                decoration: InputDecoration(
+                  counterText: '',
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(
+                        vertical: (height - 22) / 2,
+                    horizontal: 0,
+                  ),
+                      isDense: true,
+                  hintText: widget.config.showPlaceholder
+                      ? widget.config.placeholderCharacter
+                      : null,
+                  hintStyle: widget.config.placeholderStyle ??
+                      TextStyle(
+                        color: widget.config.placeholderColor ??
+                            widget.fieldColors.borderColor.withAlpha(128),
+                        fontSize: widget.config.fieldFontSize,
+                      ),
+                ),
+                validator: widget.validator,
+                onChanged: widget.onChanged,
                   ),
                   // Base custom cursor (non-animated) only when animation is disabled
                   if (widget.focusNode.hasFocus &&
