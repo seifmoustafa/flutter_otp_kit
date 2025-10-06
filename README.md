@@ -14,18 +14,7 @@
   <img src="screenshots/flutter_otp_kit_logo.png" alt="Flutter OTP Kit" width="420" />
 </p>
 
-<p align="center">
-  <a href="https://buymeacoffee.com/seifmoustafa" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=☕&slug=seifmoustafa&button_colour=FFDD00&font_colour=000000&font_family=Inter&outline_colour=000000&coffee_colour=000000" alt="Buy Me A Coffee" height="48" />
-  </a>
-  <br/><br/>
-  <a href="https://github.com/seifmoustafa" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.shields.io/badge/GitHub-seifmoustafa-181717?logo=github&logoColor=white" alt="GitHub Profile" />
-  </a>
-  <a href="https://www.linkedin.com/in/seif-moustafa-60115f/" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.shields.io/badge/LinkedIn-Seif%20Moustafa-0A66C2?logo=linkedin&logoColor=white" alt="LinkedIn" />
-  </a>
-</p>
+<!-- Package info badges end here; donation and social links are shown in a dedicated section below -->
 
 ## 📋 Table of Contents
 1. [Overview](#overview)
@@ -680,6 +669,21 @@ MIT License - see LICENSE file for details.
 Contributions are welcome! Please read our contributing guidelines.
 
 ## 📞 Support
+- ## 🙌 Support the project
+
+<p>
+  <a href="https://buymeacoffee.com/seifmoustafa" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=☕&slug=seifmoustafa&button_colour=FFDD00&font_colour=000000&font_family=Inter&outline_colour=000000&coffee_colour=000000" alt="Buy Me A Coffee" height="48" />
+  </a>
+  <br/>
+  <a href="https://github.com/seifmoustafa" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/GitHub-seifmoustafa-181717?logo=github&logoColor=white" alt="GitHub Profile" />
+  </a>
+  <a href="https://www.linkedin.com/in/seif-moustafa-60115f/" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/LinkedIn-Seif%20Moustafa-0A66C2?logo=linkedin&logoColor=white" alt="LinkedIn" />
+  </a>
+</p>
+
 
 - 📖 Documentation: [GitHub README](https://pub.dev/packages/flutter_otp_kit)
 - 🐛 Issues: [GitHub Issues](https://github.com/seifmoustafa/flutter_otp_kit/issues)
