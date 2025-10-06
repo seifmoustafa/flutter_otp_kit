@@ -6,6 +6,14 @@
   <a href="https://buymeacoffee.com/seifmoustafa" target="_blank" rel="noopener noreferrer">
    <img width="300" src="https://user-images.githubusercontent.com/26390946/161375567-9e14cd0e-1675-4896-a576-a449b0bcd293.png">
   </a>
+  <div align="center">
+   <a href="https://buymeacoffee.com/seifmoustafa">
+    <img width="150" alt="buymeacoffee" src="https://user-images.githubusercontent.com/26390946/161375563-69c634fd-89d2-45ac-addd-931b03996b34.png">
+  </a>
+   <a href="https://buymeacoffee.com/seifmoustafa">
+    <img width="150" alt="Ko-fi" src="https://user-images.githubusercontent.com/26390946/161375565-e7d64410-bbcf-4a28-896b-7514e106478e.png">
+  </a>
+ </div>
   <div align="center" style="margin-top: 8px;">
     <a href="https://github.com/seifmoustafa" target="_blank" rel="noopener noreferrer" style="margin-right:8px;">
       <img src="https://img.shields.io/badge/GitHub-seifmoustafa-181717?logo=github&logoColor=white" alt="GitHub Profile" />
