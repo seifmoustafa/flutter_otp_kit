@@ -1,20 +1,19 @@
-# 🚀 Flutter OTP Kit v3.0.0
-
-> A comprehensive and feature-rich OTP verification package for Flutter
-
-<!-- Support Me -->
 <div align="center">
+  <h1 align="center" style="font-size: 56px; margin-bottom: 0;">Flutter OTP Kit</h1>
+  <h3 style="margin-top: 8px; font-weight: normal;">A comprehensive and feature‑rich OTP verification package for Flutter</h3>
+  
+  <!-- Donations -->
   <a href="https://buymeacoffee.com/seifmoustafa" target="_blank" rel="noopener noreferrer">
-    <img src="https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png" alt="Buy Me A Coffee" height="48" />
+    <img width="220" alt="Buy Me A Coffee" src="https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png" />
   </a>
-  <br/>
-  <a href="https://github.com/seifmoustafa" target="_blank" rel="noopener noreferrer" style="margin-right:8px;">
-    <img src="https://img.shields.io/badge/GitHub-seifmoustafa-181717?logo=github&logoColor=white" alt="GitHub Profile" />
-  </a>
-  &nbsp;
-  <a href="https://www.linkedin.com/in/seif-moustafa-60115f/" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.shields.io/badge/LinkedIn-Seif%20Moustafa-0A66C2?logo=linkedin&logoColor=white" alt="LinkedIn" />
-  </a>
+  <div align="center" style="margin-top: 8px;">
+    <a href="https://github.com/seifmoustafa" target="_blank" rel="noopener noreferrer" style="margin-right:8px;">
+      <img src="https://img.shields.io/badge/GitHub-seifmoustafa-181717?logo=github&logoColor=white" alt="GitHub Profile" />
+    </a>
+    <a href="https://www.linkedin.com/in/seif-moustafa-60115f/" target="_blank" rel="noopener noreferrer">
+      <img src="https://img.shields.io/badge/LinkedIn-Seif%20Moustafa-0A66C2?logo=linkedin&logoColor=white" alt="LinkedIn" />
+    </a>
+  </div>
 </div>
 
 ---
