@@ -38,7 +38,9 @@
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="license" />
   <img src="https://img.shields.io/badge/Flutter-3.0%2B-blue.svg" alt="flutter" />
 </p>
+
 ## 📋 Table of Contents
+
 1. [Overview](#overview)
 2. [Why Choose Flutter OTP Kit](#why-choose-flutter-otp-kit)
 3. [Features](#features)
@@ -51,6 +53,7 @@
 10. [Migration Guide](#migration-guide)
 11. [Troubleshooting](#troubleshooting)
 12. [API Reference](#api-reference)
+
 
 ## 🎯 Overview
 
