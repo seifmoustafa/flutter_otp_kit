@@ -5,7 +5,7 @@
 <!-- Support Me -->
 <div align="center">
   <a href="https://buymeacoffee.com/seifmoustafa" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=☕&slug=seifmoustafa&button_colour=FFDD00&font_colour=000000&font_family=Inter&outline_colour=000000&coffee_colour=000000" alt="Buy Me A Coffee" height="48" />
+    <img src="https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png" alt="Buy Me A Coffee" height="48" />
   </a>
   <br/>
   <a href="https://github.com/seifmoustafa" target="_blank" rel="noopener noreferrer" style="margin-right:8px;">
