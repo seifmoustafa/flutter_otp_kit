@@ -1,12 +1,12 @@
 <div align="center">
   <h1 align="center" style="font-size: 56px; margin-bottom: 0;">Flutter OTP Kit</h1>
   <h3 style="margin-top: 8px; font-weight: normal;">A comprehensive and feature‑rich OTP verification package for Flutter</h3>
-  
+
   <!-- Donations -->
   <a href="https://buymeacoffee.com/seifmoustafa" target="_blank" rel="noopener noreferrer">
    <img width="300" src="https://user-images.githubusercontent.com/26390946/161375567-9e14cd0e-1675-4896-a576-a449b0bcd293.png">
   </a>
-  <div align="center">
+<div align="center">
    <a href="https://buymeacoffee.com/seifmoustafa">
     <img width="150" alt="buymeacoffee" src="https://user-images.githubusercontent.com/26390946/161375563-69c634fd-89d2-45ac-addd-931b03996b34.png">
   </a>
@@ -55,6 +55,13 @@
 ## 🎯 Overview
 
 **Flutter OTP Kit v3.0.0** is a comprehensive OTP (One-Time Password) verification package for Flutter. This version introduces a completely rewritten architecture with modern patterns and extensive customization options.
+
+### ✨ Design Principles
+- Clarity: simple APIs, predictable behavior
+- Accessibility: screen-reader friendly, keyboard navigation, reduced motion
+- Performance: smooth animations, efficient rendering, low memory overhead
+- Customization: flexible styling, animations, and behavior overrides
+- Reliability: well-structured state management and robust validation
 
 ### 🚀 **KEY FEATURES**
 
@@ -152,34 +159,8 @@ OtpKit(
 )
 ```
 
-**From Pinput:**
-
-```dart
-// Old Pinput code
-Pinput(
-  onCompleted: (pin) => print(pin),
-)
-
-// New Flutter OTP Kit code
-OtpKit(
-  fieldCount: 4,
-  onVerify: (otp) async {
-    print(otp);
-    return true;
-  },
-  onResend: () {},
-)
-```
-
-**From Smart Auth:**
-
-```dart
-// Old Smart Auth code
-SmartAuth.getSmsCode()
-
-// New Flutter OTP Kit code
-final code = await OtpSmsService.instance.getSmsCode();
-```
+// Migration from other solutions
+// Replace your existing OTP input with OtpKit as shown above.
 
 ## 🚀 Quick Start
 
@@ -202,7 +183,7 @@ class OtpScreen extends StatelessWidget {
   },
   onResend: () {
           // Resend OTP
-        },
+  },
       ),
     );
   }
@@ -271,6 +252,60 @@ OtpKit(
 ```
 
 ## ⚙️ Advanced Configuration
+## 🧭 Best Practices
+- Prefer `OtpKit` as the single source of truth for behavior and animations
+- Use `OtpAnimationConfig` for defaults; override selectively at `OtpKit` level
+- Keep `fieldCount` aligned with your backend and SMS code length
+- Provide clear error/validation messages; avoid blocking UX
+- Test on target platforms with accessibility enabled
+
+## 🔍 FAQ
+- How do I override animations globally? Use `fieldFillAnimationTypeOverride`, `errorFieldAnimationTypeOverride`, and cursor overrides on `OtpKit`.
+- Can I keep using `OtpVerificationWidget`? Yes, it remains available but is deprecated; prefer `OtpKit`.
+- Does this affect backend integration? No. All advanced features are optional and UI-only.
+
+## 🔐 Security Considerations
+- Never log OTP codes in production.
+- Avoid showing sensitive contact info; use masking via `maskingType`.
+- Use `OtpSecurityConfig` to enable rate limiting and (optionally) biometrics.
+- Keep `validationRegex` aligned with your backend’s rules.
+
+## ♿ Accessibility Guidance
+- Ensure sufficient color contrast for borders and text.
+- Provide clear titles and subtitles; screen readers read them first.
+- Keep motion reasonable; honor user “reduce motion” preferences.
+- Enable keyboard navigation testing for web/desktop.
+
+## 🧰 API Cheatsheet
+
+```dart
+// Minimal
+OtpKit(onVerify: (otp) async => true, onResend: () {});
+
+// Animation overrides
+OtpKit(
+  fieldFillAnimationTypeOverride: FieldFillAnimationType.rotate,
+  errorFieldAnimationTypeOverride: ErrorFieldAnimationType.shake,
+  cursorEnableAnimationOverride: true,
+  onVerify: (otp) async => true,
+  onResend: () {},
+);
+
+// SMS autofill
+OtpKit(
+  smsConfig: OtpSmsConfig(enableSmsAutofill: true),
+  onVerify: (otp) async => true,
+  onResend: () {},
+);
+
+// Security
+OtpKit(
+  securityConfig: OtpSecurityConfig(enableRateLimiting: true),
+  onVerify: (otp) async => true,
+  onResend: () {},
+);
+```
+
 
 ### Animation Configuration
 

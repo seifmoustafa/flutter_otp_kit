@@ -107,18 +107,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Web**: Optimized keyboard handling, screen reader support, responsive design
 - **Desktop**: Platform-specific layouts, keyboard navigation, accessibility
 
-#### 🏆 Competitive Advantages
-- **vs Pinput**: Complete solution with timer, validation, masking, Smart Auth integration
-- **vs Smart Auth**: Cross-platform support, complete OTP solution, advanced UI
-- **Superior Animations**: 10+ error animations vs basic state transitions
-- **Enterprise Ready**: Rate limiting, audit logging, biometric integration
-- **Performance Optimized**: Real-time monitoring, memory optimization
+#### 🧭 Highlights
+- Complete solution with timer, validation, masking, and SMS autofill
+- Cross-platform support with advanced UI and customization
+- Rich animation system for errors, fill, and cursor
+- Enterprise-ready options (rate limiting, audit logging, biometrics)
+- Real-time performance monitoring and memory optimization
 
 ### 🔄 Migration Guide
-- **From OtpVerificationWidget**: Simply change widget name to `OtpKit`
-- **From Pinput**: Easy migration with enhanced features
-- **From Smart Auth**: Complete SMS integration with additional OTP features
-- **Zero Breaking Changes**: All existing code continues to work
+- From `OtpVerificationWidget`: change widget name to `OtpKit`
+- Zero breaking changes: existing code continues to work
 
 ### 📦 Dependencies
 - **No New Dependencies**: All features built with existing Flutter APIs
