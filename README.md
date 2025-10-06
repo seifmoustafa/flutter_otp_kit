@@ -3,10 +3,22 @@
 > A comprehensive and feature-rich OTP verification package for Flutter
 
 <p align="center">
+  <a href="https://pub.dev/packages/flutter_otp_kit" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/pub/v/flutter_otp_kit.svg?label=pub" alt="pub version" />
+  </a>
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="license" />
+  <img src="https://img.shields.io/badge/Flutter-3.0%2B-blue.svg" alt="flutter" />
+</p>
+
+<p align="center">
+  <img src="screenshots/flutter_otp_kit_logo.png" alt="Flutter OTP Kit" width="420" />
+</p>
+
+<p align="center">
   <a href="https://buymeacoffee.com/seifmoustafa" target="_blank" rel="noopener noreferrer">
     <img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=☕&slug=seifmoustafa&button_colour=FFDD00&font_colour=000000&font_family=Inter&outline_colour=000000&coffee_colour=000000" alt="Buy Me A Coffee" height="48" />
   </a>
-  <br/>
+  <br/><br/>
   <a href="https://github.com/seifmoustafa" target="_blank" rel="noopener noreferrer">
     <img src="https://img.shields.io/badge/GitHub-seifmoustafa-181717?logo=github&logoColor=white" alt="GitHub Profile" />
   </a>
