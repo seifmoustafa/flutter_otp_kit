@@ -92,9 +92,9 @@ class BasicExample extends StatelessWidget {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
-        child: Column(
-                  children: [
-                    const Text(
+          child: Column(
+            children: [
+              const Text(
                 'Basic OTP Kit',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
@@ -137,12 +137,12 @@ class BasicExample extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Code resent!')),
                   );
-                      },
-                    ),
-                  ],
-                ),
+                },
               ),
-            ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -156,9 +156,9 @@ class ModernExample extends StatelessWidget {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    const Text(
+          child: Column(
+            children: [
+              const Text(
                 'Modern Design',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
@@ -175,7 +175,7 @@ class ModernExample extends StatelessWidget {
                 maskingType: MaskingType.email,
                 onVerify: (otp) async {
                   if (otp == '1234') {
-                            ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('✅ Success! OTP $otp is correct'),
                         backgroundColor: Colors.green,
@@ -183,9 +183,9 @@ class ModernExample extends StatelessWidget {
                     );
                     return true; // Success
                   } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                                  content:
+                        content:
                             Text('❌ Error! OTP $otp is incorrect. Try 1234'),
                         backgroundColor: Colors.red,
                       ),
@@ -198,9 +198,9 @@ class ModernExample extends StatelessWidget {
                     const SnackBar(content: Text('Code resent!')),
                   );
                 },
-                        ),
-                      ],
-                    ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -216,9 +216,9 @@ class RoundedExample extends StatelessWidget {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    const Text(
+          child: Column(
+            children: [
+              const Text(
                 'Rounded Fields',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
@@ -234,17 +234,17 @@ class RoundedExample extends StatelessWidget {
                 backgroundColor: Colors.white,
                 secondaryColor: Colors.grey,
                 contactInfo: '+44 20 7946 0958',
-      maskingType: MaskingType.phone,
+                maskingType: MaskingType.phone,
                 onVerify: (otp) async {
-        if (otp == '1234') {
-          ScaffoldMessenger.of(context).showSnackBar(
+                  if (otp == '1234') {
+                    ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('✅ Success! OTP $otp is correct'),
-              backgroundColor: Colors.green,
-            ),
-          );
+                        backgroundColor: Colors.green,
+                      ),
+                    );
                     return true; // Success
-        } else {
+                  } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content:
@@ -253,17 +253,17 @@ class RoundedExample extends StatelessWidget {
                       ),
                     );
                     return false; // Failure
-        }
-      },
-      onResend: () {
-        ScaffoldMessenger.of(context).showSnackBar(
+                  }
+                },
+                onResend: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Code resent!')),
                   );
                 },
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -290,21 +290,31 @@ class UnderlinedExample extends StatelessWidget {
                 subtitle:
                     'Minimal Design - Code sent to {contactInfo} (try 1234)',
                 fieldCount: 4,
-                fieldConfig: OtpFieldConfig.preset(OtpFieldPreset.underlined),
+                fieldConfig:
+                    OtpFieldConfig.preset(OtpFieldPreset.underlined).copyWith(
+                  cursorStyle: CursorStyle.underline,
+                  enableShadow: false,
+                ),
+                animationConfig: const OtpAnimationConfig(
+                  enableFieldStateAnimation: true,
+                  fieldFillAnimationType: FieldFillAnimationType.slideUp,
+                  enableCursorAnimation: true,
+                  cursorBlinkDuration: Duration(milliseconds: 800),
+                ),
                 primaryColor: Colors.black,
                 backgroundColor: Colors.transparent,
                 contactInfo: 'admin@techstartup.io',
                 maskingType: MaskingType.email,
                 onVerify: (otp) async {
-        if (otp == '1234') {
-          ScaffoldMessenger.of(context).showSnackBar(
+                  if (otp == '1234') {
+                    ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('✅ Success! OTP $otp is correct'),
-              backgroundColor: Colors.green,
-            ),
-          );
+                        backgroundColor: Colors.green,
+                      ),
+                    );
                     return true; // Success
-        } else {
+                  } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content:
@@ -313,10 +323,10 @@ class UnderlinedExample extends StatelessWidget {
                       ),
                     );
                     return false; // Failure
-        }
-      },
-      onResend: () {
-        ScaffoldMessenger.of(context).showSnackBar(
+                  }
+                },
+                onResend: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Code resent!')),
                   );
                 },
@@ -341,14 +351,25 @@ class AnimatedExample extends StatelessWidget {
           child: Column(
             children: [
               const Text(
-                'Advanced Animations',
+                'Cursor Styles & Animations',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
+              const SizedBox(height: 16),
+              const Text(
+                'Try different cursor styles and animations!',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
               const SizedBox(height: 32),
+
+              // Glow Bar Cursor
+              const Text(
+                'Glow Bar Cursor',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 16),
               OtpKit(
-                title: 'Animated Fields',
-                subtitle:
-                    'Watch the magic happen - Code sent to {contactInfo} (try 1234)',
+                title: 'Glow Bar Cursor',
+                subtitle: 'Code sent to {contactInfo} (try 1234)',
                 fieldCount: 4,
                 fieldConfig: const OtpFieldConfig(
                   fieldWidth: 60,
@@ -357,15 +378,14 @@ class AnimatedExample extends StatelessWidget {
                   borderWidth: 2,
                   enableShadow: true,
                   shadowBlurRadius: 8,
-                  primaryColor: Colors.indigo,
+                  primaryColor: Colors.purple,
+                  cursorStyle: CursorStyle.glowBar,
+                  cursorWidth: 3,
                 ),
                 animationConfig: const OtpAnimationConfig(
-                  animationDuration: Duration(milliseconds: 500),
-                  animationCurve: Curves.easeInOutCubic,
+                  enableCursorAnimation: true,
+                  cursorBlinkDuration: Duration(milliseconds: 600),
                   fieldFillAnimationType: FieldFillAnimationType.scale,
-                  errorFieldAnimationType: ErrorFieldAnimationType.bounce,
-                  errorShakeAmplitude: 6.0,
-                  errorShakeFrequency: 15.0,
                 ),
                 errorConfig: const OtpErrorConfig(
                   errorShakeEffect: true,
@@ -376,15 +396,15 @@ class AnimatedExample extends StatelessWidget {
                 contactInfo: '+33 1 42 86 83 26',
                 maskingType: MaskingType.phone,
                 onVerify: (otp) async {
-        if (otp == '1234') {
-          ScaffoldMessenger.of(context).showSnackBar(
+                  if (otp == '1234') {
+                    ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('✅ Success! OTP $otp is correct'),
-              backgroundColor: Colors.green,
-            ),
-          );
+                        backgroundColor: Colors.green,
+                      ),
+                    );
                     return true; // Success
-        } else {
+                  } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content:
@@ -393,16 +413,132 @@ class AnimatedExample extends StatelessWidget {
                       ),
                     );
                     return false; // Failure
-        }
-      },
-      onResend: () {
-        ScaffoldMessenger.of(context).showSnackBar(
+                  }
+                },
+                onResend: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Code resent!')),
                   );
                 },
-            ),
-          ],
-        ),
+              ),
+
+              const SizedBox(height: 32),
+
+              // Ring Cursor
+              const Text(
+                'Ring Cursor',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 16),
+              OtpKit(
+                title: 'Ring Cursor',
+                subtitle: 'Code sent to {contactInfo} (try 1234)',
+                fieldCount: 4,
+                fieldConfig: const OtpFieldConfig(
+                  fieldWidth: 60,
+                  fieldHeight: 60,
+                  borderRadius: 15,
+                  borderWidth: 2,
+                  enableShadow: true,
+                  shadowBlurRadius: 8,
+                  primaryColor: Colors.teal,
+                  cursorStyle: CursorStyle.ring,
+                ),
+                animationConfig: const OtpAnimationConfig(
+                  enableCursorAnimation: true,
+                  cursorBlinkDuration: Duration(milliseconds: 1000),
+                  fieldFillAnimationType: FieldFillAnimationType.rotate,
+                ),
+                primaryColor: Colors.teal,
+                successColor: Colors.green,
+                contactInfo: '+33 1 42 86 83 26',
+                maskingType: MaskingType.phone,
+                onVerify: (otp) async {
+                  if (otp == '1234') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('✅ Success! OTP $otp is correct'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                    return true;
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content:
+                            Text('❌ Error! OTP $otp is incorrect. Try 1234'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return false;
+                  }
+                },
+                onResend: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Code resent!')),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 32),
+
+              // Wedge Cursor
+              const Text(
+                'Wedge Cursor',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 16),
+              OtpKit(
+                title: 'Wedge Cursor',
+                subtitle: 'Code sent to {contactInfo} (try 1234)',
+                fieldCount: 4,
+                fieldConfig: const OtpFieldConfig(
+                  fieldWidth: 60,
+                  fieldHeight: 60,
+                  borderRadius: 15,
+                  borderWidth: 2,
+                  enableShadow: true,
+                  shadowBlurRadius: 8,
+                  primaryColor: Colors.orange,
+                  cursorStyle: CursorStyle.wedge,
+                ),
+                animationConfig: const OtpAnimationConfig(
+                  enableCursorAnimation: true,
+                  cursorBlinkDuration: Duration(milliseconds: 400),
+                  fieldFillAnimationType: FieldFillAnimationType.slideLeft,
+                ),
+                primaryColor: Colors.orange,
+                successColor: Colors.green,
+                contactInfo: '+33 1 42 86 83 26',
+                maskingType: MaskingType.phone,
+                onVerify: (otp) async {
+                  if (otp == '1234') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('✅ Success! OTP $otp is correct'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                    return true;
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content:
+                            Text('❌ Error! OTP $otp is incorrect. Try 1234'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return false;
+                  }
+                },
+                onResend: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Code resent!')),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -485,15 +621,15 @@ class CustomExample extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
                 onVerify: (otp) async {
-        if (otp == '1234') {
-          ScaffoldMessenger.of(context).showSnackBar(
+                  if (otp == '1234') {
+                    ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('✅ Success! OTP $otp is correct'),
-              backgroundColor: Colors.green,
-            ),
-          );
+                        backgroundColor: Colors.green,
+                      ),
+                    );
                     return true; // Success
-        } else {
+                  } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content:
@@ -502,16 +638,16 @@ class CustomExample extends StatelessWidget {
                       ),
                     );
                     return false; // Failure
-        }
-      },
-      onResend: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+                  }
+                },
+                onResend: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
                       content: Text('Code resent!'),
                       backgroundColor: Colors.purple,
-          ),
-        );
-      },
+                    ),
+                  );
+                },
               ),
             ],
           ),
@@ -530,8 +666,8 @@ class AdvancedExample extends StatelessWidget {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
+          child: Column(
+            children: [
               const Text(
                 'Advanced Features',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -640,23 +776,23 @@ class AdvancedExample extends StatelessWidget {
                 timerDuration: 120,
                 enablePaste: true,
                 autoFocus: true,
-          enableAutoValidation: true,
+                enableAutoValidation: true,
                 obscureText: false,
                 enableInteractiveSelection: true,
                 unfocusOnTapOutside: true,
                 enableScreenReaderSupport: true,
                 onVerify: (otp) async {
-            if (otp == '1234') {
-              ScaffoldMessenger.of(context).showSnackBar(
+                  if (otp == '1234') {
+                    ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content:
                             Text('✅ Enterprise Success! OTP $otp verified'),
-                  backgroundColor: Colors.green,
+                        backgroundColor: Colors.green,
                         duration: const Duration(seconds: 3),
-                ),
-              );
+                      ),
+                    );
                     return true; // Success
-            } else {
+                  } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
@@ -666,17 +802,17 @@ class AdvancedExample extends StatelessWidget {
                       ),
                     );
                     return false; // Failure
-            }
-          },
-          onResend: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
+                  }
+                },
+                onResend: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
                       content: Text('🔄 Enterprise code resent!'),
-                backgroundColor: Colors.blue,
+                      backgroundColor: Colors.blue,
                       duration: Duration(seconds: 2),
-              ),
-            );
-          },
+                    ),
+                  );
+                },
                 onChanged: (otp) {
                   log('OTP changed: $otp');
                 },
@@ -713,9 +849,9 @@ class CursorsExample extends StatelessWidget {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
-      child: Column(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
+            children: [
               const Text(
                 'Cursor Styles',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -755,7 +891,7 @@ class CursorsExample extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               const Text('Block cursor'),
-                  const SizedBox(height: 8),
+              const SizedBox(height: 8),
               OtpKit(
                 title: 'Block Cursor',
                 subtitle: 'Filled block with border',
@@ -871,7 +1007,7 @@ class CursorsExample extends StatelessWidget {
                 animationConfig: const OtpAnimationConfig(
                   enableCursorAnimation: true,
                 ),
-      primaryColor: Colors.black,
+                primaryColor: Colors.black,
                 onVerify: (_) async => true,
                 onResend: () {},
               ),
@@ -942,7 +1078,7 @@ class CursorsExample extends StatelessWidget {
                 title: 'Strikethrough',
                 subtitle: 'Line through the middle',
                 fieldCount: 4,
-      fieldConfig: const OtpFieldConfig(
+                fieldConfig: const OtpFieldConfig(
                     cursorStyle: CursorStyle.strikethrough),
                 animationConfig:
                     const OtpAnimationConfig(enableCursorAnimation: true),

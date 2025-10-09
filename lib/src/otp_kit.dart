@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/scheduler.dart';
 
 // Import existing configs and enums
 import 'config/otp_field_config.dart';
@@ -317,6 +318,12 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
   bool _isLoading = false;
   bool _isComplete = false;
 
+  // ValueNotifiers for state management
+  late ValueNotifier<String> _otpValueNotifier;
+  late ValueNotifier<bool> _isCompleteNotifier;
+  late ValueNotifier<bool> _hasErrorNotifier;
+  late ValueNotifier<String?> _errorTextNotifier;
+
   // Timer
   Timer? _timer;
   int _remainingTime = 0;
@@ -344,6 +351,7 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
     _setupTimer();
     _setupFocusListeners();
     _initializeServices();
+    _initializeValueNotifiers();
 
     if (widget.autoFocus && _focusNodes.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -370,6 +378,13 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
 
     // Initialize platform service
     await OtpPlatformService.instance.initialize();
+  }
+
+  void _initializeValueNotifiers() {
+    _otpValueNotifier = ValueNotifier<String>('');
+    _isCompleteNotifier = ValueNotifier<bool>(false);
+    _hasErrorNotifier = ValueNotifier<bool>(false);
+    _errorTextNotifier = ValueNotifier<String?>(null);
   }
 
   void _initializeControllers() {
@@ -470,15 +485,6 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
     }
   }
 
-  void _handleBackspace(int index) {
-    if (index > 0) {
-      // Move to previous field and clear it
-      _controllers[index - 1].clear();
-      _focusNodes[index - 1].requestFocus();
-      _updateFieldStates();
-    }
-  }
-
   void _triggerHapticFeedback(HapticFeedbackType type) {
     switch (type) {
       case HapticFeedbackType.light:
@@ -519,65 +525,78 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
   }
 
   void _onFieldChanged(String value, int index) {
-    setState(() {
-      _controllers[index].text = value;
-      _updateFieldStates();
+    // Update field content
+    _controllers[index].text = value;
 
-      // Clear errors when user types
-      if (_hasError) {
-        _hasError = false;
-        _errorText = null;
-        widget.onErrorStateChanged?.call(false);
+    // Update field states
+    _fieldStates[index] =
+        value.isEmpty ? OtpFieldState.empty : OtpFieldState.filled;
+    _fieldErrors[index] = false;
 
-        // Clear field errors
-        for (int i = 0; i < _fieldErrors.length; i++) {
-          _fieldErrors[i] = false;
-        }
+    // Clear global error state
+    if (_hasError) {
+      _hasError = false;
+      _errorText = null;
+      _hasErrorNotifier.value = false;
+      _errorTextNotifier.value = null;
+      widget.onErrorStateChanged?.call(false);
+    }
+
+    // Handle paste functionality
+    if (widget.enablePaste && value.length > 1) {
+      _handlePaste(value, index);
+      return;
+    }
+
+    // Trigger haptic feedback
+    final config = widget.fieldConfig ?? OtpFieldConfig();
+    if (config.enableHapticFeedback) {
+      _triggerHapticFeedback(config.hapticFeedbackType);
+    }
+
+    // Trigger field animation
+    if (widget.animationConfig.enableFieldStateAnimation) {
+      _fieldAnimationControllers[index].forward();
+    }
+
+    // Check completion
+    final otpValue = _getOtpValue();
+    _otpValueNotifier.value = otpValue;
+    widget.onChanged?.call(otpValue);
+
+    if (otpValue.length == widget.fieldCount) {
+      _isComplete = true;
+      _isCompleteNotifier.value = true;
+      widget.onCompleted?.call(otpValue);
+      widget.onCompletionStateChanged?.call(true);
+      // Hide keyboard when OTP is complete
+      FocusScope.of(context).unfocus();
+    } else {
+      _isComplete = false;
+      _isCompleteNotifier.value = false;
+      widget.onCompletionStateChanged?.call(false);
+    }
+
+    // Handle navigation AFTER all updates
+    if (value.isEmpty && index > 0) {
+      // Move to previous field
+      _focusNodes[index - 1].requestFocus();
+
+      // Select text in previous field if it has content
+      if (_controllers[index - 1].text.isNotEmpty) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _controllers[index - 1].selection = TextSelection(
+              baseOffset: 0,
+              extentOffset: _controllers[index - 1].text.length,
+            );
+          }
+        });
       }
-
-      // Handle paste functionality
-      if (widget.enablePaste && value.length > 1) {
-        _handlePaste(value, index);
-        return;
-      }
-
-      // Handle backspace navigation
-      if (value.isEmpty && index > 0) {
-        _handleBackspace(index);
-        return;
-      }
-
-      // Trigger haptic feedback on input
-      final config = widget.fieldConfig ?? OtpFieldConfig();
-      if (config.enableHapticFeedback) {
-        _triggerHapticFeedback(config.hapticFeedbackType);
-      }
-
+    } else if (value.isNotEmpty && index < widget.fieldCount - 1) {
       // Move to next field
-      if (value.isNotEmpty && index < widget.fieldCount - 1) {
-        _focusNodes[index + 1].requestFocus();
-      } else if (value.isNotEmpty && index == widget.fieldCount - 1) {
-        _focusNodes[index].unfocus();
-      }
-
-      // Trigger field animation
-      if (widget.animationConfig.enableFieldStateAnimation) {
-        _fieldAnimationControllers[index].forward();
-      }
-
-      // Check completion
-      final otpValue = _getOtpValue();
-      widget.onChanged?.call(otpValue);
-
-      if (otpValue.length == widget.fieldCount) {
-        _isComplete = true;
-        widget.onCompleted?.call(otpValue);
-        widget.onCompletionStateChanged?.call(true);
-      } else {
-        _isComplete = false;
-        widget.onCompletionStateChanged?.call(false);
-      }
-    });
+      _focusNodes[index + 1].requestFocus();
+    }
   }
 
   void _handlePaste(String pastedValue, int startIndex) {
@@ -819,6 +838,13 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
     for (var focusNode in _focusNodes) {
       focusNode.dispose();
     }
+
+    // Dispose ValueNotifiers
+    _otpValueNotifier.dispose();
+    _isCompleteNotifier.dispose();
+    _hasErrorNotifier.dispose();
+    _errorTextNotifier.dispose();
+
     super.dispose();
   }
 

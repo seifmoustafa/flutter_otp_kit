@@ -173,17 +173,6 @@ class _OtpFieldsRowState extends State<OtpFieldsRow> {
                     fieldWidth: calculatedFieldWidth,
                     index: index,
                     fieldCount: widget.fieldCount,
-                    animationDuration:
-                        widget.animationConfig.fieldTransitionDuration,
-                    animationCurve: widget.animationConfig.fieldTransitionCurve,
-                    transitionHighlightColor:
-                        widget.animationConfig.transitionHighlightColor,
-                    animationConfig: widget.animationConfig,
-                    animationController:
-                        widget.fieldAnimationControllers != null &&
-                                index < widget.fieldAnimationControllers!.length
-                            ? widget.fieldAnimationControllers![index]
-                            : null,
                   ),
                 );
               },
