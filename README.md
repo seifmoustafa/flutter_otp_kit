@@ -206,14 +206,17 @@ OtpKit(
   primaryColor: Colors.blue,
   successColor: Colors.green,
 
-  // Animation configuration
-  animationConfig: OtpAnimationConfig(
-    enableAnimation: true,
-    fieldFillAnimationType: FieldFillAnimationType.scale,
-    errorFieldAnimationType: ErrorFieldAnimationType.bounce,
-    enableCursorAnimation: true,
-    cursorBlinkDuration: Duration(milliseconds: 1000),
-  ),
+  // Animation configuration (default: no animations)
+  // animationConfig: OtpAnimationConfig(), // Default: no animations
+  // 
+  // To enable animations:
+  // animationConfig: OtpAnimationConfig(
+  //   enableAnimation: true,
+  //   fieldFillAnimationType: FieldFillAnimationType.scale,
+  //   errorFieldAnimationType: ErrorFieldAnimationType.bounce,
+  //   enableCursorAnimation: true,
+  //   cursorBlinkDuration: Duration(milliseconds: 1000),
+  // ),
 
   // Main-level animation overrides (override field-level config)
   enableFieldStateAnimationOverride: true,
@@ -312,48 +315,135 @@ OtpKit(
 
 ### Animation Configuration
 
+**🎯 Default Behavior: NO ANIMATIONS**
+By default, `flutter_otp_kit` has all animations disabled for maximum performance and clean UI. Fields change state instantly with only color changes.
+
 ```dart
-OtpAnimationConfig(
-  // Main animations
-  enableAnimation: true,
-  animationDuration: Duration(milliseconds: 300),
-  animationCurve: Curves.easeInOut,
-
-  // Field animations
-  enableFieldStateAnimation: true,
-  fieldTransitionDuration: Duration(milliseconds: 150),
-
-  // Fill animations
-  fieldFillAnimationType: FieldFillAnimationType.scale,
-  fieldFillSlideOffset: Offset(6, 0),
-  fieldFillRotationRadians: 0.10,
-
-  // Error animations
-  errorFieldAnimationType: ErrorFieldAnimationType.shake,
-  errorShakeAmplitude: 4.0,
-  errorShakeFrequency: 10.0,
-
-  // Cursor animations
-  enableCursorAnimation: true,
-  cursorBlinkDuration: Duration(milliseconds: 1000),
-  cursorColor: Color(0xFF2196F3),
-  cursorWidth: 2.0,
-
-  // State transitions
-  stateTransitionDuration: Duration(milliseconds: 200),
-  stateTransitionCurve: Curves.easeInOut,
-
-  // Decoration animations
-  enableDecorationAnimation: true,
-  decorationAnimationDuration: Duration(milliseconds: 250),
-)
-
-// OtpKit-level overrides (optional)
+// Default usage - NO animations
 OtpKit(
-  // ...
-  fieldFillAnimationTypeOverride: FieldFillAnimationType.slideRight,
-  errorFieldAnimationTypeOverride: ErrorFieldAnimationType.wiggle,
+  title: 'Verify Phone',
+  fieldCount: 4,
+  // No animationConfig needed - defaults to no animations!
 )
+```
+
+**🎨 Enabling Animations**
+To enable animations, explicitly configure `OtpAnimationConfig`:
+
+```dart
+OtpKit(
+  title: 'Verify Phone',
+  fieldCount: 4,
+  
+  // Enable animations
+  animationConfig: OtpAnimationConfig(
+    // Main widget animations
+    enableAnimation: true,                    // Enable main widget fade/scale/slide
+    animationDuration: Duration(milliseconds: 300),
+    animationCurve: Curves.easeInOut,
+
+    // Field state animations
+    enableFieldStateAnimation: true,         // Enable field fill/completion effects
+    fieldTransitionDuration: Duration(milliseconds: 150),
+    fieldTransitionCurve: Curves.easeInOut,
+
+    // Field fill animations (when field is completed)
+    fieldFillAnimationType: FieldFillAnimationType.scale,  // scale, rotate, slideLeft, slideRight, slideUp, slideDown, autoSlide, none
+    fieldFillSlideOffset: Offset(6, 0),     // For slide animations (3px for subtle effect)
+    fieldFillRotationRadians: 0.10,         // For rotate animation
+
+    // Error animations
+    errorFieldAnimationType: ErrorFieldAnimationType.shake,  // shake, bounce, rotate, pulse, wiggle, slideDown, slideUp, slideLeft, slideRight, none
+    errorShakeAmplitude: 4.0,               // Error animation intensity
+    errorShakeFrequency: 10.0,              // Error animation speed
+
+    // Cursor animations
+    enableCursorAnimation: true,             // Enable cursor blinking
+    cursorBlinkDuration: Duration(milliseconds: 1000),
+    cursorColor: Color(0xFF2196F3),
+    cursorWidth: 2.0,
+
+    // State transitions
+    stateTransitionDuration: Duration(milliseconds: 200),
+    stateTransitionCurve: Curves.easeInOut,
+
+    // Decoration animations
+    enableDecorationAnimation: true,         // Enable border/background transitions
+    decorationAnimationDuration: Duration(milliseconds: 250),
+  ),
+)
+```
+
+**🎭 Animation Types**
+
+**Field Fill Animations** (when field is completed):
+- `FieldFillAnimationType.scale` - Field scales up slightly (1.06x)
+- `FieldFillAnimationType.rotate` - Field rotates slightly
+- `FieldFillAnimationType.slideLeft/Right/Up/Down` - Field slides in direction
+- `FieldFillAnimationType.autoSlide` - **Smart slide**: Auto-detects text direction (LTR: slide left, RTL: slide right)
+- `FieldFillAnimationType.none` - No fill animation
+
+**Error Animations** (when field has error):
+- `ErrorFieldAnimationType.shake` - Horizontal shake
+- `ErrorFieldAnimationType.bounce` - Vertical bounce
+- `ErrorFieldAnimationType.rotate` - Rotation wobble
+- `ErrorFieldAnimationType.pulse` - Scale in/out rapidly
+- `ErrorFieldAnimationType.wiggle` - Combination of rotation and translation
+- `ErrorFieldAnimationType.slideDown/Up/Left/Right` - Slide in direction
+- `ErrorFieldAnimationType.none` - No error animation
+
+**🎛️ Main-Level Animation Overrides**
+You can override field-level animations at the OtpKit level:
+
+```dart
+OtpKit(
+  // Field-level config
+  animationConfig: OtpAnimationConfig(
+    fieldFillAnimationType: FieldFillAnimationType.scale,
+    errorFieldAnimationType: ErrorFieldAnimationType.shake,
+  ),
+  
+  // Main-level overrides (take precedence)
+  enableFieldStateAnimationOverride: true,
+  fieldFillAnimationTypeOverride: FieldFillAnimationType.rotate,
+  fieldFillRotationRadiansOverride: 0.15,
+  errorFieldAnimationTypeOverride: ErrorFieldAnimationType.bounce,
+  errorShakeAmplitudeOverride: 6.0,
+  cursorEnableAnimationOverride: true,
+  cursorBlinkDurationOverride: Duration(milliseconds: 700),
+)
+```
+
+**🌍 Smart Direction-Aware Animation**
+For underlined designs, use `autoSlide` to automatically adapt to text direction:
+
+```dart
+OtpKit(
+  title: 'Underlined Style',
+  fieldCount: 4,
+  fieldConfig: OtpFieldConfig.preset(OtpFieldPreset.underlined),
+  
+  // Smart slide animation - detects LTR/RTL automatically
+  animationConfig: const OtpAnimationConfig(
+    enableFieldStateAnimation: true,
+    fieldFillAnimationType: FieldFillAnimationType.autoSlide,
+    fieldFillSlideOffset: Offset(3, 0), // 3px movement
+    fieldTransitionDuration: Duration(milliseconds: 200),
+  ),
+)
+```
+
+**How it works:**
+- **LTR (Left-to-Right)**: Fields slide left 3px when filled
+- **RTL (Right-to-Left)**: Fields slide right 3px when filled
+- **Automatic Detection**: Uses `Directionality.of(context)` to detect text direction
+- **Perfect for Underlined**: Creates a subtle "field moves" effect
+
+**⚡ Performance Notes**
+- **No animations (default)**: Maximum performance, instant state changes
+- **With animations**: Smooth visual feedback, slightly higher CPU usage
+- **Field animations**: Only apply when `enableFieldStateAnimation: true`
+- **Main animations**: Only apply when `enableAnimation: true`
 ```
 
 ### SMS Configuration
@@ -848,11 +938,11 @@ Contributions are welcome! Please read our contributing guidelines.
 
 | Name                        | Type                    | Required | Default    | Description                         |
 | --------------------------- | ----------------------- | -------- | ---------- | ----------------------------------- |
-| enableAnimation             | bool                    | No       | true       | Enable animations.                  |
+| enableAnimation             | bool                    | No       | false      | Enable animations.                  |
 | animationDuration           | Duration                | No       | 300ms      | Main animation duration.            |
 | animationCurve              | Curve                   | No       | easeInOut  | Main animation curve.               |
-| enableFieldStateAnimation   | bool                    | No       | true       | Animate field state changes.        |
-| enableFieldToFieldAnimation | bool                    | No       | true       | Animate movement between fields.    |
+| enableFieldStateAnimation   | bool                    | No       | false      | Animate field state changes.        |
+| enableFieldToFieldAnimation | bool                    | No       | false      | Animate movement between fields.    |
 | fieldTransitionDuration     | Duration                | No       | 150ms      | Per-field transition duration.      |
 | fieldTransitionCurve        | Curve                   | No       | easeInOut  | Per-field transition curve.         |
 | transitionHighlightColor    | Color?                  | No       | null       | Highlight color during transitions. |

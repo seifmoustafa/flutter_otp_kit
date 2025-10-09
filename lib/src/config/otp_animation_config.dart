@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 class OtpAnimationConfig {
   /// Creates a new animation configuration
   const OtpAnimationConfig({
-    this.enableAnimation = true,
+    this.enableAnimation = false,
     this.animationDuration = const Duration(milliseconds: 300),
     this.animationCurve = Curves.easeInOut,
-    this.enableFieldStateAnimation = true,
-    this.enableFieldToFieldAnimation = true,
+    this.enableFieldStateAnimation = false,
+    this.enableFieldToFieldAnimation = false,
     this.fieldTransitionDuration = const Duration(milliseconds: 150),
     this.fieldTransitionCurve = Curves.easeInOut,
     this.transitionHighlightColor,
@@ -28,7 +28,7 @@ class OtpAnimationConfig {
     this.errorShakeFrequency = 10.0,
 
     // Cursor animation configuration
-    this.enableCursorAnimation = true,
+    this.enableCursorAnimation = false,
     this.cursorBlinkDuration = const Duration(milliseconds: 1000),
     this.cursorColor = const Color(0xFF2196F3),
     this.cursorWidth = 2.0,
@@ -38,7 +38,7 @@ class OtpAnimationConfig {
     this.stateTransitionCurve = Curves.easeInOut,
 
     // Decoration animations
-    this.enableDecorationAnimation = true,
+    this.enableDecorationAnimation = false,
     this.decorationAnimationDuration = const Duration(milliseconds: 250),
   });
 
@@ -193,6 +193,9 @@ enum FieldFillAnimationType {
 
   /// Slide from bottom towards place
   slideDown,
+
+  /// Auto-detect text direction and slide accordingly (LTR: slideLeft, RTL: slideRight)
+  autoSlide,
 }
 
 /// Animation types applied when a field enters error state

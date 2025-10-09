@@ -105,14 +105,7 @@ class BasicExample extends StatelessWidget {
                 fieldCount: 4,
                 contactInfo: '+1 (555) 123-4567',
                 maskingType: MaskingType.phone,
-                // Demonstrate main-level animation overrides (take precedence over field config)
-                enableFieldStateAnimationOverride: true,
-                fieldFillAnimationTypeOverride: FieldFillAnimationType.rotate,
-                fieldFillRotationRadiansOverride: 0.15,
-                errorFieldAnimationTypeOverride: ErrorFieldAnimationType.bounce,
-                errorShakeAmplitudeOverride: 6.0,
-                cursorEnableAnimationOverride: true,
-                cursorBlinkDurationOverride: const Duration(milliseconds: 700),
+                // Use default (no animations) for basic example
                 onVerify: (otp) async {
                   if (otp == '1234') {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -173,6 +166,17 @@ class ModernExample extends StatelessWidget {
                 successColor: Colors.green,
                 contactInfo: 'john.doe@company.com',
                 maskingType: MaskingType.email,
+                // Rotate animation for modern example
+                animationConfig: const OtpAnimationConfig(
+                  enableAnimation: true,
+                  enableFieldStateAnimation: true,
+                  fieldFillAnimationType: FieldFillAnimationType.rotate,
+                  fieldFillRotationRadians: 0.15,
+                  errorFieldAnimationType: ErrorFieldAnimationType.bounce,
+                  errorShakeAmplitude: 6.0,
+                  enableCursorAnimation: true,
+                  cursorBlinkDuration: Duration(milliseconds: 700),
+                ),
                 onVerify: (otp) async {
                   if (otp == '1234') {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -295,6 +299,15 @@ class UnderlinedExample extends StatelessWidget {
                 backgroundColor: Colors.transparent,
                 contactInfo: 'admin@techstartup.io',
                 maskingType: MaskingType.email,
+                // Smart slide animation that detects text direction
+                animationConfig: const OtpAnimationConfig(
+                  enableAnimation: true,
+                  enableFieldStateAnimation: true,
+                  fieldFillAnimationType: FieldFillAnimationType.autoSlide,
+                  fieldFillSlideOffset: Offset(3, 0), // 3px slide movement
+                  fieldTransitionDuration: Duration(milliseconds: 200),
+                  fieldTransitionCurve: Curves.easeOut,
+                ),
                 onVerify: (otp) async {
                   if (otp == '1234') {
                     ScaffoldMessenger.of(context).showSnackBar(

@@ -9,6 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🚀 MAJOR RELEASE: Complete Rewrite with Modern Architecture
 
+### 🔧 Animation System Overhaul (Latest Updates)
+
+#### 🎯 Performance-First Defaults
+- **BREAKING CHANGE**: All animations now disabled by default (`enableAnimation: false`)
+- **Zero Animation Overhead**: Default configuration provides maximum performance
+- **Instant State Changes**: Fields change state immediately without transitions
+- **Clean Static UI**: Only colors change, no size/shape transformations
+
+#### 🐛 Critical Animation Fixes
+- **Fixed Scaling Bug**: Filled fields no longer appear scaled when animations disabled
+- **Conditional Transform Logic**: `Transform.scale`, `Transform.rotate`, `Transform.translate` only apply when animations enabled
+- **Proper Animation Checks**: All animation effects now respect `enableFieldStateAnimation` setting
+- **No Visual Artifacts**: Eliminated unwanted scaling/rotation effects in static mode
+
+#### 🎨 Enhanced Animation Control
+- **Explicit Animation Enabling**: Developers must explicitly enable animations when needed
+- **Granular Control**: Separate controls for main widget, field state, cursor, and decoration animations
+- **Performance Transparency**: Clear documentation of performance implications
+- **Backward Compatibility**: Existing code continues to work, but with performance improvements
+
 #### 🎯 New Main Widget: OtpKit
 - **Brand New Widget**: Completely rewritten `OtpKit` widget from scratch
 - **Deprecated OtpVerificationWidget**: Marked as deprecated, use `OtpKit` for new projects
@@ -43,18 +63,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Fallback Options**: Graceful fallback when biometrics unavailable
 
 #### 🎬 Advanced Animation & Cursor System
+- **🎯 Default: NO ANIMATIONS**: All animations disabled by default for maximum performance
+  - `enableAnimation: false` - No main widget animations (fade/scale/slide)
+  - `enableFieldStateAnimation: false` - No field state transitions
+  - `enableCursorAnimation: false` - No cursor blinking/animations
+  - `enableDecorationAnimation: false` - No decoration transitions
+  - **Performance First**: Instant state changes, zero animation overhead
+- **🎨 Opt-in Animations**: Explicitly enable animations when needed
+  - **Field Fill Animations**: Scale, rotate, slide (4 directions) for field completion
+  - **Error Animations**: Shake, bounce, rotate, pulse, wiggle, slide variations
+  - **Cursor Animations**: Blink/opacity and focus-scale effects
+  - **Main Widget Animations**: Fade, scale, slide transitions
 - **Cursor System (New!)**: Pluggable caret styles with animation
   - Styles: `system`, `none`, `bar`, `block`, `underline`, `outline`, `doubleBar`, `dashedUnderline`, `beamCap`, `beamNotch`, `wedge`, `ring`, `strikethrough`, `doubleUnderline`, `gradientBar`, `glowBar`
   - Centered alignment and refined placement for underline variants
   - Visibility fixes for small fields (dynamic min sizes where needed)
-- **Cursor Animations**: Blink/opacity and focus-scale; only one cursor rendered at a time
-- **Smooth State Transitions**: Configurable curves and durations
-- **Decoration Animations**: Seamless visual transitions
-- **10+ Error Animations**: Shake, scale, rotate, bounce, pulse, wiggle, slide variations
-- **7+ Fill Animations**: Scale, rotate, slide (4 directions) for field completion
 - **Animation Configuration**: Complete control over all animation parameters
- - **Main-level Animation Overrides**: `OtpKit` now exposes top-level animation overrides for fill, error, and cursor that take precedence over `OtpFieldConfig`
- - **One Style Per Case**: Exactly one animation style applies per case (fill OR error), simplifying predictability and customization
+  - **Main-level Animation Overrides**: `OtpKit` now exposes top-level animation overrides for fill, error, and cursor that take precedence over `OtpFieldConfig`
+  - **One Style Per Case**: Exactly one animation style applies per case (fill OR error), simplifying predictability and customization
+  - **Conditional Animation Logic**: Animations only apply when explicitly enabled
 
 #### 🌍 Platform-Specific Features
 - **iOS Optimizations**: Face ID, Touch ID, iOS-specific animations, VoiceOver

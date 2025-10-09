@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/scheduler.dart';
 
 // Import existing configs and enums
 import 'config/otp_field_config.dart';
@@ -854,46 +853,52 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
           hint: widget.semanticHint ?? 'Enter verification code',
           value: widget.semanticValue ??
               'Enter ${widget.fieldCount}-digit verification code',
-          child: AnimatedBuilder(
-            animation: _mainAnimationController,
-            builder: (context, child) {
-              return FadeTransition(
-                opacity: _fadeAnimation,
-                child: ScaleTransition(
-                  scale: _scaleAnimation,
-                  child: SlideTransition(
-                    position: _slideAnimation,
-                    child: Padding(
-                      padding: widget.padding,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Header
-                          _buildHeader(),
-
-                          SizedBox(height: widget.spacing),
-
-                          // OTP Fields
-                          _buildOtpFields(),
-
-                          SizedBox(height: widget.spacing * 0.5),
-
-                          // Validation/Error messages
-                          _buildMessages(),
-
-                          SizedBox(height: widget.spacing),
-
-                          // Footer (buttons and timer)
-                          _buildFooter(),
-                        ],
+          child: widget.animationConfig.enableAnimation
+              ? AnimatedBuilder(
+                  animation: _mainAnimationController,
+                  builder: (context, child) {
+                    return FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: ScaleTransition(
+                        scale: _scaleAnimation,
+                        child: SlideTransition(
+                          position: _slideAnimation,
+                          child: _buildContent(),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
+                    );
+                  },
+                )
+              : _buildContent(),
         ),
+      ),
+    );
+  }
+
+  Widget _buildContent() {
+    return Padding(
+      padding: widget.padding,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Header
+          _buildHeader(),
+
+          SizedBox(height: widget.spacing),
+
+          // OTP Fields
+          _buildOtpFields(),
+
+          SizedBox(height: widget.spacing * 0.5),
+
+          // Validation/Error messages
+          _buildMessages(),
+
+          SizedBox(height: widget.spacing),
+
+          // Footer (buttons and timer)
+          _buildFooter(),
+        ],
       ),
     );
   }
@@ -1033,59 +1038,75 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
 
   Widget _buildMessages() {
     if (_validationText != null) {
-      return AnimatedBuilder(
-        animation: _errorAnimationController,
-        builder: (context, child) {
-          return Transform.translate(
-            offset: Offset(
-              _errorAnimationController.value *
-                  10 *
-                  (widget.animationConfig.errorFieldAnimationType ==
-                          ErrorFieldAnimationType.shake
-                      ? math.sin(_errorAnimationController.value * math.pi * 4)
-                      : 0),
-              0,
-            ),
-            child: Opacity(
-              opacity: 0.7 + (_errorAnimationController.value * 0.3),
-              child: Text(
-                _validationText!,
-                style: widget.errorStyle ??
-                    TextStyle(color: widget.errorColor, fontSize: 14),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          );
-        },
-      );
+      return widget.animationConfig.enableAnimation
+          ? AnimatedBuilder(
+              animation: _errorAnimationController,
+              builder: (context, child) {
+                return Transform.translate(
+                  offset: Offset(
+                    _errorAnimationController.value *
+                        10 *
+                        (widget.animationConfig.errorFieldAnimationType ==
+                                ErrorFieldAnimationType.shake
+                            ? math.sin(
+                                _errorAnimationController.value * math.pi * 4)
+                            : 0),
+                    0,
+                  ),
+                  child: Opacity(
+                    opacity: 0.7 + (_errorAnimationController.value * 0.3),
+                    child: Text(
+                      _validationText!,
+                      style: widget.errorStyle ??
+                          TextStyle(color: widget.errorColor, fontSize: 14),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              },
+            )
+          : Text(
+              _validationText!,
+              style: widget.errorStyle ??
+                  TextStyle(color: widget.errorColor, fontSize: 14),
+              textAlign: TextAlign.center,
+            );
     }
 
     if (_errorText != null) {
-      return AnimatedBuilder(
-        animation: _errorAnimationController,
-        builder: (context, child) {
-          return Transform.translate(
-            offset: Offset(
-              _errorAnimationController.value *
-                  10 *
-                  (widget.animationConfig.errorFieldAnimationType ==
-                          ErrorFieldAnimationType.shake
-                      ? math.sin(_errorAnimationController.value * math.pi * 4)
-                      : 0),
-              0,
-            ),
-            child: Opacity(
-              opacity: 0.7 + (_errorAnimationController.value * 0.3),
-              child: Text(
-                _errorText!,
-                style: widget.errorStyle ??
-                    TextStyle(color: widget.errorColor, fontSize: 14),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          );
-        },
-      );
+      return widget.animationConfig.enableAnimation
+          ? AnimatedBuilder(
+              animation: _errorAnimationController,
+              builder: (context, child) {
+                return Transform.translate(
+                  offset: Offset(
+                    _errorAnimationController.value *
+                        10 *
+                        (widget.animationConfig.errorFieldAnimationType ==
+                                ErrorFieldAnimationType.shake
+                            ? math.sin(
+                                _errorAnimationController.value * math.pi * 4)
+                            : 0),
+                    0,
+                  ),
+                  child: Opacity(
+                    opacity: 0.7 + (_errorAnimationController.value * 0.3),
+                    child: Text(
+                      _errorText!,
+                      style: widget.errorStyle ??
+                          TextStyle(color: widget.errorColor, fontSize: 14),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              },
+            )
+          : Text(
+              _errorText!,
+              style: widget.errorStyle ??
+                  TextStyle(color: widget.errorColor, fontSize: 14),
+              textAlign: TextAlign.center,
+            );
     }
 
     return const SizedBox.shrink();

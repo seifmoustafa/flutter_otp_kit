@@ -261,6 +261,11 @@ class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
       case FieldFillAnimationType.slideDown:
         slideOffset = Offset(0, widget.animationConfig.fieldFillSlideOffset.dy);
         break;
+      case FieldFillAnimationType.autoSlide:
+        // Default to LTR slide direction - will be corrected in build method
+        slideOffset =
+            Offset(-widget.animationConfig.fieldFillSlideOffset.dx, 0);
+        break;
       default:
         slideOffset = Offset.zero;
     }
@@ -543,318 +548,336 @@ class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
     // The visual state is now handled entirely by the style manager
     // No need for special decoration logic here - the container handles all styling
 
-    return AnimatedBuilder(
-      animation: _animationController,
-      builder: (context, child) {
-        // Handle custom decoration based on field shape
-        BoxDecoration decoration;
-
-        // Handle custom field shape or use default decoration
-        if (widget.config.fieldShape == OtpFieldShape.custom &&
-            widget.config.fieldShapeConfig?.decorationBuilder != null) {
-          // Use custom decoration builder if provided
-          decoration = widget.config.fieldShapeConfig!.decorationBuilder!(
-            _borderColorAnimation.value ?? widget.fieldColors.borderColor,
-            _backgroundColorAnimation.value ??
-                widget.fieldColors.backgroundColor,
-            widget.config.borderWidth,
-            widget.config.borderRadius,
-          );
-        } else if (widget.config.fieldShape == OtpFieldShape.underlined) {
-          // Special case for underlined fields
-          decoration = BoxDecoration(
-            color: _backgroundColorAnimation.value ??
-                widget.fieldColors.backgroundColor,
-            border: Border(
-              bottom: BorderSide(
-                color: _borderColorAnimation.value ??
-                    widget.fieldColors.borderColor,
-                width: widget.config.borderWidth,
-              ),
-            ),
-          );
-        } else {
-          // Default decoration for regular fields
-          decoration = BoxDecoration(
-            borderRadius: BorderRadius.circular(
-                widget.config.fieldShape == OtpFieldShape.circle ||
-                        widget.config.fieldShape == OtpFieldShape.stadium
-                    ? height /
-                        2 // For circle/stadium, use height/2 for border radius
-                    : widget.config.borderRadius),
-            border: Border.all(
-              color:
-                  _borderColorAnimation.value ?? widget.fieldColors.borderColor,
-              width: widget.config.borderWidth,
-            ),
-            color: _backgroundColorAnimation.value ??
-                widget.fieldColors.backgroundColor,
-            boxShadow: widget.config.enableShadow
-                ? [
-                    BoxShadow(
-                      color: widget.config.shadowColor ??
-                          widget.config.primaryColor
-                              .withAlpha(51), // 0.2 opacity
-                      blurRadius: widget.config.shadowBlurRadius,
-                      spreadRadius: widget.config.shadowSpreadRadius,
-                      offset: widget.config.shadowOffset,
-                    ),
-                  ]
-                : null,
-          );
-        }
-
-        // Base field content (no transforms)
-        Widget baseContent = Container(
-          width: width,
-          height: height,
-          decoration: decoration,
-          child: KeyboardListener(
-            focusNode: _keyboardListenerFocusNode,
-            onKeyEvent: (KeyEvent event) {
-              // Detect backspace on empty field
-              if (widget.controller.text.isEmpty &&
-                  event is KeyDownEvent &&
-                  event.logicalKey == LogicalKeyboardKey.backspace) {
-                // Handle backspace navigation directly
-                _handleBackspaceNavigation();
-              }
+    return widget.animationConfig.enableFieldStateAnimation
+        ? AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, child) {
+              return _buildFieldContent(height, width);
             },
-            child: Semantics(
-              label: widget.index != null && widget.fieldCount != null
-                  ? 'OTP field ${widget.index! + 1} of ${widget.fieldCount}'
-                  : 'OTP field',
-              textField: true,
-              child: Stack(
-                children: [
-                  TextFormField(
-                    controller: widget.controller,
-                    focusNode: widget.focusNode,
-                    textAlign: widget.cursorAlignment,
-                    keyboardType: widget.keyboardType,
-                    textCapitalization: widget.textCapitalization,
-                    inputFormatters: widget.inputFormatters,
-                    obscureText: widget.obscureText,
-                    obscuringCharacter: widget.obscuringCharacter,
-                    enableInteractiveSelection:
-                        widget.enableInteractiveSelection,
-                    showCursor: widget.config.cursorStyle == CursorStyle.system,
-                    cursorColor:
-                        widget.config.cursorColor ?? widget.config.primaryColor,
-                    cursorHeight: widget.config.cursorHeight ?? (height - 12),
-                    cursorWidth: widget.config.cursorWidth,
-                    style: widget.config.fieldStyle ??
-                        TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: _textColorAnimation.value ??
-                              widget.fieldColors.textColor,
-                          height: 1.0,
-                        ),
-                    decoration: InputDecoration(
-                      counterText: '',
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: (height - 22) / 2,
-                        horizontal: 0,
-                      ),
-                      isDense: true,
-                      hintText: widget.config.showPlaceholder
-                          ? widget.config.placeholderCharacter
-                          : null,
-                      hintStyle: widget.config.placeholderStyle ??
-                          TextStyle(
-                            color: widget.config.placeholderColor ??
-                                widget.fieldColors.borderColor.withAlpha(128),
-                            fontSize: widget.config.fieldFontSize,
-                          ),
+          )
+        : _buildFieldContent(height, width);
+  }
+
+  Widget _buildFieldContent(double height, double width) {
+    // Handle custom decoration based on field shape
+    BoxDecoration decoration;
+
+    // Handle custom field shape or use default decoration
+    if (widget.config.fieldShape == OtpFieldShape.custom &&
+        widget.config.fieldShapeConfig?.decorationBuilder != null) {
+      // Use custom decoration builder if provided
+      decoration = widget.config.fieldShapeConfig!.decorationBuilder!(
+        _borderColorAnimation.value ?? widget.fieldColors.borderColor,
+        _backgroundColorAnimation.value ?? widget.fieldColors.backgroundColor,
+        widget.config.borderWidth,
+        widget.config.borderRadius,
+      );
+    } else if (widget.config.fieldShape == OtpFieldShape.underlined) {
+      // Special case for underlined fields
+      decoration = BoxDecoration(
+        color: _backgroundColorAnimation.value ??
+            widget.fieldColors.backgroundColor,
+        border: Border(
+          bottom: BorderSide(
+            color:
+                _borderColorAnimation.value ?? widget.fieldColors.borderColor,
+            width: widget.config.borderWidth,
+          ),
+        ),
+      );
+    } else {
+      // Default decoration for regular fields
+      decoration = BoxDecoration(
+        borderRadius: BorderRadius.circular(widget.config.fieldShape ==
+                    OtpFieldShape.circle ||
+                widget.config.fieldShape == OtpFieldShape.stadium
+            ? height / 2 // For circle/stadium, use height/2 for border radius
+            : widget.config.borderRadius),
+        border: Border.all(
+          color: _borderColorAnimation.value ?? widget.fieldColors.borderColor,
+          width: widget.config.borderWidth,
+        ),
+        color: _backgroundColorAnimation.value ??
+            widget.fieldColors.backgroundColor,
+        boxShadow: widget.config.enableShadow
+            ? [
+                BoxShadow(
+                  color: widget.config.shadowColor ??
+                      widget.config.primaryColor.withAlpha(51), // 0.2 opacity
+                  blurRadius: widget.config.shadowBlurRadius,
+                  spreadRadius: widget.config.shadowSpreadRadius,
+                  offset: widget.config.shadowOffset,
+                ),
+              ]
+            : null,
+      );
+    }
+
+    // Base field content (no transforms)
+    Widget baseContent = Container(
+      width: width,
+      height: height,
+      decoration: decoration,
+      child: KeyboardListener(
+        focusNode: _keyboardListenerFocusNode,
+        onKeyEvent: (KeyEvent event) {
+          // Detect backspace on empty field
+          if (widget.controller.text.isEmpty &&
+              event is KeyDownEvent &&
+              event.logicalKey == LogicalKeyboardKey.backspace) {
+            // Handle backspace navigation directly
+            _handleBackspaceNavigation();
+          }
+        },
+        child: Semantics(
+          label: widget.index != null && widget.fieldCount != null
+              ? 'OTP field ${widget.index! + 1} of ${widget.fieldCount}'
+              : 'OTP field',
+          textField: true,
+          child: Stack(
+            children: [
+              TextFormField(
+                controller: widget.controller,
+                focusNode: widget.focusNode,
+                textAlign: widget.cursorAlignment,
+                keyboardType: widget.keyboardType,
+                textCapitalization: widget.textCapitalization,
+                inputFormatters: widget.inputFormatters,
+                obscureText: widget.obscureText,
+                obscuringCharacter: widget.obscuringCharacter,
+                enableInteractiveSelection: widget.enableInteractiveSelection,
+                showCursor: widget.config.cursorStyle == CursorStyle.system,
+                cursorColor:
+                    widget.config.cursorColor ?? widget.config.primaryColor,
+                cursorHeight: widget.config.cursorHeight ?? (height - 12),
+                cursorWidth: widget.config.cursorWidth,
+                style: widget.config.fieldStyle ??
+                    TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: _textColorAnimation.value ??
+                          widget.fieldColors.textColor,
+                      height: 1.0,
                     ),
-                    validator: widget.validator,
-                    onChanged: widget.onChanged,
+                decoration: InputDecoration(
+                  counterText: '',
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: (height - 22) / 2,
+                    horizontal: 0,
                   ),
-                  // Base custom cursor (non-animated) only when animation is disabled
-                  if (widget.focusNode.hasFocus &&
-                      widget.config.cursorStyle != CursorStyle.system &&
-                      !widget.animationConfig.enableCursorAnimation)
-                    Positioned.fill(
-                      child: IgnorePointer(
-                        child: Align(
-                          alignment:
-                              _textAlignToAlignment(widget.cursorAlignment),
+                  isDense: true,
+                  hintText: widget.config.showPlaceholder
+                      ? widget.config.placeholderCharacter
+                      : null,
+                  hintStyle: widget.config.placeholderStyle ??
+                      TextStyle(
+                        color: widget.config.placeholderColor ??
+                            widget.fieldColors.borderColor.withAlpha(128),
+                        fontSize: widget.config.fieldFontSize,
+                      ),
+                ),
+                validator: widget.validator,
+                onChanged: widget.onChanged,
+              ),
+              // Base custom cursor (non-animated) only when animation is disabled
+              if (widget.focusNode.hasFocus &&
+                  widget.config.cursorStyle != CursorStyle.system &&
+                  !widget.animationConfig.enableCursorAnimation)
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: Align(
+                      alignment: _textAlignToAlignment(widget.cursorAlignment),
+                      child: _buildCustomCursor(height, width),
+                    ),
+                  ),
+                ),
+
+              // Animated overlay for custom cursor when enabled
+              if (widget.animationConfig.enableCursorAnimation &&
+                  widget.focusNode.hasFocus &&
+                  widget.config.cursorStyle != CursorStyle.system)
+                AnimatedBuilder(
+                  animation: _cursorController,
+                  builder: (context, _) {
+                    return Align(
+                      alignment: _textAlignToAlignment(widget.cursorAlignment),
+                      child: FadeTransition(
+                        opacity: _cursorBlinkAnimation,
+                        child: ScaleTransition(
+                          scale: _cursorScaleAnimation,
                           child: _buildCustomCursor(height, width),
                         ),
                       ),
-                    ),
-
-                  // Animated overlay for custom cursor when enabled
-                  if (widget.animationConfig.enableCursorAnimation &&
-                      widget.focusNode.hasFocus &&
-                      widget.config.cursorStyle != CursorStyle.system)
-                    AnimatedBuilder(
-                      animation: _cursorController,
-                      builder: (context, _) {
-                        return Align(
-                          alignment:
-                              _textAlignToAlignment(widget.cursorAlignment),
-                          child: FadeTransition(
-                            opacity: _cursorBlinkAnimation,
-                            child: ScaleTransition(
-                              scale: _cursorScaleAnimation,
-                              child: _buildCustomCursor(height, width),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                ],
-              ),
-            ),
+                    );
+                  },
+                ),
+            ],
           ),
-        );
-
-        // Apply exactly ONE fill animation (style) when filled/completed
-        final isFilled = widget.fieldState == OtpFieldState.filled ||
-            widget.fieldState == OtpFieldState.completed;
-        Widget transformed = baseContent;
-        if (isFilled) {
-          switch (widget.animationConfig.fieldFillAnimationType) {
-            case FieldFillAnimationType.scale:
-              transformed = Transform.scale(
-                scale: _fillScaleAnimation.value,
-                child: baseContent,
-              );
-              break;
-            case FieldFillAnimationType.rotate:
-              transformed = Transform.rotate(
-                angle: _fillRotationAnimation.value,
-                child: baseContent,
-              );
-              break;
-            case FieldFillAnimationType.slideLeft:
-            case FieldFillAnimationType.slideRight:
-            case FieldFillAnimationType.slideUp:
-            case FieldFillAnimationType.slideDown:
-              transformed = SlideTransition(
-                position: _fillSlideAnimation,
-                child: baseContent,
-              );
-              break;
-            case FieldFillAnimationType.none:
-              transformed = baseContent;
-              break;
-          }
-        }
-
-        // Apply error animations based on type - different from fill animations
-        if ((widget.fieldState == OtpFieldState.error || widget.hasError) &&
-            widget.animationConfig.errorFieldAnimationType !=
-                ErrorFieldAnimationType.none) {
-          switch (widget.animationConfig.errorFieldAnimationType) {
-            case ErrorFieldAnimationType.shake:
-              // Horizontal shake - aggressive side-to-side movement
-              final amplitude = widget.animationConfig.errorShakeAmplitude *
-                  3; // More aggressive than fill
-              final freq = widget.animationConfig.errorShakeFrequency *
-                  1.5; // Faster frequency
-              final dx = amplitude *
-                  math.sin(_errorShakeAnimation.value * freq * math.pi * 2);
-              transformed = Transform.translate(
-                  offset: Offset(dx, 0), child: transformed);
-              break;
-
-            case ErrorFieldAnimationType.scale:
-              // Scale down dramatically then bounce back - different from fill scale
-              final scale = 1.0 -
-                  (0.3 *
-                      _errorShakeAnimation.value *
-                      math.sin(_errorShakeAnimation.value * math.pi * 2));
-              transformed = Transform.scale(scale: scale, child: transformed);
-              break;
-
-            case ErrorFieldAnimationType.rotate:
-              // Aggressive rotation wobble - different from fill rotation
-              final angle = 0.2 *
-                  math.sin(_errorShakeAnimation.value *
-                      math.pi *
-                      6); // More aggressive
-              transformed = Transform.rotate(angle: angle, child: transformed);
-              break;
-
-            case ErrorFieldAnimationType.bounce:
-              // Vertical bounce - up and down movement
-              final amplitude = widget.animationConfig.errorShakeAmplitude * 2;
-              final dy = amplitude *
-                  math.sin(_errorShakeAnimation.value * math.pi * 4).abs();
-              transformed = Transform.translate(
-                  offset: Offset(0, -dy), child: transformed);
-              break;
-
-            case ErrorFieldAnimationType.pulse:
-              // Pulse effect - scale in and out rapidly
-              final scale = 1.0 +
-                  (0.2 * math.sin(_errorShakeAnimation.value * math.pi * 8));
-              transformed = Transform.scale(scale: scale, child: transformed);
-              break;
-
-            case ErrorFieldAnimationType.wiggle:
-              // Wiggle - combination of rotation and translation
-              final amplitude = widget.animationConfig.errorShakeAmplitude * 2;
-              final angle =
-                  0.15 * math.sin(_errorShakeAnimation.value * math.pi * 4);
-              final dx = amplitude *
-                  math.sin(_errorShakeAnimation.value * math.pi * 3);
-              transformed = Transform.translate(
-                  offset: Offset(dx, 0), child: transformed);
-              transformed = Transform.rotate(angle: angle, child: transformed);
-              break;
-
-            case ErrorFieldAnimationType.slideDown:
-              // Slide down and back up
-              final amplitude = widget.animationConfig.errorShakeAmplitude * 2;
-              final dy =
-                  amplitude * math.sin(_errorShakeAnimation.value * math.pi);
-              transformed = Transform.translate(
-                  offset: Offset(0, dy), child: transformed);
-              break;
-
-            case ErrorFieldAnimationType.slideUp:
-              // Slide up and back down
-              final amplitude = widget.animationConfig.errorShakeAmplitude * 2;
-              final dy =
-                  -amplitude * math.sin(_errorShakeAnimation.value * math.pi);
-              transformed = Transform.translate(
-                  offset: Offset(0, dy), child: transformed);
-              break;
-
-            case ErrorFieldAnimationType.slideLeft:
-              // Slide left and back
-              final amplitude = widget.animationConfig.errorShakeAmplitude * 2;
-              final dx =
-                  -amplitude * math.sin(_errorShakeAnimation.value * math.pi);
-              transformed = Transform.translate(
-                  offset: Offset(dx, 0), child: transformed);
-              break;
-
-            case ErrorFieldAnimationType.slideRight:
-              // Slide right and back
-              final amplitude = widget.animationConfig.errorShakeAmplitude * 2;
-              final dx =
-                  amplitude * math.sin(_errorShakeAnimation.value * math.pi);
-              transformed = Transform.translate(
-                  offset: Offset(dx, 0), child: transformed);
-              break;
-
-            case ErrorFieldAnimationType.none:
-              // No animation
-              break;
-          }
-        }
-
-        return transformed;
-      },
+        ),
+      ),
     );
+
+    // Apply exactly ONE fill animation (style) when filled/completed AND animations are enabled
+    final isFilled = widget.fieldState == OtpFieldState.filled ||
+        widget.fieldState == OtpFieldState.completed;
+    Widget transformed = baseContent;
+    if (isFilled && widget.animationConfig.enableFieldStateAnimation) {
+      switch (widget.animationConfig.fieldFillAnimationType) {
+        case FieldFillAnimationType.scale:
+          transformed = Transform.scale(
+            scale: _fillScaleAnimation.value,
+            child: baseContent,
+          );
+          break;
+        case FieldFillAnimationType.rotate:
+          transformed = Transform.rotate(
+            angle: _fillRotationAnimation.value,
+            child: baseContent,
+          );
+          break;
+        case FieldFillAnimationType.slideLeft:
+        case FieldFillAnimationType.slideRight:
+        case FieldFillAnimationType.slideUp:
+        case FieldFillAnimationType.slideDown:
+          transformed = SlideTransition(
+            position: _fillSlideAnimation,
+            child: baseContent,
+          );
+          break;
+        case FieldFillAnimationType.autoSlide:
+          // Handle autoSlide with direction detection in build method
+          final textDirection = Directionality.of(context);
+          final slideOffset = textDirection == TextDirection.ltr
+              ? Offset(-widget.animationConfig.fieldFillSlideOffset.dx, 0)
+              : Offset(widget.animationConfig.fieldFillSlideOffset.dx, 0);
+
+          // Create a custom slide animation for autoSlide
+          final autoSlideAnimation = Tween<Offset>(
+            begin: slideOffset,
+            end: Offset.zero,
+          ).animate(CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOut,
+          ));
+
+          transformed = SlideTransition(
+            position: autoSlideAnimation,
+            child: baseContent,
+          );
+          break;
+        case FieldFillAnimationType.none:
+          transformed = baseContent;
+          break;
+      }
+    }
+
+    // Apply error animations based on type - different from fill animations
+    if ((widget.fieldState == OtpFieldState.error || widget.hasError) &&
+        widget.animationConfig.enableFieldStateAnimation &&
+        widget.animationConfig.errorFieldAnimationType !=
+            ErrorFieldAnimationType.none) {
+      switch (widget.animationConfig.errorFieldAnimationType) {
+        case ErrorFieldAnimationType.shake:
+          // Horizontal shake - aggressive side-to-side movement
+          final amplitude = widget.animationConfig.errorShakeAmplitude *
+              3; // More aggressive than fill
+          final freq = widget.animationConfig.errorShakeFrequency *
+              1.5; // Faster frequency
+          final dx = amplitude *
+              math.sin(_errorShakeAnimation.value * freq * math.pi * 2);
+          transformed =
+              Transform.translate(offset: Offset(dx, 0), child: transformed);
+          break;
+
+        case ErrorFieldAnimationType.scale:
+          // Scale down dramatically then bounce back - different from fill scale
+          final scale = 1.0 -
+              (0.3 *
+                  _errorShakeAnimation.value *
+                  math.sin(_errorShakeAnimation.value * math.pi * 2));
+          transformed = Transform.scale(scale: scale, child: transformed);
+          break;
+
+        case ErrorFieldAnimationType.rotate:
+          // Aggressive rotation wobble - different from fill rotation
+          final angle = 0.2 *
+              math.sin(
+                  _errorShakeAnimation.value * math.pi * 6); // More aggressive
+          transformed = Transform.rotate(angle: angle, child: transformed);
+          break;
+
+        case ErrorFieldAnimationType.bounce:
+          // Vertical bounce - up and down movement
+          final amplitude = widget.animationConfig.errorShakeAmplitude * 2;
+          final dy = amplitude *
+              math.sin(_errorShakeAnimation.value * math.pi * 4).abs();
+          transformed =
+              Transform.translate(offset: Offset(0, -dy), child: transformed);
+          break;
+
+        case ErrorFieldAnimationType.pulse:
+          // Pulse effect - scale in and out rapidly
+          final scale =
+              1.0 + (0.2 * math.sin(_errorShakeAnimation.value * math.pi * 8));
+          transformed = Transform.scale(scale: scale, child: transformed);
+          break;
+
+        case ErrorFieldAnimationType.wiggle:
+          // Wiggle - combination of rotation and translation
+          final amplitude = widget.animationConfig.errorShakeAmplitude * 2;
+          final angle =
+              0.15 * math.sin(_errorShakeAnimation.value * math.pi * 4);
+          final dx =
+              amplitude * math.sin(_errorShakeAnimation.value * math.pi * 3);
+          transformed =
+              Transform.translate(offset: Offset(dx, 0), child: transformed);
+          transformed = Transform.rotate(angle: angle, child: transformed);
+          break;
+
+        case ErrorFieldAnimationType.slideDown:
+          // Slide down and back up
+          final amplitude = widget.animationConfig.errorShakeAmplitude * 2;
+          final dy = amplitude * math.sin(_errorShakeAnimation.value * math.pi);
+          transformed =
+              Transform.translate(offset: Offset(0, dy), child: transformed);
+          break;
+
+        case ErrorFieldAnimationType.slideUp:
+          // Slide up and back down
+          final amplitude = widget.animationConfig.errorShakeAmplitude * 2;
+          final dy =
+              -amplitude * math.sin(_errorShakeAnimation.value * math.pi);
+          transformed =
+              Transform.translate(offset: Offset(0, dy), child: transformed);
+          break;
+
+        case ErrorFieldAnimationType.slideLeft:
+          // Slide left and back
+          final amplitude = widget.animationConfig.errorShakeAmplitude * 2;
+          final dx =
+              -amplitude * math.sin(_errorShakeAnimation.value * math.pi);
+          transformed =
+              Transform.translate(offset: Offset(dx, 0), child: transformed);
+          break;
+
+        case ErrorFieldAnimationType.slideRight:
+          // Slide right and back
+          final amplitude = widget.animationConfig.errorShakeAmplitude * 2;
+          final dx = amplitude * math.sin(_errorShakeAnimation.value * math.pi);
+          transformed =
+              Transform.translate(offset: Offset(dx, 0), child: transformed);
+          break;
+
+        case ErrorFieldAnimationType.none:
+          // No animation
+          break;
+      }
+    }
+
+    return transformed;
   }
 }
 
