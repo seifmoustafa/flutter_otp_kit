@@ -318,12 +318,6 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
   bool _isLoading = false;
   bool _isComplete = false;
 
-  // ValueNotifiers for state management
-  late ValueNotifier<String> _otpValueNotifier;
-  late ValueNotifier<bool> _isCompleteNotifier;
-  late ValueNotifier<bool> _hasErrorNotifier;
-  late ValueNotifier<String?> _errorTextNotifier;
-
   // Timer
   Timer? _timer;
   int _remainingTime = 0;
@@ -351,7 +345,6 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
     _setupTimer();
     _setupFocusListeners();
     _initializeServices();
-    _initializeValueNotifiers();
 
     if (widget.autoFocus && _focusNodes.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -378,13 +371,6 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
 
     // Initialize platform service
     await OtpPlatformService.instance.initialize();
-  }
-
-  void _initializeValueNotifiers() {
-    _otpValueNotifier = ValueNotifier<String>('');
-    _isCompleteNotifier = ValueNotifier<bool>(false);
-    _hasErrorNotifier = ValueNotifier<bool>(false);
-    _errorTextNotifier = ValueNotifier<String?>(null);
   }
 
   void _initializeControllers() {
@@ -485,6 +471,25 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
     }
   }
 
+  void _handleBackspace(int index) {
+    if (index > 0) {
+      // First, request focus on the previous field
+      _focusNodes[index - 1].requestFocus();
+
+      // Use a longer delay to ensure focus is fully established before selecting text
+      // This prevents the keyboard from closing
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (mounted) {
+          // Select ALL text in the previous field so user can immediately edit/delete/replace
+          _controllers[index - 1].selection = TextSelection(
+            baseOffset: 0,
+            extentOffset: _controllers[index - 1].text.length,
+          );
+        }
+      });
+    }
+  }
+
   void _triggerHapticFeedback(HapticFeedbackType type) {
     switch (type) {
       case HapticFeedbackType.light:
@@ -525,78 +530,65 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
   }
 
   void _onFieldChanged(String value, int index) {
-    // Update field content
-    _controllers[index].text = value;
+    setState(() {
+      _controllers[index].text = value;
+      _updateFieldStates();
 
-    // Update field states
-    _fieldStates[index] =
-        value.isEmpty ? OtpFieldState.empty : OtpFieldState.filled;
-    _fieldErrors[index] = false;
+      // Clear errors when user types
+      if (_hasError) {
+        _hasError = false;
+        _errorText = null;
+        widget.onErrorStateChanged?.call(false);
 
-    // Clear global error state
-    if (_hasError) {
-      _hasError = false;
-      _errorText = null;
-      _hasErrorNotifier.value = false;
-      _errorTextNotifier.value = null;
-      widget.onErrorStateChanged?.call(false);
-    }
-
-    // Handle paste functionality
-    if (widget.enablePaste && value.length > 1) {
-      _handlePaste(value, index);
-      return;
-    }
-
-    // Trigger haptic feedback
-    final config = widget.fieldConfig ?? OtpFieldConfig();
-    if (config.enableHapticFeedback) {
-      _triggerHapticFeedback(config.hapticFeedbackType);
-    }
-
-    // Trigger field animation
-    if (widget.animationConfig.enableFieldStateAnimation) {
-      _fieldAnimationControllers[index].forward();
-    }
-
-    // Check completion
-    final otpValue = _getOtpValue();
-    _otpValueNotifier.value = otpValue;
-    widget.onChanged?.call(otpValue);
-
-    if (otpValue.length == widget.fieldCount) {
-      _isComplete = true;
-      _isCompleteNotifier.value = true;
-      widget.onCompleted?.call(otpValue);
-      widget.onCompletionStateChanged?.call(true);
-      // Hide keyboard when OTP is complete
-      FocusScope.of(context).unfocus();
-    } else {
-      _isComplete = false;
-      _isCompleteNotifier.value = false;
-      widget.onCompletionStateChanged?.call(false);
-    }
-
-    // Handle navigation AFTER all updates
-    if (value.isEmpty && index > 0) {
-      // Move to previous field
-      _focusNodes[index - 1].requestFocus();
-
-      // Select text in previous field if it has content
-      if (_controllers[index - 1].text.isNotEmpty) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            _controllers[index - 1].selection = TextSelection(
-              baseOffset: 0,
-              extentOffset: _controllers[index - 1].text.length,
-            );
-          }
-        });
+        // Clear field errors
+        for (int i = 0; i < _fieldErrors.length; i++) {
+          _fieldErrors[i] = false;
+        }
       }
-    } else if (value.isNotEmpty && index < widget.fieldCount - 1) {
+
+      // Handle paste functionality
+      if (widget.enablePaste && value.length > 1) {
+        _handlePaste(value, index);
+        return;
+      }
+
+      // Handle backspace navigation - check if field becomes empty
+      if (value.isEmpty && index > 0) {
+        _handleBackspace(index);
+        return;
+      }
+
+      // Trigger haptic feedback on input
+      final config = widget.fieldConfig ?? OtpFieldConfig();
+      if (config.enableHapticFeedback) {
+        _triggerHapticFeedback(config.hapticFeedbackType);
+      }
+
       // Move to next field
-      _focusNodes[index + 1].requestFocus();
-    }
+      if (value.isNotEmpty && index < widget.fieldCount - 1) {
+        _focusNodes[index + 1].requestFocus();
+      } else if (value.isNotEmpty && index == widget.fieldCount - 1) {
+        _focusNodes[index].unfocus();
+      }
+
+      // Trigger field animation
+      if (widget.animationConfig.enableFieldStateAnimation) {
+        _fieldAnimationControllers[index].forward();
+      }
+
+      // Check completion
+      final otpValue = _getOtpValue();
+      widget.onChanged?.call(otpValue);
+
+      if (otpValue.length == widget.fieldCount) {
+        _isComplete = true;
+        widget.onCompleted?.call(otpValue);
+        widget.onCompletionStateChanged?.call(true);
+      } else {
+        _isComplete = false;
+        widget.onCompletionStateChanged?.call(false);
+      }
+    });
   }
 
   void _handlePaste(String pastedValue, int startIndex) {
@@ -838,13 +830,6 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
     for (var focusNode in _focusNodes) {
       focusNode.dispose();
     }
-
-    // Dispose ValueNotifiers
-    _otpValueNotifier.dispose();
-    _isCompleteNotifier.dispose();
-    _hasErrorNotifier.dispose();
-    _errorTextNotifier.dispose();
-
     super.dispose();
   }
 

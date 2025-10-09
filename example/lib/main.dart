@@ -290,17 +290,7 @@ class UnderlinedExample extends StatelessWidget {
                 subtitle:
                     'Minimal Design - Code sent to {contactInfo} (try 1234)',
                 fieldCount: 4,
-                fieldConfig:
-                    OtpFieldConfig.preset(OtpFieldPreset.underlined).copyWith(
-                  cursorStyle: CursorStyle.underline,
-                  enableShadow: false,
-                ),
-                animationConfig: const OtpAnimationConfig(
-                  enableFieldStateAnimation: true,
-                  fieldFillAnimationType: FieldFillAnimationType.slideUp,
-                  enableCursorAnimation: true,
-                  cursorBlinkDuration: Duration(milliseconds: 800),
-                ),
+                fieldConfig: OtpFieldConfig.preset(OtpFieldPreset.underlined),
                 primaryColor: Colors.black,
                 backgroundColor: Colors.transparent,
                 contactInfo: 'admin@techstartup.io',
@@ -351,25 +341,14 @@ class AnimatedExample extends StatelessWidget {
           child: Column(
             children: [
               const Text(
-                'Cursor Styles & Animations',
+                'Advanced Animations',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 16),
-              const Text(
-                'Try different cursor styles and animations!',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
               const SizedBox(height: 32),
-
-              // Glow Bar Cursor
-              const Text(
-                'Glow Bar Cursor',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 16),
               OtpKit(
-                title: 'Glow Bar Cursor',
-                subtitle: 'Code sent to {contactInfo} (try 1234)',
+                title: 'Animated Fields',
+                subtitle:
+                    'Watch the magic happen - Code sent to {contactInfo} (try 1234)',
                 fieldCount: 4,
                 fieldConfig: const OtpFieldConfig(
                   fieldWidth: 60,
@@ -378,14 +357,15 @@ class AnimatedExample extends StatelessWidget {
                   borderWidth: 2,
                   enableShadow: true,
                   shadowBlurRadius: 8,
-                  primaryColor: Colors.purple,
-                  cursorStyle: CursorStyle.glowBar,
-                  cursorWidth: 3,
+                  primaryColor: Colors.indigo,
                 ),
                 animationConfig: const OtpAnimationConfig(
-                  enableCursorAnimation: true,
-                  cursorBlinkDuration: Duration(milliseconds: 600),
+                  animationDuration: Duration(milliseconds: 500),
+                  animationCurve: Curves.easeInOutCubic,
                   fieldFillAnimationType: FieldFillAnimationType.scale,
+                  errorFieldAnimationType: ErrorFieldAnimationType.bounce,
+                  errorShakeAmplitude: 6.0,
+                  errorShakeFrequency: 15.0,
                 ),
                 errorConfig: const OtpErrorConfig(
                   errorShakeEffect: true,
@@ -413,122 +393,6 @@ class AnimatedExample extends StatelessWidget {
                       ),
                     );
                     return false; // Failure
-                  }
-                },
-                onResend: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Code resent!')),
-                  );
-                },
-              ),
-
-              const SizedBox(height: 32),
-
-              // Ring Cursor
-              const Text(
-                'Ring Cursor',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 16),
-              OtpKit(
-                title: 'Ring Cursor',
-                subtitle: 'Code sent to {contactInfo} (try 1234)',
-                fieldCount: 4,
-                fieldConfig: const OtpFieldConfig(
-                  fieldWidth: 60,
-                  fieldHeight: 60,
-                  borderRadius: 15,
-                  borderWidth: 2,
-                  enableShadow: true,
-                  shadowBlurRadius: 8,
-                  primaryColor: Colors.teal,
-                  cursorStyle: CursorStyle.ring,
-                ),
-                animationConfig: const OtpAnimationConfig(
-                  enableCursorAnimation: true,
-                  cursorBlinkDuration: Duration(milliseconds: 1000),
-                  fieldFillAnimationType: FieldFillAnimationType.rotate,
-                ),
-                primaryColor: Colors.teal,
-                successColor: Colors.green,
-                contactInfo: '+33 1 42 86 83 26',
-                maskingType: MaskingType.phone,
-                onVerify: (otp) async {
-                  if (otp == '1234') {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('✅ Success! OTP $otp is correct'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                    return true;
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content:
-                            Text('❌ Error! OTP $otp is incorrect. Try 1234'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                    return false;
-                  }
-                },
-                onResend: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Code resent!')),
-                  );
-                },
-              ),
-
-              const SizedBox(height: 32),
-
-              // Wedge Cursor
-              const Text(
-                'Wedge Cursor',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 16),
-              OtpKit(
-                title: 'Wedge Cursor',
-                subtitle: 'Code sent to {contactInfo} (try 1234)',
-                fieldCount: 4,
-                fieldConfig: const OtpFieldConfig(
-                  fieldWidth: 60,
-                  fieldHeight: 60,
-                  borderRadius: 15,
-                  borderWidth: 2,
-                  enableShadow: true,
-                  shadowBlurRadius: 8,
-                  primaryColor: Colors.orange,
-                  cursorStyle: CursorStyle.wedge,
-                ),
-                animationConfig: const OtpAnimationConfig(
-                  enableCursorAnimation: true,
-                  cursorBlinkDuration: Duration(milliseconds: 400),
-                  fieldFillAnimationType: FieldFillAnimationType.slideLeft,
-                ),
-                primaryColor: Colors.orange,
-                successColor: Colors.green,
-                contactInfo: '+33 1 42 86 83 26',
-                maskingType: MaskingType.phone,
-                onVerify: (otp) async {
-                  if (otp == '1234') {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('✅ Success! OTP $otp is correct'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                    return true;
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content:
-                            Text('❌ Error! OTP $otp is incorrect. Try 1234'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                    return false;
                   }
                 },
                 onResend: () {
