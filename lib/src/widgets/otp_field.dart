@@ -147,7 +147,7 @@ class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
     } else {
       _animationController = AnimationController(
         vsync: this,
-        duration: widget.animationDuration,
+        duration: widget.animationConfig.fieldTransitionDuration,
       );
     }
 
@@ -750,21 +750,28 @@ class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
         case FieldFillAnimationType.autoSlide:
           // Handle autoSlide with direction detection in build method
           final textDirection = Directionality.of(context);
-          final slideOffset = textDirection == TextDirection.ltr
-              ? Offset(-widget.animationConfig.fieldFillSlideOffset.dx, 0)
-              : Offset(widget.animationConfig.fieldFillSlideOffset.dx, 0);
+          // Use fieldFillSlideOffset if provided, otherwise default to 6px
+          final slideDistance =
+              widget.animationConfig.fieldFillSlideOffset.dx > 0
+                  ? widget.animationConfig.fieldFillSlideOffset.dx
+                  : 6.0; // Default 6px if not specified
 
-          // Create a custom slide animation for autoSlide
-          final autoSlideAnimation = Tween<Offset>(
-            begin: slideOffset,
-            end: Offset.zero,
+          final moveOffset = textDirection == TextDirection.ltr
+              ? Offset(-slideDistance, 0) // Move left by slideDistance
+              : Offset(slideDistance, 0); // Move right by slideDistance
+
+          // Create a custom move animation for autoSlide with configurable duration
+          final autoMoveAnimation = Tween<Offset>(
+            begin: Offset.zero, // Start at current position
+            end: moveOffset, // Move 6px left/right from current position
           ).animate(CurvedAnimation(
             parent: _animationController,
-            curve: Curves.easeOut,
+            curve: widget
+                .animationConfig.fieldTransitionCurve, // Use configurable curve
           ));
 
-          transformed = SlideTransition(
-            position: autoSlideAnimation,
+          transformed = Transform.translate(
+            offset: autoMoveAnimation.value,
             child: baseContent,
           );
           break;

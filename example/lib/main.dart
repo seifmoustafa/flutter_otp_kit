@@ -304,8 +304,9 @@ class UnderlinedExample extends StatelessWidget {
                   enableAnimation: true,
                   enableFieldStateAnimation: true,
                   fieldFillAnimationType: FieldFillAnimationType.autoSlide,
-                  fieldFillSlideOffset: Offset(3, 0), // 3px slide movement
-                  fieldTransitionDuration: Duration(milliseconds: 200),
+                  // fieldFillSlideOffset: Offset(6, 0), // Optional: overrides default 6px
+                  fieldTransitionDuration:
+                      Duration(milliseconds: 120),
                   fieldTransitionCurve: Curves.easeOut,
                 ),
                 onVerify: (otp) async {

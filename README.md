@@ -349,7 +349,7 @@ OtpKit(
 
     // Field fill animations (when field is completed)
     fieldFillAnimationType: FieldFillAnimationType.scale,  // scale, rotate, slideLeft, slideRight, slideUp, slideDown, autoSlide, none
-    fieldFillSlideOffset: Offset(6, 0),     // For slide animations (3px for subtle effect)
+    fieldFillSlideOffset: Offset(6, 0),     // For slide animations (6px for more noticeable effect)
     fieldFillRotationRadians: 0.10,         // For rotate animation
 
     // Error animations
@@ -380,7 +380,7 @@ OtpKit(
 - `FieldFillAnimationType.scale` - Field scales up slightly (1.06x)
 - `FieldFillAnimationType.rotate` - Field rotates slightly
 - `FieldFillAnimationType.slideLeft/Right/Up/Down` - Field slides in direction
-- `FieldFillAnimationType.autoSlide` - **Smart slide**: Auto-detects text direction (LTR: slide left, RTL: slide right)
+- `FieldFillAnimationType.autoSlide` - **Smart move**: Auto-detects text direction (LTR: move left, RTL: move right) - defaults to 6px, configurable via `fieldFillSlideOffset`
 - `FieldFillAnimationType.none` - No fill animation
 
 **Error Animations** (when field has error):
@@ -427,17 +427,29 @@ OtpKit(
   animationConfig: const OtpAnimationConfig(
     enableFieldStateAnimation: true,
     fieldFillAnimationType: FieldFillAnimationType.autoSlide,
-    fieldFillSlideOffset: Offset(3, 0), // 3px movement
-    fieldTransitionDuration: Duration(milliseconds: 200),
+    // fieldFillSlideOffset: Offset(6, 0), // Optional: overrides default 6px
+    fieldTransitionDuration: Duration(milliseconds: 120), // Faster duration
   ),
 )
 ```
 
 **How it works:**
-- **LTR (Left-to-Right)**: Fields slide left 3px when filled
-- **RTL (Right-to-Left)**: Fields slide right 3px when filled
+- **LTR (Left-to-Right)**: Fields move left from current position when filled (default 6px)
+- **RTL (Right-to-Left)**: Fields move right from current position when filled (default 6px)
 - **Automatic Detection**: Uses `Directionality.of(context)` to detect text direction
-- **Perfect for Underlined**: Creates a subtle "field moves" effect
+- **Package Controlled**: Default 6px movement controlled by package
+- **Configurable Override**: Use `fieldFillSlideOffset` to override default distance
+- **Configurable Duration**: Control animation speed with `fieldTransitionDuration`
+- **Perfect for Underlined**: Creates a noticeable "field shifts" effect
+
+**🎛️ Override Default Distance:**
+```dart
+// Use custom distance instead of default 6px
+animationConfig: const OtpAnimationConfig(
+  fieldFillAnimationType: FieldFillAnimationType.autoSlide,
+  fieldFillSlideOffset: Offset(10, 0), // Custom 10px movement
+),
+```
 
 **⚡ Performance Notes**
 - **No animations (default)**: Maximum performance, instant state changes
