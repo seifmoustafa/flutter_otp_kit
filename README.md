@@ -102,17 +102,13 @@
 
 ## Demo
 
-| Basic Theme | Rotate Animation |
+| Basic Theme | Rotate Animation | Rounded Fields |
 | - | - | - |
-| <img width="300" src="assets\images\basic_theme_demo.gif"/> | <img width="300" src="assets\images\rotate_animation_demo.gif"/> |
+| <img width="300" src="assets\images\basic_theme_demo.gif"/> | <img width="300" src="assets\images\rotate_animation_demo.gif"/> | <img width="300" src="assets\images\rounded_demo.gif"/> |
 
-| Rounded Fields | Scale Animation | Underlined Fields |
+| Scale Animation | Underlined Fields | Cursor Styles |
 | - | - | - |
-| <img width="300" src="assets\images\rounded_demo.gif"/> | <img width="300" src="assets\images\scale_demo.gif"/> | <img width="300" src="assets\images\underline_demo.gif"/> |
-
-| Cursor Styles | Modern Design | Classic Style |
-| - | - | - |
-| <img width="300" src="assets\images\cursor_styles.gif"/> | <img width="300" src="assets\images\basic_theme_demo.gif"/> | <img width="300" src="assets\images\basic_theme_demo.gif"/> |
+| <img width="300" src="assets\images\scale_demo.gif"/> | <img width="300" src="assets\images\underline_demo.gif"/> | <img width="300" src="assets\images\cursor_styles.gif"/> |
 
 ---
 
