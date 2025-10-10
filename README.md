@@ -104,7 +104,7 @@
 
 | [Live Demo](https://github.com/seifmoustafa/flutter_otp_kit) | Basic Theme | Rotate Animation |
 | - | - | - |
-| <a href="https://github.com/seifmoustafa/flutter_otp_kit"><img width="300" src="assets\images\flutter_otp_kit_logo.png"/></a> | <img width="300" src="assets\images\basic_theme_demo.gif"/> | <img width="300" src="assets\images\rotate_animation_demo.gif"/> |
+| <img width="300" src="assets\images\basic_theme_demo.gif"/> | <img width="300" src="assets\images\rotate_animation_demo.gif"/> |
 
 | Rounded Fields | Scale Animation | Underlined Fields |
 | - | - | - |
