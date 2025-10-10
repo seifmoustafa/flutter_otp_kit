@@ -109,42 +109,130 @@
   </p>
 </div>
 
-<div align="center" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 3rem; margin: 3rem 0; padding: 0 2rem;">
+<!-- Main Demo Section -->
+<div style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
   
-  <div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #f0f0f0;">
-    <h3 style="margin: 0 0 1rem 0; color: #333; font-size: 1.3rem;">🎯 Basic Demo</h3>
-    <img src="assets\images\basic_theme_demo.gif" width="100%" height="400" style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); object-fit: cover;" alt="Basic OTP Demo">
-    <p style="margin: 1rem 0 0 0; color: #666; font-weight: 500;">Clean, simple OTP verification with default styling</p>
+  <!-- Featured Demo -->
+  <div style="background: white; border-radius: 30px; padding: 3rem; box-shadow: 0 30px 60px rgba(0,0,0,0.15); margin: 3rem 0; text-align: center;">
+    <h3 style="margin: 0 0 2rem 0; color: #333; font-size: 1.8rem; font-weight: 600;">📱 Complete OTP Experience</h3>
+    <div style="position: relative; display: inline-block;">
+      <div style="width: 300px; height: 600px; background: linear-gradient(145deg, #667eea 0%, #764ba2 100%); border-radius: 40px; padding: 20px; box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3); transform: perspective(1000px) rotateY(-15deg) rotateX(5deg);">
+        <div style="width: 100%; height: 100%; background: white; border-radius: 30px; overflow: hidden; position: relative;">
+          <img src="assets\images\basic_theme_demo.gif" width="100%" height="100%" style="object-fit: cover;" alt="Complete OTP Demo">
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: 2rem;">
+      <button style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 1rem 2rem; border-radius: 50px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);">
+        View Complete Demo
+      </button>
+    </div>
   </div>
   
-  <div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #f0f0f0;">
-    <h3 style="margin: 0 0 1rem 0; color: #333; font-size: 1.3rem;">🔄 Rotate Animation</h3>
-    <img src="assets\images\rotate_animation_demo.gif" width="100%" height="400" style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); object-fit: cover;" alt="Rotate Animation Demo">
-    <p style="margin: 1rem 0 0 0; color: #666; font-weight: 500;">Smooth rotation animations when fields are completed</p>
+  <!-- Phone Mockups Grid -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin: 4rem 0;">
+    
+    <!-- Basic Demo -->
+    <div style="background: white; border-radius: 25px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center;">
+      <h4 style="margin: 0 0 1rem 0; color: #333; font-size: 1.2rem; font-weight: 600;">🎯 Basic Demo</h4>
+      <div style="width: 200px; height: 400px; background: #f8f9fa; border-radius: 25px; margin: 0 auto; padding: 15px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);">
+        <div style="width: 100%; height: 100%; background: white; border-radius: 20px; overflow: hidden;">
+          <img src="assets\images\basic_theme_demo.gif" width="100%" height="100%" style="object-fit: cover;" alt="Basic Demo">
+        </div>
+      </div>
+      <p style="margin: 1rem 0 0 0; color: #666; font-size: 0.9rem;">Clean, simple OTP verification</p>
+    </div>
+    
+    <!-- Rotate Animation -->
+    <div style="background: white; border-radius: 25px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center;">
+      <h4 style="margin: 0 0 1rem 0; color: #333; font-size: 1.2rem; font-weight: 600;">🔄 Rotate Animation</h4>
+      <div style="width: 200px; height: 400px; background: #f8f9fa; border-radius: 25px; margin: 0 auto; padding: 15px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);">
+        <div style="width: 100%; height: 100%; background: white; border-radius: 20px; overflow: hidden;">
+          <img src="assets\images\rotate_animation_demo.gif" width="100%" height="100%" style="object-fit: cover;" alt="Rotate Animation">
+        </div>
+      </div>
+      <p style="margin: 1rem 0 0 0; color: #666; font-size: 0.9rem;">Smooth rotation animations</p>
+    </div>
+    
+    <!-- Rounded Fields -->
+    <div style="background: white; border-radius: 25px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center;">
+      <h4 style="margin: 0 0 1rem 0; color: #333; font-size: 1.2rem; font-weight: 600;">⭕ Rounded Fields</h4>
+      <div style="width: 200px; height: 400px; background: #f8f9fa; border-radius: 25px; margin: 0 auto; padding: 15px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);">
+        <div style="width: 100%; height: 100%; background: white; border-radius: 20px; overflow: hidden;">
+          <img src="assets\images\rounded_demo.gif" width="100%" height="100%" style="object-fit: cover;" alt="Rounded Fields">
+        </div>
+      </div>
+      <p style="margin: 1rem 0 0 0; color: #666; font-size: 0.9rem;">Beautiful circular fields</p>
+    </div>
+    
+    <!-- Scale Animation -->
+    <div style="background: white; border-radius: 25px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center;">
+      <h4 style="margin: 0 0 1rem 0; color: #333; font-size: 1.2rem; font-weight: 600;">📏 Scale Animation</h4>
+      <div style="width: 200px; height: 400px; background: #f8f9fa; border-radius: 25px; margin: 0 auto; padding: 15px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);">
+        <div style="width: 100%; height: 100%; background: white; border-radius: 20px; overflow: hidden;">
+          <img src="assets\images\scale_demo.gif" width="100%" height="100%" style="object-fit: cover;" alt="Scale Animation">
+        </div>
+      </div>
+      <p style="margin: 1rem 0 0 0; color: #666; font-size: 0.9rem;">Elegant scale transitions</p>
+    </div>
+    
+    <!-- Underlined Fields -->
+    <div style="background: white; border-radius: 25px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center;">
+      <h4 style="margin: 0 0 1rem 0; color: #333; font-size: 1.2rem; font-weight: 600;">📝 Underlined Fields</h4>
+      <div style="width: 200px; height: 400px; background: #f8f9fa; border-radius: 25px; margin: 0 auto; padding: 15px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);">
+        <div style="width: 100%; height: 100%; background: white; border-radius: 20px; overflow: hidden;">
+          <img src="assets\images\underline_demo.gif" width="100%" height="100%" style="object-fit: cover;" alt="Underlined Fields">
+        </div>
+      </div>
+      <p style="margin: 1rem 0 0 0; color: #666; font-size: 0.9rem;">Minimal underlined design</p>
+    </div>
+    
+    <!-- Cursor Styles -->
+    <div style="background: white; border-radius: 25px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center;">
+      <h4 style="margin: 0 0 1rem 0; color: #333; font-size: 1.2rem; font-weight: 600;">🎨 Cursor Styles</h4>
+      <div style="width: 200px; height: 400px; background: #f8f9fa; border-radius: 25px; margin: 0 auto; padding: 15px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);">
+        <div style="width: 100%; height: 100%; background: white; border-radius: 20px; overflow: hidden;">
+          <img src="assets\images\cursor_styles.gif" width="100%" height="100%" style="object-fit: cover;" alt="Cursor Styles">
+        </div>
+      </div>
+      <p style="margin: 1rem 0 0 0; color: #666; font-size: 0.9rem;">16 different cursor styles</p>
+    </div>
+    
   </div>
   
-  <div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #f0f0f0;">
-    <h3 style="margin: 0 0 1rem 0; color: #333; font-size: 1.3rem;">⭕ Rounded Fields</h3>
-    <img src="assets\images\rounded_demo.gif" width="100%" height="400" style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); object-fit: cover;" alt="Rounded Fields Demo">
-    <p style="margin: 1rem 0 0 0; color: #666; font-weight: 500;">Beautiful circular fields with modern design</p>
-  </div>
-  
-  <div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #f0f0f0;">
-    <h3 style="margin: 0 0 1rem 0; color: #333; font-size: 1.3rem;">📏 Scale Animation</h3>
-    <img src="assets\images\scale_demo.gif" width="100%" height="400" style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); object-fit: cover;" alt="Scale Animation Demo">
-    <p style="margin: 1rem 0 0 0; color: #666; font-weight: 500;">Elegant scale animations with smooth transitions</p>
-  </div>
-  
-  <div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #f0f0f0;">
-    <h3 style="margin: 0 0 1rem 0; color: #333; font-size: 1.3rem;">📝 Underlined Fields</h3>
-    <img src="assets\images\underline_demo.gif" width="100%" height="400" style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); object-fit: cover;" alt="Underlined Fields Demo">
-    <p style="margin: 1rem 0 0 0; color: #666; font-weight: 500;">Minimal underlined design with smart animations</p>
-  </div>
-  
-  <div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #f0f0f0;">
-    <h3 style="margin: 0 0 1rem 0; color: #333; font-size: 1.3rem;">🎨 Cursor Styles</h3>
-    <img src="assets\images\cursor_styles.gif" width="100%" height="400" style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); object-fit: cover;" alt="Cursor Styles Demo">
-    <p style="margin: 1rem 0 0 0; color: #666; font-weight: 500;">16 different cursor styles from system to custom</p>
+  <!-- Additional Style Showcase -->
+  <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 30px; padding: 3rem; margin: 4rem 0;">
+    <h3 style="text-align: center; margin: 0 0 2rem 0; color: #333; font-size: 1.8rem; font-weight: 600;">🎨 Style Variations</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+      
+      <div style="text-align: center;">
+        <div style="width: 150px; height: 300px; background: white; border-radius: 20px; margin: 0 auto; padding: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+          <div style="width: 100%; height: 100%; background: #f8f9fa; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 0.9rem;">
+            Rounded Filled
+          </div>
+        </div>
+        <p style="margin: 1rem 0 0 0; color: #666; font-size: 0.9rem; font-weight: 500;">Rounded Filled</p>
+      </div>
+      
+      <div style="text-align: center;">
+        <div style="width: 150px; height: 300px; background: white; border-radius: 20px; margin: 0 auto; padding: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+          <div style="width: 100%; height: 100%; background: #f8f9fa; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 0.9rem;">
+            With Bottom Cursor
+          </div>
+        </div>
+        <p style="margin: 1rem 0 0 0; color: #666; font-size: 0.9rem; font-weight: 500;">With Bottom Cursor</p>
+      </div>
+      
+      <div style="text-align: center;">
+        <div style="width: 150px; height: 300px; background: white; border-radius: 20px; margin: 0 auto; padding: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+          <div style="width: 100%; height: 100%; background: #f8f9fa; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 0.9rem;">
+            Filled Style
+          </div>
+        </div>
+        <p style="margin: 1rem 0 0 0; color: #666; font-size: 0.9rem; font-weight: 500;">Filled Style</p>
+      </div>
+      
+    </div>
   </div>
   
 </div>
