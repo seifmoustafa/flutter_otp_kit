@@ -29,7 +29,7 @@
 <!-- Package Info -->
 
 <p align="center">
-  <img src="screenshots/flutter_otp_kit_logo.png" alt="Flutter OTP Kit" width="420" />
+  <img src="https://drive.google.com/file/d/1j_-U7ZyG4BZGF84nXek2OVGxPxl-E9Y2/view?usp=drive_link" alt="Flutter OTP Kit" width="420" />
 </p>
 <p align="center">
   <a href="https://pub.dev/packages/flutter_otp_kit" target="_blank" rel="noopener noreferrer">
