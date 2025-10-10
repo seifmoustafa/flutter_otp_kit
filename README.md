@@ -104,11 +104,11 @@
 
 | Basic Theme | Rotate Animation | Rounded Fields |
 | - | - | - |
-| <img width="300" src="assets\images\basic_theme_demo.gif"/> | <img width="300" src="assets\images\rotate_animation_demo.gif"/> | <img width="300" src="assets\images\rounded_demo.gif"/> |
+| <img width="300" src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/assets/images/basic_theme_demo.gif"/> | <img width="300" src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/assets/images/rotate_animation_demo.gif"/> | <img width="300" src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/assets/images/rounded_demo.gif"/> |
 
 | Scale Animation | Underlined Fields | Cursor Styles |
 | - | - | - |
-| <img width="300" src="assets\images\scale_demo.gif"/> | <img width="300" src="assets\images\underline_demo.gif"/> | <img width="300" src="assets\images\cursor_styles.gif"/> |
+| <img width="300" src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/assets/images/scale_demo.gif"/> | <img width="300" src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/assets/images/underline_demo.gif"/> | <img width="300" src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/assets/images/cursor_styles.gif"/> |
 
 ---
 
