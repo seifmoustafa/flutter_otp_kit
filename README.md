@@ -124,7 +124,7 @@
     <h3 style="margin: 0 0 1rem 0; font-size: 1.5rem;">📦 Installation</h3>
     <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 15px; backdrop-filter: blur(10px);">
       <pre style="margin: 0; font-size: 1.1rem; color: white;"><code>dependencies:
-  flutter_otp_kit: ^3.0.0</code></pre>
+  flutter_otp_kit: ^3.0.1</code></pre>
     </div>
   </div>
   

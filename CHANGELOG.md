@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [3.0.1] - 2025-10-10
+- ✅ **Fixed GIF display on pub.dev** - Updated demo URLs to use GitHub raw links
+- ✅ **Improved documentation** - Enhanced README with better formatting and structure
+- ✅ **Better demo presentation** - Clean table layout for showcasing features
+- ✅ **Enhanced accessibility** - Improved alt text and descriptions for demo images
+
+
 ## [3.0.0] - 2025-10-10
 
 ### 🚀 MAJOR RELEASE: Complete Rewrite with Modern Architecture
