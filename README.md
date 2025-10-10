@@ -1,6 +1,6 @@
 <div align="center">
   <br>
-  <img src="https://drive.google.com/file/d/1j_-U7ZyG4BZGF84nXek2OVGxPxl-E9Y2/view?usp=drive_link" alt="Flutter OTP Kit" width="200" height="200">
+  <img src="assets\images\flutter_otp_kit_logo.png" alt="Flutter OTP Kit" width="200" height="200">
   <br>
   <br>
   
@@ -113,55 +113,37 @@
   
   <div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #f0f0f0;">
     <h3 style="margin: 0 0 1rem 0; color: #333; font-size: 1.3rem;">🎯 Basic Demo</h3>
-    <video width="100%" height="400" controls style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
-      <source src="YOUR_BASIC_DEMO_VIDEO_URL.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+    <img src="assets\images\basic_theme_demo.gif" width="100%" height="400" style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); object-fit: cover;" alt="Basic OTP Demo">
     <p style="margin: 1rem 0 0 0; color: #666; font-weight: 500;">Clean, simple OTP verification with default styling</p>
   </div>
   
   <div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #f0f0f0;">
     <h3 style="margin: 0 0 1rem 0; color: #333; font-size: 1.3rem;">🔄 Rotate Animation</h3>
-    <video width="100%" height="400" controls style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
-      <source src="YOUR_ROTATE_ANIMATION_VIDEO_URL.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+    <img src="assets\images\rotate_animation_demo.gif" width="100%" height="400" style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); object-fit: cover;" alt="Rotate Animation Demo">
     <p style="margin: 1rem 0 0 0; color: #666; font-weight: 500;">Smooth rotation animations when fields are completed</p>
   </div>
   
   <div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #f0f0f0;">
     <h3 style="margin: 0 0 1rem 0; color: #333; font-size: 1.3rem;">⭕ Rounded Fields</h3>
-    <video width="100%" height="400" controls style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
-      <source src="YOUR_ROUNDED_FIELDS_VIDEO_URL.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+    <img src="assets\images\rounded_demo.gif" width="100%" height="400" style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); object-fit: cover;" alt="Rounded Fields Demo">
     <p style="margin: 1rem 0 0 0; color: #666; font-weight: 500;">Beautiful circular fields with modern design</p>
   </div>
   
   <div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #f0f0f0;">
     <h3 style="margin: 0 0 1rem 0; color: #333; font-size: 1.3rem;">📏 Scale Animation</h3>
-    <video width="100%" height="400" controls style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
-      <source src="YOUR_SCALE_ANIMATION_VIDEO_URL.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+    <img src="assets\images\scale_demo.gif" width="100%" height="400" style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); object-fit: cover;" alt="Scale Animation Demo">
     <p style="margin: 1rem 0 0 0; color: #666; font-weight: 500;">Elegant scale animations with smooth transitions</p>
   </div>
   
   <div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #f0f0f0;">
     <h3 style="margin: 0 0 1rem 0; color: #333; font-size: 1.3rem;">📝 Underlined Fields</h3>
-    <video width="100%" height="400" controls style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
-      <source src="YOUR_UNDERLINED_FIELDS_VIDEO_URL.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+    <img src="assets\images\underline_demo.gif" width="100%" height="400" style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); object-fit: cover;" alt="Underlined Fields Demo">
     <p style="margin: 1rem 0 0 0; color: #666; font-weight: 500;">Minimal underlined design with smart animations</p>
   </div>
   
   <div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #f0f0f0;">
     <h3 style="margin: 0 0 1rem 0; color: #333; font-size: 1.3rem;">🎨 Cursor Styles</h3>
-    <video width="100%" height="400" controls style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
-      <source src="YOUR_CURSOR_STYLES_VIDEO_URL.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+    <img src="assets\images\cursor_styles.gif" width="100%" height="400" style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); object-fit: cover;" alt="Cursor Styles Demo">
     <p style="margin: 1rem 0 0 0; color: #666; font-weight: 500;">16 different cursor styles from system to custom</p>
   </div>
   
@@ -199,7 +181,7 @@ class OtpScreen extends StatelessWidget {
         subtitle: 'Enter the code sent to +1 (555) 123-4567',
         fieldCount: 4,
         onVerify: (otp) async {
-          return otp == '1234';
+return otp == '1234';
         },
         onResend: () {
           // Resend OTP
@@ -208,7 +190,8 @@ class OtpScreen extends StatelessWidget {
     );
   }
 }</code></pre>
-    </div>
+</div>
+
   </div>
   
   <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 2rem; border-radius: 20px; margin: 2rem 0; color: white;">
