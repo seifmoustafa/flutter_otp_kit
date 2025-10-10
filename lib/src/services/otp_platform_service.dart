@@ -1,6 +1,6 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import '../utils/platform_utils.dart';
 
 /// Platform-specific features and optimizations
 ///
@@ -22,14 +22,14 @@ class OtpPlatformService {
   /// Initialize platform-specific features
   Future<void> initialize() async {
     try {
-      if (Platform.isIOS) {
-        await _initializeIOS();
-      } else if (Platform.isAndroid) {
-        await _initializeAndroid();
-      } else if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
-        await _initializeDesktop();
-      } else if (kIsWeb) {
+      if (PlatformUtils.isWeb) {
         await _initializeWeb();
+      } else if (PlatformUtils.isIOS) {
+        await _initializeIOS();
+      } else if (PlatformUtils.isAndroid) {
+        await _initializeAndroid();
+      } else if (PlatformUtils.isDesktop) {
+        await _initializeDesktop();
       }
     } catch (e) {
       // Platform initialization failed, continue without platform features
@@ -74,7 +74,7 @@ class OtpPlatformService {
 
   /// Check if Face ID is available (iOS)
   Future<bool> isFaceIdAvailable() async {
-    if (!Platform.isIOS) return false;
+    if (!PlatformUtils.isIOS) return false;
 
     try {
       final result = await _channel.invokeMethod('isFaceIdAvailable');
@@ -86,7 +86,7 @@ class OtpPlatformService {
 
   /// Check if Touch ID is available (iOS)
   Future<bool> isTouchIdAvailable() async {
-    if (!Platform.isIOS) return false;
+    if (!PlatformUtils.isIOS) return false;
 
     try {
       final result = await _channel.invokeMethod('isTouchIdAvailable');
@@ -98,7 +98,7 @@ class OtpPlatformService {
 
   /// Check if fingerprint is available (Android)
   Future<bool> isFingerprintAvailable() async {
-    if (!Platform.isAndroid) return false;
+    if (!PlatformUtils.isAndroid) return false;
 
     try {
       final result = await _channel.invokeMethod('isFingerprintAvailable');
@@ -110,7 +110,7 @@ class OtpPlatformService {
 
   /// Check if face recognition is available (Android)
   Future<bool> isFaceRecognitionAvailable() async {
-    if (!Platform.isAndroid) return false;
+    if (!PlatformUtils.isAndroid) return false;
 
     try {
       final result = await _channel.invokeMethod('isFaceRecognitionAvailable');
@@ -122,9 +122,9 @@ class OtpPlatformService {
 
   /// Get platform-specific keyboard type
   TextInputType getPlatformKeyboardType() {
-    if (Platform.isIOS) {
+    if (PlatformUtils.isIOS) {
       return TextInputType.numberWithOptions(signed: false, decimal: false);
-    } else if (Platform.isAndroid) {
+    } else if (PlatformUtils.isAndroid) {
       return TextInputType.number;
     } else if (kIsWeb) {
       return TextInputType.number;
@@ -135,12 +135,12 @@ class OtpPlatformService {
 
   /// Get platform-specific input formatters
   List<TextInputFormatter> getPlatformInputFormatters() {
-    if (Platform.isIOS) {
+    if (PlatformUtils.isIOS) {
       return [
         FilteringTextInputFormatter.digitsOnly,
         LengthLimitingTextInputFormatter(1),
       ];
-    } else if (Platform.isAndroid) {
+    } else if (PlatformUtils.isAndroid) {
       return [
         FilteringTextInputFormatter.digitsOnly,
         LengthLimitingTextInputFormatter(1),
@@ -160,9 +160,9 @@ class OtpPlatformService {
 
   /// Get platform-specific haptic feedback
   void triggerPlatformHapticFeedback() {
-    if (Platform.isIOS) {
+    if (PlatformUtils.isIOS) {
       HapticFeedback.lightImpact();
-    } else if (Platform.isAndroid) {
+    } else if (PlatformUtils.isAndroid) {
       HapticFeedback.vibrate();
     } else if (kIsWeb) {
       // Web doesn't support haptic feedback
@@ -173,9 +173,9 @@ class OtpPlatformService {
 
   /// Get platform-specific error haptic feedback
   void triggerPlatformErrorHapticFeedback() {
-    if (Platform.isIOS) {
+    if (PlatformUtils.isIOS) {
       HapticFeedback.heavyImpact();
-    } else if (Platform.isAndroid) {
+    } else if (PlatformUtils.isAndroid) {
       HapticFeedback.vibrate();
     } else if (kIsWeb) {
       // Web doesn't support haptic feedback
@@ -186,9 +186,9 @@ class OtpPlatformService {
 
   /// Get platform-specific success haptic feedback
   void triggerPlatformSuccessHapticFeedback() {
-    if (Platform.isIOS) {
+    if (PlatformUtils.isIOS) {
       HapticFeedback.mediumImpact();
-    } else if (Platform.isAndroid) {
+    } else if (PlatformUtils.isAndroid) {
       HapticFeedback.lightImpact();
     } else if (kIsWeb) {
       // Web doesn't support haptic feedback
@@ -199,14 +199,14 @@ class OtpPlatformService {
 
   /// Get platform-specific field dimensions
   Map<String, double> getPlatformFieldDimensions() {
-    if (Platform.isIOS) {
+    if (PlatformUtils.isIOS) {
       return {
         'width': 56.0,
         'height': 56.0,
         'borderRadius': 12.0,
         'borderWidth': 2.0,
       };
-    } else if (Platform.isAndroid) {
+    } else if (PlatformUtils.isAndroid) {
       return {
         'width': 56.0,
         'height': 56.0,
@@ -232,14 +232,14 @@ class OtpPlatformService {
 
   /// Get platform-specific animation durations
   Map<String, Duration> getPlatformAnimationDurations() {
-    if (Platform.isIOS) {
+    if (PlatformUtils.isIOS) {
       return {
         'fieldTransition': const Duration(milliseconds: 200),
         'errorAnimation': const Duration(milliseconds: 300),
         'successAnimation': const Duration(milliseconds: 400),
         'cursorBlink': const Duration(milliseconds: 1000),
       };
-    } else if (Platform.isAndroid) {
+    } else if (PlatformUtils.isAndroid) {
       return {
         'fieldTransition': const Duration(milliseconds: 150),
         'errorAnimation': const Duration(milliseconds: 250),
@@ -265,14 +265,14 @@ class OtpPlatformService {
 
   /// Get platform-specific accessibility features
   Map<String, dynamic> getPlatformAccessibilityFeatures() {
-    if (Platform.isIOS) {
+    if (PlatformUtils.isIOS) {
       return {
         'enableVoiceOver': true,
         'enableSwitchControl': true,
         'enableVoiceControl': true,
         'semanticHints': true,
       };
-    } else if (Platform.isAndroid) {
+    } else if (PlatformUtils.isAndroid) {
       return {
         'enableTalkBack': true,
         'enableSwitchAccess': true,

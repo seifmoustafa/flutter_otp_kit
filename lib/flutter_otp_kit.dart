@@ -49,3 +49,4 @@ export 'src/services/otp_platform_service.dart';
 export 'src/utils/otp_formatter.dart';
 export 'src/utils/otp_masker.dart';
 export 'src/utils/otp_validator.dart';
+export 'src/utils/platform_utils.dart';

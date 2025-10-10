@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/services.dart';
+import '../utils/platform_utils.dart';
 
 /// Service for biometric authentication integration
 ///
@@ -36,9 +36,9 @@ class OtpBiometricService {
     try {
       _channel.setMethodCallHandler(_handleMethodCall);
 
-      if (Platform.isAndroid) {
+      if (PlatformUtils.isAndroid) {
         await _initializeAndroid();
-      } else if (Platform.isIOS) {
+      } else if (PlatformUtils.isIOS) {
         await _initializeIOS();
       }
     } catch (e) {

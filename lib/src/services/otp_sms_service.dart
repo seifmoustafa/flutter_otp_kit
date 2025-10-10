@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/services.dart';
 import '../config/otp_sms_config.dart';
+import '../utils/platform_utils.dart';
 
 /// Service for handling SMS autofill functionality
 ///
@@ -62,9 +62,9 @@ class OtpSmsService {
     try {
       _channel.setMethodCallHandler(_handleMethodCall);
 
-      if (Platform.isAndroid) {
+      if (PlatformUtils.isAndroid) {
         await _setupAndroidSms();
-      } else if (Platform.isIOS) {
+      } else if (PlatformUtils.isIOS) {
         await _setupIosSms();
       }
     } catch (e) {
@@ -159,9 +159,9 @@ class OtpSmsService {
     }
 
     try {
-      if (Platform.isAndroid) {
+      if (PlatformUtils.isAndroid) {
         await _channel.invokeMethod('startListening');
-      } else if (Platform.isIOS) {
+      } else if (PlatformUtils.isIOS) {
         await _channel.invokeMethod('startListening');
       }
     } catch (e) {
@@ -217,9 +217,9 @@ class OtpSmsService {
   /// Check if SMS autofill is available on current platform
   Future<bool> isSmsAutofillAvailable() async {
     try {
-      if (Platform.isAndroid) {
+      if (PlatformUtils.isAndroid) {
         return await _channel.invokeMethod('isSmsRetrieverAvailable') ?? false;
-      } else if (Platform.isIOS) {
+      } else if (PlatformUtils.isIOS) {
         return await _channel.invokeMethod('isIosSmsAvailable') ?? false;
       }
       return false;

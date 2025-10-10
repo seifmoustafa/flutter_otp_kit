@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### [3.0.1] - 2025-10-10
+- ✅ **WASM Compatibility Fixed** - Resolved dart:io import issues for WebAssembly compatibility
+- ✅ **Platform Utils Added** - New PlatformUtils class for cross-platform compatibility
+- ✅ **Conditional Imports** - Proper conditional imports for web/WASM environments
+- ✅ **Static Analysis Improved** - Fixed platform detection issues across all service files
 - ✅ **Fixed GIF display on pub.dev** - Updated demo URLs to use GitHub raw links
 - ✅ **Improved documentation** - Enhanced README with better formatting and structure
 - ✅ **Better demo presentation** - Clean table layout for showcasing features
