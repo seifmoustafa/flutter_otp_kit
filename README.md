@@ -102,7 +102,7 @@
 
 ## Demo
 
-| [Live Demo](https://github.com/seifmoustafa/flutter_otp_kit) | Basic Theme | Rotate Animation |
+| Basic Theme | Rotate Animation |
 | - | - | - |
 | <img width="300" src="assets\images\basic_theme_demo.gif"/> | <img width="300" src="assets\images\rotate_animation_demo.gif"/> |
 
