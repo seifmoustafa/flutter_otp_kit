@@ -115,7 +115,7 @@ If applicable, add screenshots.
 - Flutter version: [e.g. 3.16.0]
 - Dart version: [e.g. 3.2.0]
 - Platform: [e.g. iOS 17, Android 14]
-- Package version: [e.g. 3.0.1]
+- Package version: [e.g. 3.0.3]
 
 **Additional context**
 Any other context about the problem.
