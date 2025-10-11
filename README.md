@@ -30,9 +30,13 @@ The most **comprehensive**, **feature-rich**, and **performant** OTP verificatio
 
 ## 📱 Demo
 
-| Basic Theme | Animated Fields | Custom Styles |
-|-------------|-----------------|---------------|
-| ![Basic Demo](https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/assets/images/basic_theme_demo.gif) | ![Animated Demo](https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/assets/images/rotate_animation_demo.gif) | ![Custom Demo](https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/assets/images/rounded_demo.gif) |
+| Basic Theme | Rotate Animation | Rounded Fields |
+|-------------|------------------|----------------|
+| ![Basic Demo](https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/assets/images/basic_theme_demo.gif) | ![Rotate Demo](https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/assets/images/rotate_animation_demo.gif) | ![Rounded Demo](https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/assets/images/rounded_demo.gif) |
+
+| Scale Animation | Underline Style | Cursor Styles |
+|-----------------|-----------------|---------------|
+| ![Scale Demo](https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/assets/images/scale_demo.gif) | ![Underline Demo](https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/assets/images/underline_demo.gif) | ![Cursor Demo](https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/assets/images/cursor_styles.gif) |
 
 ---
 
