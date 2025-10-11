@@ -805,6 +805,124 @@ if (!isAvailable) {
 | `successColor` | `Color?` | ❌ | `Colors.green` | Success state color |
 | `errorColor` | `Color?` | ❌ | `Colors.red` | Error state color |
 
+### OtpFieldConfig Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `fieldWidth` | `double` | ❌ | `55.125` | Width of each OTP field |
+| `fieldHeight` | `double` | ❌ | `60.731` | Height of each OTP field |
+| `borderRadius` | `double` | ❌ | `17.752` | Border radius for rounded corners |
+| `borderWidth` | `double` | ❌ | `1.869` | Border width of the field |
+| `primaryColor` | `Color` | ❌ | `Color(0xFF018CC3)` | Primary color for active states |
+| `secondaryColor` | `Color` | ❌ | `Color(0xFF8B8B8B)` | Secondary color for inactive states |
+| `backgroundColor` | `Color` | ❌ | `Colors.white` | Background color of fields |
+| `fieldFontSize` | `double` | ❌ | `24.0` | Font size for field text |
+| `fieldFontWeight` | `FontWeight` | ❌ | `FontWeight.bold` | Font weight for field text |
+| `letterSpacing` | `double` | ❌ | `0.5` | Letter spacing for field text |
+| `cursorColor` | `Color?` | ❌ | `null` | Color of the cursor |
+| `cursorWidth` | `double` | ❌ | `1.0` | Width of the cursor |
+| `cursorStyle` | `CursorStyle` | ❌ | `CursorStyle.system` | Style of the cursor |
+| `enableShadow` | `bool` | ❌ | `false` | Enable shadow effects |
+| `shadowColor` | `Color?` | ❌ | `null` | Color of the shadow |
+| `shadowBlurRadius` | `double` | ❌ | `10.0` | Blur radius of the shadow |
+| `fieldShape` | `OtpFieldShape` | ❌ | `OtpFieldShape.roundedRectangle` | Shape of the field |
+| `enableHapticFeedback` | `bool` | ❌ | `false` | Enable haptic feedback |
+
+### OtpAnimationConfig Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `enableAnimation` | `bool` | ❌ | `false` | Enable/disable all animations |
+| `animationDuration` | `Duration` | ❌ | `Duration(milliseconds: 300)` | Duration for main animations |
+| `animationCurve` | `Curve` | ❌ | `Curves.easeInOut` | Animation curve |
+| `enableFieldStateAnimation` | `bool` | ❌ | `false` | Enable field state transitions |
+| `fieldTransitionDuration` | `Duration` | ❌ | `Duration(milliseconds: 150)` | Field transition duration |
+| `fieldFillAnimationType` | `FieldFillAnimationType` | ❌ | `FieldFillAnimationType.scale` | Animation when field is filled |
+| `errorFieldAnimationType` | `ErrorFieldAnimationType` | ❌ | `ErrorFieldAnimationType.shake` | Animation for error states |
+| `errorShakeAmplitude` | `double` | ❌ | `4.0` | Amplitude of shake animation |
+| `enableCursorAnimation` | `bool` | ❌ | `false` | Enable cursor blinking |
+| `cursorBlinkDuration` | `Duration` | ❌ | `Duration(milliseconds: 1000)` | Cursor blink duration |
+
+### OtpSmsConfig Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `enableSmsAutofill` | `bool` | ❌ | `false` | Enable SMS autofill |
+| `enableSmartAuth` | `bool` | ❌ | `false` | Enable Smart Auth integration |
+| `enableSmsRetrieverAPI` | `bool` | ❌ | `false` | Enable Android SMS Retriever API |
+| `enableSmsUserConsentAPI` | `bool` | ❌ | `false` | Enable Android User Consent API |
+| `appSignature` | `String?` | ❌ | `null` | App signature for SMS Retriever |
+| `senderPhoneNumber` | `String?` | ❌ | `null` | Filter SMS by sender number |
+| `enableSmsValidation` | `bool` | ❌ | `false` | Enable SMS content validation |
+| `smsValidationRegex` | `String?` | ❌ | `null` | Regex pattern for SMS validation |
+| `smsTimeout` | `Duration` | ❌ | `Duration(minutes: 5)` | Timeout for SMS listening |
+| `enableSmsErrorHandling` | `bool` | ❌ | `false` | Enable SMS error handling |
+
+### OtpSecurityConfig Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `enableRateLimiting` | `bool` | ❌ | `false` | Enable rate limiting |
+| `maxAttemptsPerMinute` | `int` | ❌ | `5` | Max attempts per minute |
+| `maxAttemptsPerHour` | `int` | ❌ | `20` | Max attempts per hour |
+| `lockoutDuration` | `Duration` | ❌ | `Duration(minutes: 5)` | Lockout duration after max attempts |
+| `enableBiometricIntegration` | `bool` | ❌ | `false` | Enable biometric authentication |
+| `biometricTimeout` | `Duration` | ❌ | `Duration(seconds: 30)` | Biometric authentication timeout |
+| `enableAdvancedValidation` | `bool` | ❌ | `false` | Enable advanced OTP validation |
+| `validationPattern` | `String?` | ❌ | `null` | Regex pattern for validation |
+| `enableEncryption` | `bool` | ❌ | `false` | Enable OTP encryption |
+| `enableAuditLogging` | `bool` | ❌ | `false` | Enable audit logging |
+| `enableSessionManagement` | `bool` | ❌ | `false` | Enable session management |
+| `sessionTimeout` | `Duration` | ❌ | `Duration(minutes: 30)` | Session timeout duration |
+
+### OtpErrorConfig Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `maxErrorRetries` | `int` | ❌ | `3` | Maximum error retries allowed |
+| `enableFieldLockout` | `bool` | ❌ | `false` | Lock fields after max errors |
+| `fieldLockoutDuration` | `Duration` | ❌ | `Duration(seconds: 30)` | Field lockout duration |
+| `clearFieldsOnError` | `bool` | ❌ | `false` | Clear fields on error |
+| `errorShakeEffect` | `bool` | ❌ | `false` | Enable shake effect on error |
+| `errorShakeDuration` | `Duration` | ❌ | `Duration(milliseconds: 500)` | Duration of shake animation |
+| `errorShakeCount` | `int` | ❌ | `3` | Number of shakes |
+| `enableHapticFeedbackOnError` | `bool` | ❌ | `false` | Haptic feedback on error |
+| `errorHapticFeedbackType` | `ErrorHapticFeedbackType` | ❌ | `ErrorHapticFeedbackType.medium` | Type of haptic feedback |
+| `showErrorIcon` | `bool` | ❌ | `false` | Show error icon |
+| `errorIcon` | `IconData?` | ❌ | `null` | Custom error icon |
+| `autoClearErrorOnInput` | `bool` | ❌ | `true` | Auto-clear error on new input |
+
+### OtpPerformanceConfig Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `enableLazyLoading` | `bool` | ❌ | `false` | Enable lazy loading of fields |
+| `maxVisibleFields` | `int` | ❌ | `10` | Maximum visible fields at once |
+| `enableMemoryOptimization` | `bool` | ❌ | `false` | Enable memory optimization |
+| `enableAnimationPooling` | `bool` | ❌ | `false` | Pool animations for reuse |
+| `maxAnimationPoolSize` | `int` | ❌ | `10` | Maximum animation pool size |
+| `animationCleanupDelay` | `Duration` | ❌ | `Duration(seconds: 5)` | Delay before animation cleanup |
+| `enableFieldRecycling` | `bool` | ❌ | `false` | Recycle field widgets |
+| `enableBackgroundCleanup` | `bool` | ❌ | `false` | Enable background cleanup |
+| `cleanupInterval` | `Duration` | ❌ | `Duration(minutes: 1)` | Background cleanup interval |
+| `enablePerformanceMonitoring` | `bool` | ❌ | `false` | Monitor performance metrics |
+| `enableMemoryLeakDetection` | `bool` | ❌ | `false` | Detect memory leaks |
+
+### OtpField Parameters (Individual Field Widget)
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `index` | `int` | ✅ | - | Index of the field |
+| `value` | `String?` | ❌ | `null` | Current value of the field |
+| `config` | `OtpFieldConfig` | ✅ | - | Field configuration |
+| `animationConfig` | `OtpAnimationConfig?` | ❌ | `null` | Animation configuration |
+| `focusNode` | `FocusNode?` | ❌ | `null` | Focus node for the field |
+| `onChanged` | `ValueChanged<String>?` | ❌ | `null` | Callback when value changes |
+| `onCompleted` | `VoidCallback?` | ❌ | `null` | Callback when field is completed |
+| `isError` | `bool` | ❌ | `false` | Whether field is in error state |
+| `isSuccess` | `bool` | ❌ | `false` | Whether field is in success state |
+| `isActive` | `bool` | ❌ | `false` | Whether field is currently active |
+
 ---
 
 ## 🤝 Contributing
