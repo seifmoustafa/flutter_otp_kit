@@ -1,7 +1,7 @@
 # Flutter OTP Kit
 
 <div align="center">
-  <img src="assets/images/flutter_otp_kit_logo.png" alt="Flutter OTP Kit" width="200" height="200">
+  <img src="https://raw.githubusercontent.com/seifmoustafa/flutter_otp_kit/main/assets/images/flutter_otp_kit_logo.png" alt="Flutter OTP Kit" width="200" height="200">
   
   **🚀 The Ultimate OTP Verification Solution for Flutter**
   
