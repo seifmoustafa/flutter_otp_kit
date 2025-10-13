@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### [3.0.4] - 2025-10-12
+### [3.0.4] - 2025-10-13
 - ✅ **WASM Compatibility Fully Fixed** - Completely resolved dart:io import issues with proper conditional imports
 - ✅ **Platform Abstraction** - Created proper platform checker abstraction for WASM compatibility
 - ✅ **Zero WASM Issues** - Package now fully compatible with WebAssembly runtime
