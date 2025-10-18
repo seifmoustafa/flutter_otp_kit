@@ -181,6 +181,23 @@ class OtpKit extends StatefulWidget {
     this.timerWidget,
     this.errorWidget,
 
+    // State management integration
+    this.externalErrorText,
+    this.externalErrorState,
+    this.externalLoadingState,
+    this.externalValidationState,
+    this.onExternalStateChange,
+
+    // Button styling
+    this.buttonBackgroundColor,
+    this.buttonTextColor,
+    this.buttonBorderRadius,
+    this.buttonHeight,
+    this.buttonWidth,
+    this.buttonElevation,
+    this.buttonPadding,
+    this.buttonBorderSide,
+
     // Accessibility
     this.semanticLabel,
     this.semanticHint,
@@ -293,6 +310,23 @@ class OtpKit extends StatefulWidget {
   final Widget? resendWidget;
   final Widget? timerWidget;
   final Widget? errorWidget;
+
+  // State management integration
+  final String? externalErrorText;
+  final bool? externalErrorState;
+  final bool? externalLoadingState;
+  final bool? externalValidationState;
+  final VoidCallback? onExternalStateChange;
+
+  // Button styling
+  final Color? buttonBackgroundColor;
+  final Color? buttonTextColor;
+  final double? buttonBorderRadius;
+  final double? buttonHeight;
+  final double? buttonWidth;
+  final double? buttonElevation;
+  final EdgeInsets? buttonPadding;
+  final BorderSide? buttonBorderSide;
 
   // Accessibility
   final String? semanticLabel;
@@ -534,11 +568,12 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
       _controllers[index].text = value;
       _updateFieldStates();
 
-      // Clear errors when user types
+      // Clear errors when user types (both internal and external)
       if (_hasError) {
         _hasError = false;
         _errorText = null;
         widget.onErrorStateChanged?.call(false);
+        widget.onExternalStateChange?.call();
 
         // Clear field errors
         for (int i = 0; i < _fieldErrors.length; i++) {
@@ -660,19 +695,42 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
       return;
     }
 
-    setState(() => _isLoading = true);
+    // Use external loading state if provided, otherwise use internal
+    if (widget.externalLoadingState != null) {
+      widget.onExternalStateChange?.call();
+    } else {
+      setState(() => _isLoading = true);
+    }
 
     // Call the actual verification callback
     try {
       final isValid = await widget.onVerify(otpValue);
       if (!isValid) {
         _handleVerificationError('Invalid OTP code');
+      } else {
+        // Clear any existing errors on successful verification
+        setState(() {
+          _hasError = false;
+          _errorText = null;
+          _validationText = null;
+          widget.onErrorStateChanged?.call(false);
+          widget.onExternalStateChange?.call();
+
+          // Clear field errors
+          for (int i = 0; i < _fieldErrors.length; i++) {
+            _fieldErrors[i] = false;
+          }
+        });
       }
     } catch (e) {
       _handleVerificationError('Verification failed: $e');
     } finally {
       if (mounted) {
-        setState(() => _isLoading = false);
+        if (widget.externalLoadingState != null) {
+          widget.onExternalStateChange?.call();
+        } else {
+          setState(() => _isLoading = false);
+        }
       }
     }
   }
@@ -683,6 +741,7 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
       _hasError = true;
       _errorText = message;
       widget.onErrorStateChanged?.call(true);
+      widget.onExternalStateChange?.call();
 
       // Set all fields to error state
       for (int i = 0; i < _fieldErrors.length; i++) {
@@ -733,7 +792,7 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
           _fieldAnimationControllers[i].reverse();
         });
       }
-    } else {}
+    }
   }
 
   void _onResendPressed() {
@@ -779,6 +838,11 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
   void _clearAllFields() {
     for (var controller in _controllers) {
       controller.clear();
+    }
+    // Reset field states and errors
+    for (int i = 0; i < _fieldStates.length; i++) {
+      _fieldStates[i] = OtpFieldState.empty;
+      _fieldErrors[i] = false;
     }
     _updateFieldStates();
   }
@@ -1038,6 +1102,7 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
   }
 
   Widget _buildMessages() {
+    // Show validation text first (for input validation errors)
     if (_validationText != null) {
       return widget.animationConfig.enableAnimation
           ? AnimatedBuilder(
@@ -1074,40 +1139,76 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
             );
     }
 
-    if (_errorText != null) {
-      return widget.animationConfig.enableAnimation
-          ? AnimatedBuilder(
-              animation: _errorAnimationController,
-              builder: (context, child) {
-                return Transform.translate(
-                  offset: Offset(
-                    _errorAnimationController.value *
-                        10 *
-                        (widget.animationConfig.errorFieldAnimationType ==
-                                ErrorFieldAnimationType.shake
-                            ? math.sin(
-                                _errorAnimationController.value * math.pi * 4)
-                            : 0),
-                    0,
-                  ),
-                  child: Opacity(
-                    opacity: 0.7 + (_errorAnimationController.value * 0.3),
-                    child: Text(
-                      _errorText!,
-                      style: widget.errorStyle ??
-                          TextStyle(color: widget.errorColor, fontSize: 14),
-                      textAlign: TextAlign.center,
+    // Show error text or custom error widget (prioritize external error text)
+    final effectiveErrorText = widget.externalErrorText ?? _errorText;
+    final effectiveErrorState = widget.externalErrorState ?? _hasError;
+
+    if (effectiveErrorText != null ||
+        widget.errorWidget != null ||
+        effectiveErrorState) {
+      // If custom error widget is provided, use it
+      if (widget.errorWidget != null) {
+        return widget.animationConfig.enableAnimation
+            ? AnimatedBuilder(
+                animation: _errorAnimationController,
+                builder: (context, child) {
+                  return Transform.translate(
+                    offset: Offset(
+                      _errorAnimationController.value *
+                          10 *
+                          (widget.animationConfig.errorFieldAnimationType ==
+                                  ErrorFieldAnimationType.shake
+                              ? math.sin(
+                                  _errorAnimationController.value * math.pi * 4)
+                              : 0),
+                      0,
                     ),
-                  ),
-                );
-              },
-            )
-          : Text(
-              _errorText!,
-              style: widget.errorStyle ??
-                  TextStyle(color: widget.errorColor, fontSize: 14),
-              textAlign: TextAlign.center,
-            );
+                    child: Opacity(
+                      opacity: 0.7 + (_errorAnimationController.value * 0.3),
+                      child: widget.errorWidget!,
+                    ),
+                  );
+                },
+              )
+            : widget.errorWidget!;
+      }
+
+      // Otherwise show error text
+      if (effectiveErrorText != null) {
+        return widget.animationConfig.enableAnimation
+            ? AnimatedBuilder(
+                animation: _errorAnimationController,
+                builder: (context, child) {
+                  return Transform.translate(
+                    offset: Offset(
+                      _errorAnimationController.value *
+                          10 *
+                          (widget.animationConfig.errorFieldAnimationType ==
+                                  ErrorFieldAnimationType.shake
+                              ? math.sin(
+                                  _errorAnimationController.value * math.pi * 4)
+                              : 0),
+                      0,
+                    ),
+                    child: Opacity(
+                      opacity: 0.7 + (_errorAnimationController.value * 0.3),
+                      child: Text(
+                        effectiveErrorText,
+                        style: widget.errorStyle ??
+                            TextStyle(color: widget.errorColor, fontSize: 14),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                },
+              )
+            : Text(
+                effectiveErrorText,
+                style: widget.errorStyle ??
+                    TextStyle(color: widget.errorColor, fontSize: 14),
+                textAlign: TextAlign.center,
+              );
+      }
     }
 
     return const SizedBox.shrink();
@@ -1117,7 +1218,7 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
     return OtpFooter(
       onVerifyPressed: _onVerifyPressed,
       onResendPressed: _onResendPressed,
-      isLoading: _isLoading,
+      isLoading: widget.externalLoadingState ?? _isLoading,
       remainingTime: _remainingTime,
       primaryColor: widget.primaryColor,
       secondaryColor: widget.secondaryColor,
@@ -1132,13 +1233,16 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
       resendStyle: widget.resendStyle,
       timerStyle: widget.timerStyle,
       showTimer: widget.showTimer,
-      buttonBackgroundColor: widget.primaryColor,
-      buttonTextColor: Colors.white,
-      buttonBorderRadius: 8.0,
-      buttonHeight: 50.0,
-      buttonWidth: double.infinity,
-      buttonElevation: 0.0,
-      loadingIndicatorColor: Colors.white,
+      buttonBackgroundColor:
+          widget.buttonBackgroundColor ?? widget.primaryColor,
+      buttonTextColor: widget.buttonTextColor ?? Colors.white,
+      buttonBorderRadius: widget.buttonBorderRadius ?? 8.0,
+      buttonHeight: widget.buttonHeight ?? 50.0,
+      buttonWidth: widget.buttonWidth ?? double.infinity,
+      buttonElevation: widget.buttonElevation ?? 0.0,
+      buttonPadding: widget.buttonPadding,
+      buttonBorderSide: widget.buttonBorderSide,
+      loadingIndicatorColor: widget.buttonTextColor ?? Colors.white,
       loadingIndicatorSize: 20.0,
     );
   }

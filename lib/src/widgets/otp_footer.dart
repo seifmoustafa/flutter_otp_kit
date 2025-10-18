@@ -31,6 +31,8 @@ class OtpFooter extends StatelessWidget {
     this.buttonElevation = 0.0,
     this.loadingIndicatorColor,
     this.loadingIndicatorSize = 24.0,
+    this.buttonPadding,
+    this.buttonBorderSide,
   }) : super(key: key);
 
   /// Callback when verify button is pressed
@@ -108,6 +110,12 @@ class OtpFooter extends StatelessWidget {
   /// Size for the loading indicator
   final double loadingIndicatorSize;
 
+  /// Padding for the button
+  final EdgeInsets? buttonPadding;
+
+  /// Border side for the button
+  final BorderSide? buttonBorderSide;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -122,7 +130,11 @@ class OtpFooter extends StatelessWidget {
   /// Builds the verify button widget (custom or default)
   Widget _buildVerifyButton() {
     if (verifyButtonWidget != null) {
-      return verifyButtonWidget!;
+      // Wrap custom button widget to ensure it calls onVerifyPressed
+      return GestureDetector(
+        onTap: isLoading ? null : onVerifyPressed,
+        child: verifyButtonWidget!,
+      );
     }
 
     return _buildDefaultButton();
@@ -134,11 +146,13 @@ class OtpFooter extends StatelessWidget {
       width: buttonWidth,
       height: buttonHeight,
       child: ElevatedButton(
-        onPressed: onVerifyPressed,
+        onPressed: isLoading ? null : onVerifyPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: buttonBackgroundColor ?? primaryColor,
           foregroundColor: buttonTextColor ?? Colors.white,
           elevation: buttonElevation,
+          padding: buttonPadding,
+          side: buttonBorderSide,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(buttonBorderRadius),
           ),

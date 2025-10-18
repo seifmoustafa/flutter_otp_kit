@@ -95,8 +95,21 @@ class BasicExample extends StatelessWidget {
           child: Column(
             children: [
               const Text(
-                'Basic OTP Kit',
+                'Enhanced OTP Kit - All Features & Fixes',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                '✅ All Critical Bug Fixes Applied:\n'
+                '• Error widget displays on verification failure\n'
+                '• Custom buttons trigger verification\n'
+                '• Fields clear after failed attempts\n'
+                '• Async operations handled properly\n'
+                '• Real-time field updates\n'
+                '• State management integration ready\n'
+                '• Enhanced button styling with border radius control',
+                style: TextStyle(fontSize: 14, color: Colors.green),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
               OtpKit(
@@ -105,13 +118,77 @@ class BasicExample extends StatelessWidget {
                 fieldCount: 4,
                 contactInfo: '+1 (555) 123-4567',
                 maskingType: MaskingType.phone,
-                // Use default (no animations) for basic example
+
+                // Enhanced field configuration
+                fieldConfig: OtpFieldConfig(
+                  fieldWidth: 60,
+                  fieldHeight: 60,
+                  borderRadius: 12,
+                  borderWidth: 2,
+                  primaryColor: Colors.blue,
+                  secondaryColor: Colors.grey.shade400,
+                  backgroundColor: Colors.white,
+                  fieldFontSize: 24,
+                  fieldFontWeight: FontWeight.w600,
+                  enableShadow: true,
+                  shadowBlurRadius: 4,
+                  shadowColor: Colors.blue.withOpacity(0.2),
+                ),
+
+                // Enhanced button styling with border radius control
+                buttonBackgroundColor: Colors.blue,
+                buttonTextColor: Colors.white,
+                buttonBorderRadius: 25, // Fully rounded button
+                buttonHeight: 50,
+                buttonWidth: double.infinity,
+                buttonElevation: 2,
+                buttonPadding: const EdgeInsets.symmetric(vertical: 12),
+
+                // Error configuration for field clearing
+                errorConfig: const OtpErrorConfig(
+                  clearFieldsOnError: true,
+                  enableHapticFeedbackOnError: true,
+                  errorHapticFeedbackType: ErrorHapticFeedbackType.medium,
+                ),
+
+                // Custom error widget
+                errorWidget: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade50,
+                    border: Border.all(color: Colors.red, width: 1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.error_outline, color: Colors.red, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Invalid OTP! Fields will be cleared.',
+                        style: TextStyle(
+                          color: Colors.red.shade700,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Enhanced callbacks with real-time updates
                 onVerify: (otp) async {
+                  print('🚀 Verifying OTP: $otp');
+
+                  // Simulate API call with delay
+                  await Future.delayed(const Duration(milliseconds: 800));
+
                   if (otp == '1234') {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('✅ Success! OTP $otp is correct'),
                         backgroundColor: Colors.green,
+                        behavior: SnackBarBehavior.floating,
                       ),
                     );
                     return true; // Success
@@ -121,16 +198,48 @@ class BasicExample extends StatelessWidget {
                         content:
                             Text('❌ Error! OTP $otp is incorrect. Try 1234'),
                         backgroundColor: Colors.red,
+                        behavior: SnackBarBehavior.floating,
                       ),
                     );
-                    return false; // Failure
+                    return false; // Failure - will trigger error widget and field clearing
                   }
                 },
                 onResend: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Code resent!')),
+                    const SnackBar(
+                      content: Text('Code resent!'),
+                      behavior: SnackBarBehavior.floating,
+                    ),
                   );
                 },
+
+                // Real-time callbacks
+                onChanged: (otp) {
+                  print('📝 OTP changed: $otp');
+                },
+                onCompleted: (otp) {
+                  print('✅ OTP completed: $otp');
+                },
+                onErrorStateChanged: (hasError) {
+                  print('🚨 Error state changed: $hasError');
+                },
+                onValidationStateChanged: (isValid) {
+                  print('✅ Validation state changed: $isValid');
+                },
+                onCompletionStateChanged: (isCompleted) {
+                  print('🎯 Completion state changed: $isCompleted');
+                },
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                '🎯 Test Instructions:\n'
+                '1. Enter any OTP (e.g., "5678") and click Verify\n'
+                '2. Watch the error widget appear and fields clear\n'
+                '3. Enter "1234" and click Verify for success\n'
+                '4. Notice real-time field updates as you type\n'
+                '5. Try the custom button styling and animations',
+                style: TextStyle(fontSize: 14, color: Colors.blue),
+                textAlign: TextAlign.center,
               ),
             ],
           ),

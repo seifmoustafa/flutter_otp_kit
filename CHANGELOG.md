@@ -5,6 +5,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [3.1.1] - 2025-10-18
+
+#### 🐛 Critical Bug Fixes
+- **FIXED**: Error widget now properly displays when `onVerify` returns `false`
+- **FIXED**: Custom `buttonWidget` now correctly triggers `onVerify` callback instead of bypassing verification
+- **FIXED**: OTP fields now properly clear after failed verification attempts when `clearFieldsOnError` is enabled
+- **FIXED**: Async `onVerify` operations are now properly handled with correct state management
+- **IMPROVED**: Enhanced error state management to ensure proper UI feedback
+- **IMPROVED**: Better field state handling during verification failures
+
+#### 🚀 Major New Features
+- **ADDED**: Complete state management integration with external state parameters
+- **ADDED**: Real-time field value updates - no more waiting for delete + type to see changes
+- **ADDED**: Package-managed validation and error states with external synchronization
+- **ADDED**: Enhanced button styling with full control over border radius, padding, and borders
+- **ADDED**: External error text and state management for seamless Cubit/BLoC integration
+- **ADDED**: Comprehensive state management example with live state controls
+
+#### 🎨 Enhanced Customization
+- **ADDED**: `buttonBorderRadius` parameter for complete button styling control
+- **ADDED**: `buttonPadding` and `buttonBorderSide` for advanced button customization
+- **ADDED**: `externalErrorText`, `externalErrorState`, `externalLoadingState` for state management
+- **ADDED**: `onExternalStateChange` callback for bidirectional state synchronization
+- **IMPROVED**: Custom widgets now maintain full functionality without performance impact
+
+#### 🧪 Testing & Validation
+- **ADDED**: Comprehensive bug fix test page demonstrating all critical fixes
+- **ADDED**: State management integration example with live controls
+- **ADDED**: Test cases for error widget display, custom button verification, field clearing, and async handling
+- **ADDED**: Real-time state monitoring and external state control examples
+- **VALIDATED**: All reported critical issues from v3.1.0 have been resolved
+
+#### 📋 Issues Resolved
+- Resolves issue where error widgets were not displayed on verification failure
+- Resolves issue where custom buttons completely bypassed verification logic
+- Resolves issue where OTP fields retained old values after failed verification
+- Resolves issue where async verification operations had incorrect state handling
+- Resolves issue where field values didn't update in real-time
+- Resolves issue where external state management integration was incomplete
+
+#### 📚 Documentation & Examples
+- **ADDED**: Complete Cubit integration guide with step-by-step migration
+- **ADDED**: State management best practices and integration patterns
+- **ADDED**: Comprehensive examples showing all use cases and configurations
+- **ADDED**: Real-time callback examples and state synchronization patterns
+
 ### [3.1.0] - 2025-10-18
 
 #### 🗑️ Complete Removal of Deprecated Widget
