@@ -18,6 +18,7 @@ import 'masking_type.dart';
 import 'otp_input_type.dart';
 import 'state/otp_field_state.dart';
 import 'widgets/otp_fields_row.dart';
+import 'widgets/otp_footer.dart';
 import 'styling/field_colors.dart';
 import 'otp_layout_type.dart';
 
@@ -1113,59 +1114,32 @@ class _OtpKitState extends State<OtpKit> with TickerProviderStateMixin {
   }
 
   Widget _buildFooter() {
-    return Column(
-      children: [
-        // Verify button
-        SizedBox(
-          width: double.infinity,
-          height: 50,
-          child: ElevatedButton(
-            onPressed: _isLoading ? null : _onVerifyPressed,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: widget.primaryColor,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: _isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  )
-                : Text(
-                    widget.buttonText,
-                    style: widget.buttonStyle ??
-                        const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-          ),
-        ),
-
-        SizedBox(height: widget.spacing * 0.5),
-
-        // Resend button and timer
-        if (widget.showTimer)
-          TextButton(
-            onPressed: _remainingTime == 0 ? _onResendPressed : null,
-            child: Text(
-              _remainingTime > 0
-                  ? '${widget.timerPrefix} $_remainingTime'
-                  : widget.resendText,
-              style: widget.timerStyle ??
-                  TextStyle(
-                    color: _remainingTime > 0
-                        ? widget.secondaryColor
-                        : widget.primaryColor,
-                    fontSize: 14,
-                  ),
-            ),
-          ),
-      ],
+    return OtpFooter(
+      onVerifyPressed: _onVerifyPressed,
+      onResendPressed: _onResendPressed,
+      isLoading: _isLoading,
+      remainingTime: _remainingTime,
+      primaryColor: widget.primaryColor,
+      secondaryColor: widget.secondaryColor,
+      spacing: widget.spacing,
+      buttonText: widget.buttonText,
+      resendText: widget.resendText,
+      timerPrefix: widget.timerPrefix,
+      verifyButtonWidget: widget.buttonWidget, // Use the custom button widget
+      resendWidget: widget.resendWidget, // Use the custom resend widget
+      timerWidget: widget.timerWidget, // Use the custom timer widget
+      buttonStyle: widget.buttonStyle,
+      resendStyle: widget.resendStyle,
+      timerStyle: widget.timerStyle,
+      showTimer: widget.showTimer,
+      buttonBackgroundColor: widget.primaryColor,
+      buttonTextColor: Colors.white,
+      buttonBorderRadius: 8.0,
+      buttonHeight: 50.0,
+      buttonWidth: double.infinity,
+      buttonElevation: 0.0,
+      loadingIndicatorColor: Colors.white,
+      loadingIndicatorSize: 20.0,
     );
   }
 }

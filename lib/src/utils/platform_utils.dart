@@ -40,7 +40,9 @@ class PlatformUtils {
   /// Check if running on any desktop platform
   static bool get isDesktop {
     if (kIsWeb) return false;
-    return PlatformChecker.isWindows || PlatformChecker.isMacOS || PlatformChecker.isLinux;
+    return PlatformChecker.isWindows ||
+        PlatformChecker.isMacOS ||
+        PlatformChecker.isLinux;
   }
 
   /// Check if running on any mobile platform

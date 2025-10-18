@@ -48,7 +48,7 @@ Add this to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_otp_kit: ^3.0.3
+  flutter_otp_kit: ^3.1.0
 ```
 
 Then run:
@@ -110,6 +110,73 @@ OtpKit(
   primaryColor: Colors.purple,
   successColor: Colors.green,
   errorColor: Colors.red,
+  
+  onVerify: (otp) async => await verifyOtp(otp),
+  onResend: () => resendOtp(),
+)
+```
+
+### Custom Verify and Resend Widgets
+
+```dart
+OtpKit(
+  title: 'Custom UI',
+  subtitle: 'Using custom widgets',
+  fieldCount: 4,
+  
+  // Custom verify button - completely replaces default button
+  buttonWidget: Container(
+    height: 60,
+    width: double.infinity,
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [Colors.deepPurple, Colors.blue],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      ),
+      borderRadius: BorderRadius.circular(30),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.deepPurple.withValues(alpha: 0.3),
+          blurRadius: 10,
+          offset: Offset(0, 5),
+        ),
+      ],
+    ),
+    child: TextButton(
+      onPressed: () {
+        // Your custom verify logic
+      },
+      child: Text(
+        'VERIFY NOW',
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    ),
+  ),
+  
+  // Custom resend widget - completely replaces default resend UI
+  resendWidget: Container(
+    padding: EdgeInsets.all(16),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.autorenew, color: Colors.redAccent, size: 24),
+        SizedBox(width: 12),
+        Text(
+          'RESEND VERIFICATION CODE',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            color: Colors.redAccent,
+          ),
+        ),
+      ],
+    ),
+  ),
   
   onVerify: (otp) async => await verifyOtp(otp),
   onResend: () => resendOtp(),
@@ -705,14 +772,6 @@ OtpPerformanceMonitor.instance.cleanup();
 
 ### From Previous Versions
 
-#### Old Way (still works but deprecated):
-```dart
-OtpVerificationWidget(
-  onVerify: (otp) => backend.verify(otp),
-  onResend: () => backend.resend(),
-)
-```
-
 #### New Way (recommended):
 ```dart
 OtpKit(
@@ -724,7 +783,7 @@ OtpKit(
 ### Breaking Changes in 3.0.0
 
 - **Animations disabled by default** - Explicitly enable with `enableAnimation: true`
-- **New OtpKit widget** - Replaces OtpVerificationWidget (still backward compatible)
+- **New OtpKit widget** - The only supported widget for OTP verification
 - **Performance-first approach** - Zero overhead unless features are enabled
 
 ---
@@ -808,6 +867,11 @@ if (!isAvailable) {
 | `primaryColor` | `Color?` | ❌ | `Colors.blue` | Primary theme color |
 | `successColor` | `Color?` | ❌ | `Colors.green` | Success state color |
 | `errorColor` | `Color?` | ❌ | `Colors.red` | Error state color |
+| `buttonWidget` | `Widget?` | ❌ | `null` | Custom verify button widget (overrides default) |
+| `resendWidget` | `Widget?` | ❌ | `null` | Custom resend widget (overrides default) |
+| `timerWidget` | `Widget?` | ❌ | `null` | Custom timer widget (overrides default) |
+| `titleWidget` | `Widget?` | ❌ | `null` | Custom title widget (overrides default) |
+| `subtitleWidget` | `Widget?` | ❌ | `null` | Custom subtitle widget (overrides default) |
 
 ### OtpFieldConfig Parameters
 

@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.2/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [3.1.0] - 2025-10-18
+
+#### 🗑️ Complete Removal of Deprecated Widget
+- **BREAKING CHANGE**: Completely removed deprecated `OtpVerificationWidget`
+- **Migration Required**: All users must migrate to `OtpKit` widget
+- **Cleaner API**: Simplified package API by removing deprecated code
+- **Reduced Package Size**: Smaller package size due to removed deprecated code
+
+#### ✅ Fixed Custom Widget Functionality
+- **Custom Widget Support**: Fixed `buttonWidget` and `resendWidget` parameters to properly override default UI
+- **Complete Replacement**: Custom widgets now fully replace default buttons instead of being ignored
+- **All Custom Widgets**: Support for `buttonWidget`, `resendWidget`, `timerWidget`, `titleWidget`, and `subtitleWidget`
+- **Backward Compatibility**: Existing code continues to work with default widgets when custom widgets not provided
+
 ### [3.0.4] - 2025-10-13
 - ✅ **WASM Compatibility Fully Fixed** - Completely resolved dart:io import issues with proper conditional imports
 - ✅ **Platform Abstraction** - Created proper platform checker abstraction for WASM compatibility
