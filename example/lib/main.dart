@@ -162,7 +162,7 @@ class BasicExample extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.error_outline, color: Colors.red, size: 20),
+                      const Icon(Icons.error_outline, color: Colors.red, size: 20),
                       const SizedBox(width: 8),
                       Text(
                         'Invalid OTP! Fields will be cleared.',
